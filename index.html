@@ -6,9 +6,10 @@
     <link rel="stylesheet" type="text/css" href="./style.css">
   </head>
   <body>
-    <div id="app"></div>
+    <div id="main"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router/4.0.0-0/react-router.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.js"></script>
     <script type="text/babel">
 
@@ -36,7 +37,7 @@
       var JSONdata = '[{"id": 0,"time": {"hour": 7,"minute": 30},"days": {"sun": false,"mon": true,"tue": true,"wed": true,"thu": true,"fri": true,"sat": false},"snooze": true,"vibrate": false,"activated": true},{"id": 1,"time": {"hour": 10,"minute": 0},"days": {"sun": true,"mon": false,"tue": false,"wed": false,"thu": false,"fri": false,"sat": true},"snooze": true,"vibrate": false,"activated": false}]';
 
       //React App
-      var App = React.createClass({
+      var Main = React.createClass({
         getDefaultProps: function() {
           return {
             alarms: JSON.parse(JSONdata)
@@ -54,7 +55,6 @@
             }
             return alarm;
           });
-          console.log('toggled');
           this.setState({
             alarms: newAlarms
           });
@@ -62,8 +62,18 @@
         render: function() {
           return (
             <div>
-              <h1>Alarms</h1>
-              <AlarmList alarms={this.state.alarms} toggleAlarm={this.toggleAlarm}></AlarmList>
+              <AlarmPage alarms={this.state.alarms} toggleAlarm={this.toggleAlarm}></AlarmPage>
+            </div>
+          )
+        }
+      });
+
+      var AlarmPage = React.createClass({
+        render: function() {
+          return (
+            <div>
+              <h1>Wakey</h1>
+              <AlarmList alarms={this.props.alarms} toggleAlarm={this.props.toggleAlarm}></AlarmList>
               <div>Settings</div>
               <div>Add Alarm</div>
             </div>
@@ -71,7 +81,7 @@
         }
       });
 
-      //AlarmList page
+      //AlarmList
       var AlarmList = React.createClass({
         render: function() {
           return (
@@ -111,15 +121,34 @@
                     <div className="time">{this.props.alarm.time.hour + ':' + setTwoDigit(this.props.alarm.time.minute)}</div>
                     <div className="days">
                       {Object.keys(this.props.alarm.days).map(function(key, index) {
-                        var dayclass = (this.props.alarm.days[key]) ? 'dayOn' : 'dayOff';
-                        return <span className={dayclass} key={index}>{capitalize(key)}</span>;
-                      }, this)}
+                        if (this.props.alarm.days[key]) {
+                          return <span className="day" key={index}>{capitalize(key)}</span>;
+                        }
+                      }, this)
+                    }
                     </div>
                   </div>
                   <input type="checkbox" id={this.props.alarm.id} defaultChecked={this.props.alarm.activated} onChange={this.toggleAlarmActivated} />
                 </div>
               )
           return alarm;
+        }
+      });
+
+      //AddAlarm
+      var AddAlarm = React.createClass({
+        render: function() {
+          <div>
+            <h1>Add New Alarm</h1>
+            <div className="time">
+              {/* needs to display existing time set */}
+            </div>
+            <div className="days">
+              {/* needs to display existing days set */}
+            </div>
+            <div className="snooze"></div>
+            <div className="vibrate"></div>
+          </div>
         }
       });
 
@@ -152,8 +181,8 @@
       // });
 
       ReactDOM.render(
-        <App></App>,
-        document.getElementById('app')
+        <Main></Main>,
+        document.getElementById('main')
       );
     </script>
   </body>
