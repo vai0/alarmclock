@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Alarm Clock!</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="./style.css">
+  </head>
+  <body>
+    <div id="app"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.js"></script>
+    <script type="text/babel">
+
+      //Determine how we put this into a store??
+      //Alarms store, Settings Store
+      // var Alarms = [];
+      //
+      // function Alarm(time, days, snooze, vibrate) {
+      //   this.time = time;
+      //   this.days = days;
+      //   this.snooze = snooze;
+      //   this.vibrate = vibrate;
+      // }
+
+      // Helper functions
+      function setTwoDigit(number) {
+        return (number < 10) ? '0' + number.toString() : number.toString();
+      }
+
+      function capitalize(str) {
+        return str[0].toUpperCase() + str.slice(1);
+      }
+
+      //data
+      var JSONdata = '[{"id": 0,"time": {"hour": 7,"minute": 30},"days": {"sun": false,"mon": true,"tue": true,"wed": true,"thu": true,"fri": true,"sat": false},"snooze": true,"vibrate": false,"activated": true},{"id": 1,"time": {"hour": 10,"minute": 0},"days": {"sun": true,"mon": false,"tue": false,"wed": false,"thu": false,"fri": false,"sat": true},"snooze": true,"vibrate": false,"activated": false}]';
+
+      //React App
+      var App = React.createClass({
+        getDefaultProps: function() {
+          return {
+            alarms: JSON.parse(JSONdata)
+          };
+        },
+        getInitialState: function() {
+          return {
+            alarms: this.props.alarms
+          };
+        },
+        toggleAlarm: function(alarmid) {
+          var newAlarms = this.state.alarms.map(function(alarm) {
+            if (alarmid === alarm.id) {
+              alarm.activated = !alarm.activated;
+            }
+            return alarm;
+          });
+          console.log('toggled');
+          this.setState({
+            alarms: newAlarms
+          });
+        },
+        render: function() {
+          return (
+            <div>
+              <h1>Alarms</h1>
+              <AlarmList alarms={this.state.alarms} toggleAlarm={this.toggleAlarm}></AlarmList>
+              <div>Settings</div>
+              <div>Add Alarm</div>
+            </div>
+          )
+        }
+      });
+
+      //AlarmList page
+      var AlarmList = React.createClass({
+        render: function() {
+          return (
+            <div>
+              {this.props.alarms.map(function(alarm, index) {
+                return (
+                  <AlarmElement alarm={alarm} key={alarm.id} toggleAlarm={this.props.toggleAlarm}></AlarmElement>
+                )
+              }, this)}
+            </div>
+          )
+        }
+      });
+
+      var AlarmElement = React.createClass({
+        getInitialState: function() {
+          return {
+            editable: false
+          }
+        },
+        toggleEdit: function() {
+          var a = (this.state.editable === false) ? true : false;
+          this.setState({
+            editable: a
+          });
+        },
+        toggleAlarmActivated: function() {
+          this.props.toggleAlarm(this.props.alarm.id);
+        },
+        render: function() {
+          var activated = (this.props.alarm.activated) ? 'toggleOn' : 'toggleOff';
+          var alarm = (this.state.editable)
+            ? <h3>route to EditAlarm window</h3> //open modal (EditAlarm page)
+            : (
+                <div className="Alarm">
+                  <div onClick={this.toggleEdit}>
+                    <div className="time">{this.props.alarm.time.hour + ':' + setTwoDigit(this.props.alarm.time.minute)}</div>
+                    <div className="days">
+                      {Object.keys(this.props.alarm.days).map(function(key, index) {
+                        var dayclass = (this.props.alarm.days[key]) ? 'dayOn' : 'dayOff';
+                        return <span className={dayclass} key={index}>{capitalize(key)}</span>;
+                      }, this)}
+                    </div>
+                  </div>
+                  <input type="checkbox" id={this.props.alarm.id} defaultChecked={this.props.alarm.activated} onChange={this.toggleAlarmActivated} />
+                </div>
+              )
+          return alarm;
+        }
+      });
+
+      // var Settings = React.createClass({
+      //
+      // });
+      //
+      // //EditAlarm page
+      // var Time = React.createClass({
+      //
+      // });
+      //
+      // var Days = React.createClass({
+      //
+      // });
+      //
+      // var DaySelection = React.createClass({
+      //
+      // });
+      //
+      // //Settings page
+      //
+      // //AlarmTrigger page
+      //
+      // //AddAlarm page
+      //
+      // //Utility components
+      // var Toggle = React.createClass({
+      //
+      // });
+
+      ReactDOM.render(
+        <App></App>,
+        document.getElementById('app')
+      );
+    </script>
+  </body>
+</html>

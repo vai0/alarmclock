@@ -1,0 +1,8 @@
+.Alarm {
+  margin: 1em 0;
+}
+
+.Alarm .dayOn {
+  background-color: green;
+  color: white;
+}
