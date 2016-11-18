@@ -1,3 +1,44 @@
-.Alarm {
+.AlarmElement {
+  border: 1px solid black;
   margin: 1em 0;
+  width: 180px;
+  height: 60px;
+}
+
+.AddAlarmPage .days {
+  margin: 10px 0px;
+}
+
+.AddAlarmPage .day {
+  background-color: white;
+  padding: 10px;
+  color: black;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  margin: 5px;
+}
+
+.AddAlarmPage .day-on {
+  background-color: #E91E63;
+  color: white;
+}
+
+button:focus {
+  outline: none;
+}
+
+.SettingsPage .temperatureButton {
+  background-color: white;
+  padding: 10px;
+  color: black;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  margin: 5px;
+}
+
+.SettingsPage .temp-on {
+  background-color: #E91E63;
+  color: white;
 }

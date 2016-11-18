@@ -1,3 +1,4 @@
+//Alarms
 [
   {
     "id": 0,
@@ -38,3 +39,10 @@
     "activated": false
   }
 ]
+
+//Settings
+{
+  "militarytime": true,
+  "temperature": "c",
+  "locationservice": true
+}

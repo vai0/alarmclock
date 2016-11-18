@@ -24,45 +24,54 @@
       //   this.vibrate = vibrate;
       // }
 
-      // Helper functions
-      function setTwoDigit(number) {
-        return (number < 10) ? '0' + number.toString() : number.toString();
-      }
-
-      function capitalize(str) {
-        return str[0].toUpperCase() + str.slice(1);
-      }
-
-      //data
-      var JSONdata = '[{"id": 0,"time": {"hour": 7,"minute": 30},"days": {"sun": false,"mon": true,"tue": true,"wed": true,"thu": true,"fri": true,"sat": false},"snooze": true,"vibrate": false,"activated": true},{"id": 1,"time": {"hour": 10,"minute": 0},"days": {"sun": true,"mon": false,"tue": false,"wed": false,"thu": false,"fri": false,"sat": true},"snooze": true,"vibrate": false,"activated": false}]';
+      //INITIAL DATA
+      var alarmsdata = '[{"id": 0,"time": {"hour": 7,"minute": 30},"days": {"sun": false,"mon": true,"tue": true,"wed": true,"thu": true,"fri": true,"sat": false},"snooze": true,"vibrate": false,"activated": true},{"id": 1,"time": {"hour": 10,"minute": 0},"days": {"sun": true,"mon": false,"tue": false,"wed": false,"thu": false,"fri": false,"sat": true},"snooze": true,"vibrate": false,"activated": false}]';
+      var settingsdata = '{"militarytime": true, "temperature": "c", "locationservice": true}';
 
       //React App
       var Main = React.createClass({
         getDefaultProps: function() {
           return {
-            alarms: JSON.parse(JSONdata)
+            alarms: JSON.parse(alarmsdata),
+            settings: JSON.parse(settingsdata)
           };
         },
         getInitialState: function() {
           return {
-            alarms: this.props.alarms
+            alarms: this.props.alarms,
+            settings: this.props.settings
           };
         },
-        toggleAlarm: function(alarmid) {
+        _toggleAlarm: function(alarmid) {
           var newAlarms = this.state.alarms.map(function(alarm) {
-            if (alarmid === alarm.id) {
-              alarm.activated = !alarm.activated;
-            }
+            if (alarmid === alarm.id) alarm.activated = !alarm.activated;
             return alarm;
           });
           this.setState({
             alarms: newAlarms
           });
         },
+        _addAlarm: function(newAlarm) {
+          var newAlarms = this.state.alarms.slice();
+          newAlarms.push(newAlarm);
+          this.setState({
+            alarms: newAlarms
+          });
+        },
+        _setTemperatureSetting: function(event) {
+          var newSettings = JSON.parse(JSON.stringify(this.state.settings));
+          var temp = event.target.dataset.temp;
+          newSettings['temperature'] = temp;
+          this.setState({
+            settings: newSettings
+          });
+        },
         render: function() {
           return (
-            <div>
-              <AlarmPage alarms={this.state.alarms} toggleAlarm={this.toggleAlarm}></AlarmPage>
+            <div className="Main">
+              <AlarmPage alarms={this.state.alarms} _toggleAlarm={this._toggleAlarm}></AlarmPage>
+              <AddAlarmPage alarms={this.state.alarms} _addAlarm={this._addAlarm}></AddAlarmPage>
+              <SettingsPage settings={this.state.settings} _setTemperatureSetting={this._setTemperatureSetting}></SettingsPage>
             </div>
           )
         }
@@ -71,9 +80,9 @@
       var AlarmPage = React.createClass({
         render: function() {
           return (
-            <div>
+            <div className="AlarmPage">
               <h1>Wakey</h1>
-              <AlarmList alarms={this.props.alarms} toggleAlarm={this.props.toggleAlarm}></AlarmList>
+              <AlarmList alarms={this.props.alarms} _toggleAlarm={this.props._toggleAlarm}></AlarmList>
               <div>Settings</div>
               <div>Add Alarm</div>
             </div>
@@ -81,14 +90,13 @@
         }
       });
 
-      //AlarmList
       var AlarmList = React.createClass({
         render: function() {
           return (
-            <div>
+            <div className="AlarmList">
               {this.props.alarms.map(function(alarm, index) {
                 return (
-                  <AlarmElement alarm={alarm} key={alarm.id} toggleAlarm={this.props.toggleAlarm}></AlarmElement>
+                  <AlarmElement alarm={alarm} key={index} _toggleAlarm={this.props._toggleAlarm}></AlarmElement>
                 )
               }, this)}
             </div>
@@ -102,22 +110,22 @@
             editable: false
           }
         },
-        toggleEdit: function() {
+        _toggleEdit: function() {
           var a = (this.state.editable === false) ? true : false;
           this.setState({
             editable: a
           });
         },
-        toggleAlarmActivated: function() {
-          this.props.toggleAlarm(this.props.alarm.id);
+        _toggleAlarmActivated: function() {
+          this.props._toggleAlarm(this.props.alarm.id);
         },
         render: function() {
           var activated = (this.props.alarm.activated) ? 'toggleOn' : 'toggleOff';
           var alarm = (this.state.editable)
             ? <h3>route to EditAlarm window</h3> //open modal (EditAlarm page)
             : (
-                <div className="Alarm">
-                  <div onClick={this.toggleEdit}>
+                <div className="AlarmElement">
+                  <div onClick={this._toggleEdit}>
                     <div className="time">{this.props.alarm.time.hour + ':' + setTwoDigit(this.props.alarm.time.minute)}</div>
                     <div className="days">
                       {Object.keys(this.props.alarm.days).map(function(key, index) {
@@ -128,57 +136,153 @@
                     }
                     </div>
                   </div>
-                  <input type="checkbox" id={this.props.alarm.id} defaultChecked={this.props.alarm.activated} onChange={this.toggleAlarmActivated} />
+                  <input type="checkbox" id={this.props.alarm.id} defaultChecked={this.props.alarm.activated} onChange={this._toggleAlarmActivated} />
                 </div>
               )
           return alarm;
         }
       });
 
-      //AddAlarm
-      var AddAlarm = React.createClass({
+      var AddAlarmPage = React.createClass({
+        getInitialState: function() {
+          return {
+            id: this.props.alarms.length,
+            time: {
+              hour: getCurrentHour(),
+              minute: getCurrentMinute()
+            },
+            days: {
+              'sun': false,
+              'mon': false,
+              'tue': false,
+              'wed': false,
+              'thu': false,
+              'fri': false,
+              'sat': false
+            },
+            snooze: true,
+            vibrate: false,
+            activated: true
+          }
+        },
+        componentWillReceiveProps: function(nextProps) {
+          this.setState({
+            id: nextProps.alarms.length
+          });
+        },
+        _switchToggle: function(event) {
+          var newState = {};
+          var key = event.target.dataset.input;
+          newState[key] = !this.state[key];
+          this.setState(newState);
+        },
+        _selectDay: function(event) {
+          var newDays = JSON.parse(JSON.stringify(this.state.days));
+          var key = event.target.dataset.day;
+          newDays[key] = !this.state.days[key];
+          this.setState({
+            days: newDays
+          });
+        },
+        _addAlarmEvent: function() {
+          this.props._addAlarm(this.state);
+        },
+        _changeHour: function(event) {
+          var newTime = JSON.parse(JSON.stringify(this.state.time));
+          newTime.hour = parseInt(event.target.value);
+          this.setState({
+            time: newTime
+          });
+        },
+        _changeMinute: function(event) {
+          var newTime = JSON.parse(JSON.stringify(this.state.time));
+          newTime.minute = parseInt(event.target.value);
+          this.setState({
+            time: newTime
+          });
+        },
         render: function() {
-          <div>
-            <h1>Add New Alarm</h1>
-            <div className="time">
-              {/* needs to display existing time set */}
+          return (
+            <div className="AddAlarmPage">
+              <h1>Add New Alarm</h1>
+              <div className="time">
+                <input type="text" defaultValue={setTwoDigit(getCurrentHour())} onChange={this._changeHour}/>
+                :<input type="text" defaultValue={setTwoDigit(getCurrentMinute())} onChange={this._changeMinute}/>
+              </div>
+              <div className="days">
+                {Object.keys(this.state.days).map(function(key, index) {
+                  var dayClass = 'day';
+                  if (this.state.days[key]) dayClass += ' day-on';
+                  return <button data-day={key} className={dayClass} key={index} onClick={this._selectDay}>{capitalize(key)}</button>;
+                }, this)}
+                {/* needs to handle selected state*/}
+              </div>
+              <div className="snooze">Snooze<input type="checkbox" data-input="snooze" defaultChecked={this.state.snooze} onChange={this._switchToggle}/></div>
+              <div className="vibrate">Vibrate<input type="checkbox" data-input="vibrate" defaultChecked={this.state.vibrate} onChange={this._switchToggle}/></div>
+              <button onClick={this._addAlarmEvent}>Save</button>
             </div>
-            <div className="days">
-              {/* needs to display existing days set */}
-            </div>
-            <div className="snooze"></div>
-            <div className="vibrate"></div>
-          </div>
+          )
         }
       });
 
-      // var Settings = React.createClass({
-      //
-      // });
-      //
-      // //EditAlarm page
-      // var Time = React.createClass({
-      //
-      // });
-      //
-      // var Days = React.createClass({
-      //
-      // });
-      //
-      // var DaySelection = React.createClass({
-      //
-      // });
-      //
-      // //Settings page
-      //
-      // //AlarmTrigger page
-      //
-      // //AddAlarm page
-      //
-      // //Utility components
-      // var Toggle = React.createClass({
-      //
-      // });
+      var SettingsPage = React.createClass({
+        _setTemperatureSettingEvent: function(event) {
+          this.props._setTemperatureSetting(event);
+        },
+        _renderTemperatureButton: function() {
+          if (this.props.settings.temperature === 'c') {
+            return (
+              <span>
+                <button data-temp="c" className="temperatureButton temp-on" onClick={this._setTemperatureSettingEvent}>&deg;C</button>
+                <button data-temp="f" className="temperatureButton" onClick={this._setTemperatureSettingEvent}>&deg;F</button>
+              </span>
+            )
+          } else if (this.props.settings.temperature === 'f') {
+            return (
+              <span>
+                <button data-temp="c" className="temperatureButton" onClick={this._setTemperatureSettingEvent}>&deg;C</button>
+                <button data-temp="f" className="temperatureButton temp-on" onClick={this._setTemperatureSettingEvent}>&deg;F</button>
+              </span>
+            )
+          }
+        },
+        render: function() {
+          return (
+            <div className="SettingsPage">
+              <h1>Settings</h1>
+              <div className="militarytime">24-Hour Time<input type="checkbox" /></div>
+              <div className="temperature">
+                Temperature: {this._renderTemperatureButton()}
+              </div>
+            </div>
+          )
+        }
+      });
+
+      // Helper functions
+      function setTwoDigit(number) {
+        return (number < 10) ? '0' + number.toString() : number.toString();
+      }
+
+      function capitalize(str) {
+        return str[0].toUpperCase() + str.slice(1);
+      }
+
+      function getCurrentHour() {
+        var currentDate = new Date();
+        return currentDate.getHours();
+      }
+
+      function getCurrentMinute() {
+        var currentDate = new Date();
+        return currentDate.getMinutes();
+      }
+
+      //get local time in hh:mm 24-hour format as a string
+      function getCurrentTime() {
+        var currentDate = new Date();
+        return setTwoDigit(currentDate.getHours()) + ':' + setTwoDigit(currentDate.getMinutes());
+      }
 
       ReactDOM.render(
         <Main></Main>,
