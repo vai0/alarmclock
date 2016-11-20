@@ -5,6 +5,10 @@
   height: 60px;
 }
 
+.AlarmElement .day {
+  margin-right: 6px;
+}
+
 .AddAlarmPage .days {
   margin: 10px 0px;
 }
@@ -20,6 +24,25 @@
 }
 
 .AddAlarmPage .day-on {
+  background-color: #E91E63;
+  color: white;
+}
+
+.EditAlarmPage .days {
+  margin: 10px 0px;
+}
+
+.EditAlarmPage .day {
+  background-color: white;
+  padding: 10px;
+  color: black;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  margin: 5px;
+}
+
+.EditAlarmPage .day-on {
   background-color: #E91E63;
   color: white;
 }

@@ -58,6 +58,21 @@
             alarms: newAlarms
           });
         },
+        _updateAlarm: function(updatedalarm) {
+          var newAlarms = this.state.alarms.map(function(alarm) {
+            if (alarm.id === updatedalarm.id) {
+              updatedalarm.activated = alarm.activated;
+              return updatedalarm;
+            }
+            return alarm;
+          });
+          this.setState({
+            alarms: newAlarms
+          });
+          // console.log('oldAlarms: ', this.state.alarms);
+          // console.log('newAlarms: ', newAlarms);
+          // console.log('updated alarm!');
+        },
         _setTemperatureSetting: function(event) {
           var newSettings = JSON.parse(JSON.stringify(this.state.settings));
           var temp = event.target.dataset.temp;
@@ -79,7 +94,7 @@
         render: function() {
           return (
             <div className="Main">
-              <AlarmPage alarms={this.state.alarms} _toggleAlarm={this._toggleAlarm} _getAlarmCount={this._getAlarmCount} _addAlarm={this._addAlarm} settings={this.state.settings} _setTemperatureSetting={this._setTemperatureSetting} _setMilitaryTime={this._setMilitaryTime}/>
+              <AlarmPage alarms={this.state.alarms} _updateAlarm={this._updateAlarm} _toggleAlarm={this._toggleAlarm} _getAlarmCount={this._getAlarmCount} _addAlarm={this._addAlarm} settings={this.state.settings} _setTemperatureSetting={this._setTemperatureSetting} _setMilitaryTime={this._setMilitaryTime}/>
             </div>
           )
         }
@@ -97,12 +112,17 @@
           return {
             showEditAlarmPage: this.props.showEditAlarmPage,
             showAddAlarmPage: this.props.showAddAlarmPage,
-            showSettingsPage: this.props.showSettingsPage
+            showSettingsPage: this.props.showSettingsPage,
+            alarmBeingEdited: {}
           };
         },
-        _openEditAlarmPage: function() {
+        _openEditAlarmPage: function(event) {
+          var alarm = this.props.alarms.filter(function(alarm) {
+            return alarm.id === parseInt(event.currentTarget.dataset.alarmid);
+          })[0];
           this.setState({
-            showEditAlarmPage: true
+            showEditAlarmPage: true,
+            alarmBeingEdited: alarm
           });
         },
         _openAddAlarmPage: function() {
@@ -132,7 +152,7 @@
         },
         render: function() {
           if (this.state.showEditAlarmPage) {
-            return <EditAlarmPage _closeEditAlarmPage={this._closeEditAlarmPage} />
+            return <EditAlarmPage _updateAlarm={this.props._updateAlarm} alarmBeingEdited={this.state.alarmBeingEdited} _closeEditAlarmPage={this._closeEditAlarmPage} />
           }
           if (this.state.showAddAlarmPage) {
             return <AddAlarmPage _getAlarmCount={this.props._getAlarmCount} _addAlarm={this.props._addAlarm} showAddAlarmPage={this.state.showAddAlarmPage} _closeAddAlarmPage={this._closeAddAlarmPage} />
@@ -143,7 +163,7 @@
           return (
             <div className="AlarmPage">
               <h1>Wakey</h1>
-              <AlarmList alarms={this.props.alarms} _toggleAlarm={this.props._toggleAlarm} _closeEditAlarmPage={this._closeEditAlarmPage} _openEditAlarmPage={this._openEditAlarmPage} />
+              <AlarmList alarms={this.props.alarms} _getAlarmId={this._getAlarmId} _toggleAlarm={this.props._toggleAlarm} _closeEditAlarmPage={this._closeEditAlarmPage} _openEditAlarmPage={this._openEditAlarmPage} />
               <button onClick={this._openSettingsPage}>Settings</button>
               <button onClick={this._openAddAlarmPage}>&#43;</button>
             </div>
@@ -157,7 +177,7 @@
             <div className="AlarmList">
               {this.props.alarms.map(function(alarm, index) {
                 return (
-                  <AlarmElement alarm={alarm} key={index} _toggleAlarm={this.props._toggleAlarm} _closeEditAlarmPage={this.props._closeEditAlarmPage} _openEditAlarmPage={this.props._openEditAlarmPage}></AlarmElement>
+                  <AlarmElement alarm={alarm} data-alarmid={alarm.id} key={index} _getAlarmId={this.props._getAlarmId} _toggleAlarm={this.props._toggleAlarm} _closeEditAlarmPage={this.props._closeEditAlarmPage} _openEditAlarmPage={this.props._openEditAlarmPage}></AlarmElement>
                 )
               }, this)}
             </div>
@@ -178,7 +198,7 @@
           var activated = (this.props.alarm.activated) ? 'toggleOn' : 'toggleOff';
           return (
             <div className="AlarmElement">
-              <div onClick={this.props._openEditAlarmPage}>
+              <div data-alarmid={this.props.alarm.id} onClick={this.props._openEditAlarmPage}>
                 <div className="time">{this.props.alarm.time.hour + ':' + setTwoDigit(this.props.alarm.time.minute)}</div>
                 <div className="days">
                   {Object.keys(this.props.alarm.days).map(function(key, index) {
@@ -196,11 +216,79 @@
       });
 
       var EditAlarmPage = React.createClass({
+        getInitialState: function() {
+          return {
+            id: this.props.alarmBeingEdited.id,
+            time: {
+              hour: this.props.alarmBeingEdited.time.hour,
+              minute: this.props.alarmBeingEdited.time.minute
+            },
+            days: {
+              'sun': this.props.alarmBeingEdited.days['sun'],
+              'mon': this.props.alarmBeingEdited.days['mon'],
+              'tue': this.props.alarmBeingEdited.days['tue'],
+              'wed': this.props.alarmBeingEdited.days['wed'],
+              'thu': this.props.alarmBeingEdited.days['thu'],
+              'fri': this.props.alarmBeingEdited.days['fri'],
+              'sat': this.props.alarmBeingEdited.days['sat']
+            },
+            snooze: this.props.alarmBeingEdited.snooze,
+            vibrate: this.props.alarmBeingEdited.vibrate
+          }
+        },
+        _switchToggle: function(event) {
+          var newState = {};
+          var key = event.target.dataset.input;
+          newState[key] = !this.state[key];
+          this.setState(newState);
+        },
+        _selectDay: function(event) {
+          var newDays = JSON.parse(JSON.stringify(this.state.days));
+          var key = event.target.dataset.day;
+          newDays[key] = !this.state.days[key];
+          this.setState({
+            days: newDays
+          });
+        },
+        _onSave: function() {
+          this.props._updateAlarm(this.state);
+          this.props._closeEditAlarmPage();
+        },
+        _changeHour: function(event) {
+          var newTime = JSON.parse(JSON.stringify(this.state.time));
+          newTime.hour = parseInt(event.target.value);
+          this.setState({
+            time: newTime
+          });
+        },
+        _changeMinute: function(event) {
+          var newTime = JSON.parse(JSON.stringify(this.state.time));
+          newTime.minute = parseInt(event.target.value);
+          this.setState({
+            time: newTime
+          });
+        },
         render: function() {
           return (
-            <div className="EditAlarmPage">
-              <button onClick={this.props._closeEditAlarmPage}>&#60;</button><h1>Edit Alarm</h1>
-            </div>
+              <div className="EditAlarmPage">
+                <button onClick={this.props._closeEditAlarmPage}>&#60;</button>
+                <h1>Edit</h1>
+                <div className="time">
+                  <input type="text" defaultValue={setTwoDigit(this.state.time.hour)} onChange={this._changeHour}/>
+                  :<input type="text" defaultValue={setTwoDigit(this.state.time.minute)} onChange={this._changeMinute}/>
+                </div>
+                <div className="days">
+                  {Object.keys(this.state.days).map(function(key, index) {
+                    var dayClass = 'day';
+                    if (this.state.days[key]) dayClass += ' day-on';
+                    return <button data-day={key} className={dayClass} key={index} onClick={this._selectDay}>{capitalize(key)}</button>;
+                  }, this)}
+                  {/* needs to handle selected state*/}
+                </div>
+                <div className="snooze">Snooze<input type="checkbox" data-input="snooze" defaultChecked={this.state.snooze} onChange={this._switchToggle}/></div>
+                <div className="vibrate">Vibrate<input type="checkbox" data-input="vibrate" defaultChecked={this.state.vibrate} onChange={this._switchToggle}/></div>
+                <button onClick={this._onSave}>Save</button>
+              </div>
           )
         }
       });
