@@ -69,9 +69,14 @@
           this.setState({
             alarms: newAlarms
           });
-          // console.log('oldAlarms: ', this.state.alarms);
-          // console.log('newAlarms: ', newAlarms);
-          // console.log('updated alarm!');
+        },
+        _deleteAlarm: function(alarmid) {
+          var newAlarms = this.state.alarms.filter(function(alarm) {
+            return alarm.id !== alarmid;
+          });
+          this.setState({
+            alarms: newAlarms
+          });
         },
         _setTemperatureSetting: function(event) {
           var newSettings = JSON.parse(JSON.stringify(this.state.settings));
@@ -94,7 +99,7 @@
         render: function() {
           return (
             <div className="Main">
-              <AlarmPage alarms={this.state.alarms} _updateAlarm={this._updateAlarm} _toggleAlarm={this._toggleAlarm} _getAlarmCount={this._getAlarmCount} _addAlarm={this._addAlarm} settings={this.state.settings} _setTemperatureSetting={this._setTemperatureSetting} _setMilitaryTime={this._setMilitaryTime}/>
+              <AlarmPage alarms={this.state.alarms} _updateAlarm={this._updateAlarm} _deleteAlarm={this._deleteAlarm} _toggleAlarm={this._toggleAlarm} _getAlarmCount={this._getAlarmCount} _addAlarm={this._addAlarm} settings={this.state.settings} _setTemperatureSetting={this._setTemperatureSetting} _setMilitaryTime={this._setMilitaryTime}/>
             </div>
           )
         }
@@ -152,7 +157,7 @@
         },
         render: function() {
           if (this.state.showEditAlarmPage) {
-            return <EditAlarmPage _updateAlarm={this.props._updateAlarm} alarmBeingEdited={this.state.alarmBeingEdited} _closeEditAlarmPage={this._closeEditAlarmPage} />
+            return <EditAlarmPage _updateAlarm={this.props._updateAlarm} _deleteAlarm={this.props._deleteAlarm} alarmBeingEdited={this.state.alarmBeingEdited} _closeEditAlarmPage={this._closeEditAlarmPage} />
           }
           if (this.state.showAddAlarmPage) {
             return <AddAlarmPage _getAlarmCount={this.props._getAlarmCount} _addAlarm={this.props._addAlarm} showAddAlarmPage={this.state.showAddAlarmPage} _closeAddAlarmPage={this._closeAddAlarmPage} />
@@ -254,6 +259,10 @@
           this.props._updateAlarm(this.state);
           this.props._closeEditAlarmPage();
         },
+        _onDelete: function() {
+          this.props._deleteAlarm(this.state.id);
+          this.props._closeEditAlarmPage();
+        },
         _changeHour: function(event) {
           var newTime = JSON.parse(JSON.stringify(this.state.time));
           newTime.hour = parseInt(event.target.value);
@@ -272,6 +281,7 @@
           return (
               <div className="EditAlarmPage">
                 <button onClick={this.props._closeEditAlarmPage}>&#60;</button>
+                <button onClick={this._onDelete}>Delete</button>
                 <h1>Edit</h1>
                 <div className="time">
                   <input type="text" defaultValue={setTwoDigit(this.state.time.hour)} onChange={this._changeHour}/>
@@ -357,7 +367,7 @@
             return (
                 <div className="AddAlarmPage">
                   <button onClick={this.props._closeAddAlarmPage}>&#60;</button>
-                  <h1>Add New Alarm</h1>
+                  <h1>New Alarm</h1>
                   <div className="time">
                     <input type="text" defaultValue={setTwoDigit(getCurrentHour())} onChange={this._changeHour}/>
                     :<input type="text" defaultValue={setTwoDigit(getCurrentMinute())} onChange={this._changeMinute}/>
