@@ -13,272 +13,340 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.js"></script>
     <script type="text/babel">
 
-      //Determine how we put this into a store??
-      //Alarms store, Settings Store
-      // var Alarms = [];
-      //
-      // function Alarm(time, days, snooze, vibrate) {
-      //   this.time = time;
-      //   this.days = days;
-      //   this.snooze = snooze;
-      //   this.vibrate = vibrate;
-      // }
+      (function() {
 
-      //INITIAL DATA
-      var alarmsdata = '[{"id": 0,"time": {"hour": 7,"minute": 30},"days": {"sun": false,"mon": true,"tue": true,"wed": true,"thu": true,"fri": true,"sat": false},"snooze": true,"vibrate": false,"activated": true},{"id": 1,"time": {"hour": 10,"minute": 0},"days": {"sun": true,"mon": false,"tue": false,"wed": false,"thu": false,"fri": false,"sat": true},"snooze": true,"vibrate": false,"activated": false}]';
-      var settingsdata = '{"militarytime": true, "temperature": "c", "locationservice": true}';
+        //INITIAL DATA
+        var alarmsdata = '[ { "id": 0, "time": { "hour": 7, "minute": 30, "second": 0 }, "days": { "sun": false, "mon": true, "tue": true, "wed": true, "thu": true, "fri": true, "sat": false }, "repeat": true, "snooze": true, "vibrate": false, "activated": true }, { "id": 1, "time": { "hour": 10, "minute": 0, "second": 0 }, "days": { "sun": true, "mon": false, "tue": false, "wed": false, "thu": false, "fri": false, "sat": true }, "repeat": true, "snooze": true, "vibrate": false, "activated": false }]';
+        var settingsdata = '{"militarytime": true, "temperature": "c", "locationservice": true}';
 
-      //React App
-      var Main = React.createClass({
-        getDefaultProps: function() {
-          return {
-            alarms: JSON.parse(alarmsdata),
-            settings: JSON.parse(settingsdata)
-          };
-        },
-        getInitialState: function() {
-          return {
-            alarms: this.props.alarms,
-            settings: this.props.settings
-          };
-        },
-        _toggleAlarm: function(alarmid) {
-          var newAlarms = this.state.alarms.map(function(alarm) {
-            if (alarmid === alarm.id) alarm.activated = !alarm.activated;
-            return alarm;
-          });
-          this.setState({
-            alarms: newAlarms
-          });
-        },
-        _addAlarm: function(newAlarm) {
-          var newAlarms = this.state.alarms.slice();
-          newAlarms.push(newAlarm);
-          this.setState({
-            alarms: newAlarms
-          });
-        },
-        _updateAlarm: function(updatedalarm) {
-          var newAlarms = this.state.alarms.map(function(alarm) {
-            if (alarm.id === updatedalarm.id) {
-              updatedalarm.activated = alarm.activated;
-              return updatedalarm;
+        //React App
+        var Main = React.createClass({
+          getDefaultProps: function() {
+            return {
+              alarms: JSON.parse(alarmsdata),
+              settings: JSON.parse(settingsdata),
+            };
+          },
+          getInitialState: function() {
+            return {
+              alarms: this.props.alarms,
+              settings: this.props.settings,
+              currentTime: null // {hour: [int], minute: [int], second: [int]}
+            };
+          },
+          _startClock: function() {
+            var time = new Date();
+            var day = time.getDay();
+            var hour = time.getHours();
+            var minute = time.getMinutes();
+            var second = time.getSeconds();
+            this.setState({
+              currentTime: {
+                day: day,
+                hour: hour,
+                minute: minute,
+                second: second
+              }
+            });
+            setTimeout(this._startClock, 1000);
+          },
+          _toggleAlarm: function(alarmid) {
+            var newAlarms = this.state.alarms.map(function(alarm) {
+              if (alarmid === alarm.id) alarm.activated = !alarm.activated;
+              return alarm;
+            });
+            this.setState({
+              alarms: newAlarms
+            });
+          },
+          _addAlarm: function(newAlarm) {
+            var newAlarms = this.state.alarms.slice();
+            newAlarms.push(newAlarm);
+            this.setState({
+              alarms: newAlarms
+            });
+          },
+          _updateAlarm: function(updatedalarm) {
+            var newAlarms = this.state.alarms.map(function(alarm) {
+              if (alarm.id === updatedalarm.id) {
+                updatedalarm.activated = alarm.activated;
+                return updatedalarm;
+              }
+              return alarm;
+            });
+            this.setState({
+              alarms: newAlarms
+            });
+          },
+          _deleteAlarm: function(alarmid) {
+            var newAlarms = this.state.alarms.filter(function(alarm) {
+              return alarm.id !== alarmid;
+            });
+            this.setState({
+              alarms: newAlarms
+            });
+          },
+          _setTemperatureSetting: function(event) {
+            var newSettings = JSON.parse(JSON.stringify(this.state.settings));
+            var temp = event.target.dataset.temp;
+            newSettings['temperature'] = temp;
+            this.setState({
+              settings: newSettings
+            });
+          },
+          _setMilitaryTime: function(event) {
+            var newSettings = JSON.parse(JSON.stringify(this.state.settings));
+            newSettings['militarytime'] = !this.state.settings.militarytime;
+            this.setState({
+              settings: newSettings
+            });
+          },
+          _getAlarmCount: function() {
+            return this.state.alarms.length;
+          },
+          componentWillMount: function() {
+            this._startClock();
+          },
+          render: function() {
+            return (
+              <div className="Main">
+                <AlarmPage alarms={this.state.alarms} _toggleAlarm={this._toggleAlarm} currentTime={this.state.currentTime} _updateAlarm={this._updateAlarm} _deleteAlarm={this._deleteAlarm} _toggleAlarm={this._toggleAlarm} _getAlarmCount={this._getAlarmCount} _addAlarm={this._addAlarm} settings={this.state.settings} _setTemperatureSetting={this._setTemperatureSetting} _setMilitaryTime={this._setMilitaryTime} />
+              </div>
+            )
+          }
+        });
+
+        var AlarmPage = React.createClass({
+          getDefaultProps: function() {
+            return {
+              showEditAlarmPage: false,
+              showAddAlarmPage: false,
+              showSettingsPage: false,
+              showAlarmTriggeredPage: false
+            };
+          },
+          getInitialState: function() {
+            return {
+              showEditAlarmPage: this.props.showEditAlarmPage,
+              showAddAlarmPage: this.props.showAddAlarmPage,
+              showSettingsPage: this.props.showSettingsPage,
+              showAlarmTriggeredPage: this.props.showAlarmTriggeredPage,
+              alarmBeingEdited: {}
+            };
+          },
+          _openEditAlarmPage: function(event) {
+            var alarm = this.props.alarms.filter(function(alarm) {
+              return alarm.id === parseInt(event.currentTarget.dataset.alarmid);
+            })[0];
+            this.setState({
+              showEditAlarmPage: true,
+              alarmBeingEdited: alarm
+            });
+          },
+          _openAddAlarmPage: function() {
+            this.setState({
+              showAddAlarmPage: true
+            });
+          },
+          _openSettingsPage: function() {
+            this.setState({
+              showSettingsPage: true
+            });
+          },
+          _closeEditAlarmPage: function() {
+            this.setState({
+              showEditAlarmPage: false
+            });
+          },
+          _closeAddAlarmPage: function() {
+            this.setState({
+              showAddAlarmPage: false
+            });
+          },
+          _closeSettingsPage: function() {
+            this.setState({
+              showSettingsPage: false
+            });
+          },
+          _closeAlarmTriggeredPage: function() {
+            this.setState({
+              showAlarmTriggeredPage: false
+            });
+          },
+          componentWillReceiveProps: function(nextProps) {
+            console.log(this.props.currentTime.hour + ':' + this.props.currentTime.minute + ':' + this.props.currentTime.second);
+            this.props.alarms.forEach(function(alarm) {
+              if (alarm.activated &&
+                (alarm.time.hour === this.props.currentTime.hour) &&
+                (alarm.time.minute === this.props.currentTime.minute) &&
+                (alarm.time.second === this.props.currentTime.second)) {
+                //add condition - when current day === selected repeat day
+                //if no repeat, then ignore this rule: set to true?
+                console.log('alarm triggered!', alarm);
+                if (!alarm.repeat) this.props._toggleAlarm(alarm.id);
+                this.setState({
+                  showAlarmTriggeredPage: true
+                });
+              }
+            }, this);
+          },
+          render: function() {
+            if (this.state.showEditAlarmPage) {
+              return <EditAlarmPage _updateAlarm={this.props._updateAlarm} _deleteAlarm={this.props._deleteAlarm} alarmBeingEdited={this.state.alarmBeingEdited} _closeEditAlarmPage={this._closeEditAlarmPage} />
             }
-            return alarm;
-          });
-          this.setState({
-            alarms: newAlarms
-          });
-        },
-        _deleteAlarm: function(alarmid) {
-          var newAlarms = this.state.alarms.filter(function(alarm) {
-            return alarm.id !== alarmid;
-          });
-          this.setState({
-            alarms: newAlarms
-          });
-        },
-        _setTemperatureSetting: function(event) {
-          var newSettings = JSON.parse(JSON.stringify(this.state.settings));
-          var temp = event.target.dataset.temp;
-          newSettings['temperature'] = temp;
-          this.setState({
-            settings: newSettings
-          });
-        },
-        _setMilitaryTime: function(event) {
-          var newSettings = JSON.parse(JSON.stringify(this.state.settings));
-          newSettings['militarytime'] = !this.state.settings.militarytime;
-          this.setState({
-            settings: newSettings
-          });
-        },
-        _getAlarmCount: function() {
-          return this.state.alarms.length;
-        },
-        render: function() {
-          return (
-            <div className="Main">
-              <AlarmPage alarms={this.state.alarms} _updateAlarm={this._updateAlarm} _deleteAlarm={this._deleteAlarm} _toggleAlarm={this._toggleAlarm} _getAlarmCount={this._getAlarmCount} _addAlarm={this._addAlarm} settings={this.state.settings} _setTemperatureSetting={this._setTemperatureSetting} _setMilitaryTime={this._setMilitaryTime}/>
-            </div>
-          )
-        }
-      });
+            if (this.state.showAddAlarmPage) {
+              return <AddAlarmPage currentTime={this.props.currentTime} _getAlarmCount={this.props._getAlarmCount} _addAlarm={this.props._addAlarm} showAddAlarmPage={this.state.showAddAlarmPage} _closeAddAlarmPage={this._closeAddAlarmPage} />
+            }
+            if (this.state.showSettingsPage) {
+              return <SettingsPage settings={this.props.settings} _setTemperatureSetting={this.props._setTemperatureSetting} _setMilitaryTime={this.props._setMilitaryTime} _closeSettingsPage={this._closeSettingsPage}/>
+            }
+            if (this.state.showAlarmTriggeredPage) {
+              return <AlarmTriggeredPage currentTime={this.props.currentTime} _closeAlarmTriggeredPage={this._closeAlarmTriggeredPage} />
+            }
+            return (
+              <div className="AlarmPage">
+                <h1>Wakey</h1>
+                <AlarmList alarms={this.props.alarms} _getAlarmId={this._getAlarmId} _toggleAlarm={this.props._toggleAlarm} _closeEditAlarmPage={this._closeEditAlarmPage} _openEditAlarmPage={this._openEditAlarmPage} />
+                <button onClick={this._openSettingsPage}>Settings</button>
+                <button onClick={this._openAddAlarmPage}>&#43;</button>
+              </div>
+            )
+          }
+        });
 
-      var AlarmPage = React.createClass({
-        getDefaultProps: function() {
-          return {
-            showEditAlarmPage: false,
-            showAddAlarmPage: false,
-            showSettingsPage: false
-          };
-        },
-        getInitialState: function() {
-          return {
-            showEditAlarmPage: this.props.showEditAlarmPage,
-            showAddAlarmPage: this.props.showAddAlarmPage,
-            showSettingsPage: this.props.showSettingsPage,
-            alarmBeingEdited: {}
-          };
-        },
-        _openEditAlarmPage: function(event) {
-          var alarm = this.props.alarms.filter(function(alarm) {
-            return alarm.id === parseInt(event.currentTarget.dataset.alarmid);
-          })[0];
-          this.setState({
-            showEditAlarmPage: true,
-            alarmBeingEdited: alarm
-          });
-        },
-        _openAddAlarmPage: function() {
-          this.setState({
-            showAddAlarmPage: true
-          });
-        },
-        _openSettingsPage: function() {
-          this.setState({
-            showSettingsPage: true
-          });
-        },
-        _closeEditAlarmPage: function() {
-          this.setState({
-            showEditAlarmPage: false
-          });
-        },
-        _closeAddAlarmPage: function() {
-          this.setState({
-            showAddAlarmPage: false
-          });
-        },
-        _closeSettingsPage: function() {
-          this.setState({
-            showSettingsPage: false
-          });
-        },
-        render: function() {
-          if (this.state.showEditAlarmPage) {
-            return <EditAlarmPage _updateAlarm={this.props._updateAlarm} _deleteAlarm={this.props._deleteAlarm} alarmBeingEdited={this.state.alarmBeingEdited} _closeEditAlarmPage={this._closeEditAlarmPage} />
+        var AlarmList = React.createClass({
+          render: function() {
+            return (
+              <div className="AlarmList">
+                {this.props.alarms.map(function(alarm, index) {
+                  return (
+                    <AlarmElement alarm={alarm} data-alarmid={alarm.id} key={index} _getAlarmId={this.props._getAlarmId} _toggleAlarm={this.props._toggleAlarm} _closeEditAlarmPage={this.props._closeEditAlarmPage} _openEditAlarmPage={this.props._openEditAlarmPage}></AlarmElement>
+                  )
+                }, this)}
+              </div>
+            )
           }
-          if (this.state.showAddAlarmPage) {
-            return <AddAlarmPage _getAlarmCount={this.props._getAlarmCount} _addAlarm={this.props._addAlarm} showAddAlarmPage={this.state.showAddAlarmPage} _closeAddAlarmPage={this._closeAddAlarmPage} />
-          }
-          if (this.state.showSettingsPage) {
-            return <SettingsPage settings={this.props.settings} _setTemperatureSetting={this.props._setTemperatureSetting} _setMilitaryTime={this.props._setMilitaryTime} _closeSettingsPage={this._closeSettingsPage}/>
-          }
-          return (
-            <div className="AlarmPage">
-              <h1>Wakey</h1>
-              <AlarmList alarms={this.props.alarms} _getAlarmId={this._getAlarmId} _toggleAlarm={this.props._toggleAlarm} _closeEditAlarmPage={this._closeEditAlarmPage} _openEditAlarmPage={this._openEditAlarmPage} />
-              <button onClick={this._openSettingsPage}>Settings</button>
-              <button onClick={this._openAddAlarmPage}>&#43;</button>
-            </div>
-          )
-        }
-      });
+        });
 
-      var AlarmList = React.createClass({
-        render: function() {
-          return (
-            <div className="AlarmList">
-              {this.props.alarms.map(function(alarm, index) {
-                return (
-                  <AlarmElement alarm={alarm} data-alarmid={alarm.id} key={index} _getAlarmId={this.props._getAlarmId} _toggleAlarm={this.props._toggleAlarm} _closeEditAlarmPage={this.props._closeEditAlarmPage} _openEditAlarmPage={this.props._openEditAlarmPage}></AlarmElement>
-                )
-              }, this)}
-            </div>
-          )
-        }
-      });
-
-      var AlarmElement = React.createClass({
-        getInitialState: function() {
-          return {
-            editable: false
-          }
-        },
-        _toggleAlarmActivated: function() {
-          this.props._toggleAlarm(this.props.alarm.id);
-        },
-        render: function() {
-          var activated = (this.props.alarm.activated) ? 'toggleOn' : 'toggleOff';
-          return (
-            <div className="AlarmElement">
-              <div data-alarmid={this.props.alarm.id} onClick={this.props._openEditAlarmPage}>
-                <div className="time">{this.props.alarm.time.hour + ':' + setTwoDigit(this.props.alarm.time.minute)}</div>
+        var AlarmElement = React.createClass({
+          getInitialState: function() {
+            return {
+              editable: false
+            }
+          },
+          _toggleAlarmActivated: function() {
+            this.props._toggleAlarm(this.props.alarm.id);
+          },
+          _renderDays: function() {
+            if (this.props.alarm.repeat) {
+              return (
                 <div className="days">
                   {Object.keys(this.props.alarm.days).map(function(key, index) {
                     if (this.props.alarm.days[key]) {
                       return <span className="day" key={index}>{capitalize(key)}</span>;
                     }
-                  }, this)
-                }
+                  }, this)}
                 </div>
+              )
+            } else {
+              return null;
+            }
+          },
+          render: function() {
+            var activated = (this.props.alarm.activated) ? 'toggleOn' : 'toggleOff';
+            return (
+              <div className="AlarmElement">
+                <div data-alarmid={this.props.alarm.id} onClick={this.props._openEditAlarmPage}>
+                  <div className="time">{this.props.alarm.time.hour + ':' + setTwoDigit(this.props.alarm.time.minute)}</div>
+                  {this._renderDays()}
+                </div>
+                <input type="checkbox" id={this.props.alarm.id} defaultChecked={this.props.alarm.activated} onClick={this._toggleAlarmActivated} />
               </div>
-              <input type="checkbox" id={this.props.alarm.id} defaultChecked={this.props.alarm.activated} onClick={this._toggleAlarmActivated} />
-            </div>
-          )
-        }
-      });
-
-      var EditAlarmPage = React.createClass({
-        getInitialState: function() {
-          return {
-            id: this.props.alarmBeingEdited.id,
-            time: {
-              hour: this.props.alarmBeingEdited.time.hour,
-              minute: this.props.alarmBeingEdited.time.minute
-            },
-            days: {
-              'sun': this.props.alarmBeingEdited.days['sun'],
-              'mon': this.props.alarmBeingEdited.days['mon'],
-              'tue': this.props.alarmBeingEdited.days['tue'],
-              'wed': this.props.alarmBeingEdited.days['wed'],
-              'thu': this.props.alarmBeingEdited.days['thu'],
-              'fri': this.props.alarmBeingEdited.days['fri'],
-              'sat': this.props.alarmBeingEdited.days['sat']
-            },
-            snooze: this.props.alarmBeingEdited.snooze,
-            vibrate: this.props.alarmBeingEdited.vibrate
+            )
           }
-        },
-        _switchToggle: function(event) {
-          var newState = {};
-          var key = event.target.dataset.input;
-          newState[key] = !this.state[key];
-          this.setState(newState);
-        },
-        _selectDay: function(event) {
-          var newDays = JSON.parse(JSON.stringify(this.state.days));
-          var key = event.target.dataset.day;
-          newDays[key] = !this.state.days[key];
-          this.setState({
-            days: newDays
-          });
-        },
-        _onSave: function() {
-          this.props._updateAlarm(this.state);
-          this.props._closeEditAlarmPage();
-        },
-        _onDelete: function() {
-          this.props._deleteAlarm(this.state.id);
-          this.props._closeEditAlarmPage();
-        },
-        _changeHour: function(event) {
-          var newTime = JSON.parse(JSON.stringify(this.state.time));
-          newTime.hour = parseInt(event.target.value);
-          this.setState({
-            time: newTime
-          });
-        },
-        _changeMinute: function(event) {
-          var newTime = JSON.parse(JSON.stringify(this.state.time));
-          newTime.minute = parseInt(event.target.value);
-          this.setState({
-            time: newTime
-          });
-        },
-        render: function() {
-          return (
+        });
+
+        var EditAlarmPage = React.createClass({
+          getInitialState: function() {
+            return {
+              id: this.props.alarmBeingEdited.id,
+              time: {
+                hour: this.props.alarmBeingEdited.time.hour,
+                minute: this.props.alarmBeingEdited.time.minute,
+                second: this.props.alarmBeingEdited.time.second
+              },
+              days: {
+                'sun': this.props.alarmBeingEdited.days['sun'],
+                'mon': this.props.alarmBeingEdited.days['mon'],
+                'tue': this.props.alarmBeingEdited.days['tue'],
+                'wed': this.props.alarmBeingEdited.days['wed'],
+                'thu': this.props.alarmBeingEdited.days['thu'],
+                'fri': this.props.alarmBeingEdited.days['fri'],
+                'sat': this.props.alarmBeingEdited.days['sat']
+              },
+              repeat: this.props.alarmBeingEdited.repeat,
+              snooze: this.props.alarmBeingEdited.snooze,
+              vibrate: this.props.alarmBeingEdited.vibrate
+            }
+          },
+          _switchToggle: function(event) {
+            var newState = {};
+            var key = event.target.dataset.input;
+            newState[key] = !this.state[key];
+            this.setState(newState);
+          },
+          _selectDay: function(event) {
+            var newDays = JSON.parse(JSON.stringify(this.state.days));
+            var key = event.target.dataset.day;
+            newDays[key] = !this.state.days[key];
+            this.setState({
+              days: newDays
+            });
+          },
+          _onSave: function() {
+            this.props._updateAlarm(this.state);
+            this.props._closeEditAlarmPage();
+          },
+          _onDelete: function() {
+            this.props._deleteAlarm(this.state.id);
+            this.props._closeEditAlarmPage();
+          },
+          _changeHour: function(event) {
+            var newTime = JSON.parse(JSON.stringify(this.state.time));
+            newTime.hour = parseInt(event.target.value);
+            this.setState({
+              time: newTime
+            });
+          },
+          _changeMinute: function(event) {
+            var newTime = JSON.parse(JSON.stringify(this.state.time));
+            newTime.minute = parseInt(event.target.value);
+            this.setState({
+              time: newTime
+            });
+          },
+          _onClickRepeat: function() {
+            this.setState({
+              repeat: !this.state.repeat
+            });
+          },
+          _renderDays: function() {
+            if (this.state.repeat) {
+              return (
+                <div className="days">
+                  {Object.keys(this.state.days).map(function(key, index) {
+                    var dayClass = 'day';
+                    if (this.state.days[key]) dayClass += ' day-on';
+                    return <button data-day={key} className={dayClass} key={index} onClick={this._selectDay}>{capitalize(key)}</button>;
+                  }, this)}
+                </div>
+              )
+            } else {
+              return null;
+            }
+          },
+          render: function() {
+            return (
               <div className="EditAlarmPage">
                 <button onClick={this.props._closeEditAlarmPage}>&#60;</button>
                 <button onClick={this._onDelete}>Delete</button>
@@ -287,177 +355,248 @@
                   <input type="text" defaultValue={setTwoDigit(this.state.time.hour)} onChange={this._changeHour}/>
                   :<input type="text" defaultValue={setTwoDigit(this.state.time.minute)} onChange={this._changeMinute}/>
                 </div>
+                Repeat: <input type="checkbox" defaultChecked={this.state.repeat} onClick={this._onClickRepeat} />
+                {this._renderDays()}
+                <div className="snooze">Snooze<input type="checkbox" data-input="snooze" defaultChecked={this.state.snooze} onChange={this._switchToggle}/></div>
+                <div className="vibrate">Vibrate<input type="checkbox" data-input="vibrate" defaultChecked={this.state.vibrate} onChange={this._switchToggle}/></div>
+                <button onClick={this._onSave}>Save</button>
+              </div>
+            )
+          }
+        });
+
+        var AddAlarmPage = React.createClass({
+          getInitialState: function() {
+            return {
+              id: this.props._getAlarmCount(),
+              time: {
+                hour: this.props.currentTime.hour,
+                minute: this.props.currentTime.minute,
+                second: 0
+              },
+              days: {
+                'sun': true,
+                'mon': true,
+                'tue': true,
+                'wed': true,
+                'thu': true,
+                'fri': true,
+                'sat': true
+              },
+              repeat: false,
+              snooze: true,
+              vibrate: false,
+              activated: true
+            }
+          },
+          _switchToggle: function(event) {
+            var newState = {};
+            var key = event.target.dataset.input;
+            newState[key] = !this.state[key];
+            this.setState(newState);
+          },
+          _selectDay: function(event) {
+            var newDays = JSON.parse(JSON.stringify(this.state.days));
+            var key = event.target.dataset.day;
+            newDays[key] = !this.state.days[key];
+            this.setState({
+              days: newDays
+            });
+          },
+          _onSave: function() {
+            this.props._addAlarm(this.state);
+            this.props._closeAddAlarmPage();
+          },
+          _changeHour: function(event) {
+            var newTime = JSON.parse(JSON.stringify(this.state.time));
+            newTime.hour = parseInt(event.target.value);
+            this.setState({
+              time: newTime
+            });
+          },
+          _changeMinute: function(event) {
+            var newTime = JSON.parse(JSON.stringify(this.state.time));
+            newTime.minute = parseInt(event.target.value);
+            this.setState({
+              time: newTime
+            });
+          },
+          _onClickRepeat: function() {
+            this.setState({
+              repeat: !this.state.repeat
+            });
+          },
+          componentWillReceiveProps: function(nextProps) {
+            this.setState({
+              id: nextProps._getAlarmCount()
+            });
+          },
+          _renderDays: function() {
+            if (this.state.repeat) {
+              return (
                 <div className="days">
                   {Object.keys(this.state.days).map(function(key, index) {
                     var dayClass = 'day';
                     if (this.state.days[key]) dayClass += ' day-on';
                     return <button data-day={key} className={dayClass} key={index} onClick={this._selectDay}>{capitalize(key)}</button>;
                   }, this)}
-                  {/* needs to handle selected state*/}
                 </div>
-                <div className="snooze">Snooze<input type="checkbox" data-input="snooze" defaultChecked={this.state.snooze} onChange={this._switchToggle}/></div>
-                <div className="vibrate">Vibrate<input type="checkbox" data-input="vibrate" defaultChecked={this.state.vibrate} onChange={this._switchToggle}/></div>
-                <button onClick={this._onSave}>Save</button>
-              </div>
-          )
-        }
-      });
-
-      var AddAlarmPage = React.createClass({
-        getInitialState: function() {
-          return {
-            id: this.props._getAlarmCount(),
-            time: {
-              hour: getCurrentHour(),
-              minute: getCurrentMinute()
-            },
-            days: {
-              'sun': false,
-              'mon': false,
-              'tue': false,
-              'wed': false,
-              'thu': false,
-              'fri': false,
-              'sat': false
-            },
-            snooze: true,
-            vibrate: false,
-            activated: true
+              )
+            } else {
+              return null;
+            }
+          },
+          render: function() {
+            if (this.props.showAddAlarmPage) {
+              return (
+                  <div className="AddAlarmPage">
+                    <button onClick={this.props._closeAddAlarmPage}>&#60;</button>
+                    <h1>New Alarm</h1>
+                    <div className="time">
+                      <input type="text" defaultValue={this.props.currentTime.hour} onChange={this._changeHour}/>
+                      :<input type="text" defaultValue={this.props.currentTime.minute} onChange={this._changeMinute}/>
+                    </div>
+                    Repeat: <input type="checkbox" defaultChecked={this.state.repeat} onClick={this._onClickRepeat} />
+                    {this._renderDays()}
+                    <div className="snooze">Snooze<input type="checkbox" data-input="snooze" defaultChecked={this.state.snooze} onChange={this._switchToggle}/></div>
+                    <div className="vibrate">Vibrate<input type="checkbox" data-input="vibrate" defaultChecked={this.state.vibrate} onChange={this._switchToggle}/></div>
+                    <button onClick={this._onSave}>Save</button>
+                  </div>
+              )
+            } else {
+              return null;
+            }
           }
-        },
-        componentWillReceiveProps: function(nextProps) {
-          this.setState({
-            id: nextProps._getAlarmCount()
-          });
-        },
-        _switchToggle: function(event) {
-          var newState = {};
-          var key = event.target.dataset.input;
-          newState[key] = !this.state[key];
-          this.setState(newState);
-        },
-        _selectDay: function(event) {
-          var newDays = JSON.parse(JSON.stringify(this.state.days));
-          var key = event.target.dataset.day;
-          newDays[key] = !this.state.days[key];
-          this.setState({
-            days: newDays
-          });
-        },
-        _onSave: function() {
-          this.props._addAlarm(this.state);
-          this.props._closeAddAlarmPage();
-        },
-        _changeHour: function(event) {
-          var newTime = JSON.parse(JSON.stringify(this.state.time));
-          newTime.hour = parseInt(event.target.value);
-          this.setState({
-            time: newTime
-          });
-        },
-        _changeMinute: function(event) {
-          var newTime = JSON.parse(JSON.stringify(this.state.time));
-          newTime.minute = parseInt(event.target.value);
-          this.setState({
-            time: newTime
-          });
-        },
-        render: function() {
-          if (this.props.showAddAlarmPage) {
+        });
+
+        var SettingsPage = React.createClass({
+          _setTemperatureSettingEvent: function(event) {
+            this.props._setTemperatureSetting(event);
+          },
+          _renderTemperatureButton: function() {
+            if (this.props.settings.temperature === 'c') {
+              return (
+                <span>
+                  <button data-temp="c" className="temperatureButton temp-on" onClick={this._setTemperatureSettingEvent}>&deg;C</button>
+                  <button data-temp="f" className="temperatureButton" onClick={this._setTemperatureSettingEvent}>&deg;F</button>
+                </span>
+              )
+            } else if (this.props.settings.temperature === 'f') {
+              return (
+                <span>
+                  <button data-temp="c" className="temperatureButton" onClick={this._setTemperatureSettingEvent}>&deg;C</button>
+                  <button data-temp="f" className="temperatureButton temp-on" onClick={this._setTemperatureSettingEvent}>&deg;F</button>
+                </span>
+              )
+            }
+          },
+          _setMilitaryTimeEvent: function(event) {
+            this.props._setMilitaryTime(event);
+          },
+          render: function() {
             return (
-                <div className="AddAlarmPage">
-                  <button onClick={this.props._closeAddAlarmPage}>&#60;</button>
-                  <h1>New Alarm</h1>
-                  <div className="time">
-                    <input type="text" defaultValue={setTwoDigit(getCurrentHour())} onChange={this._changeHour}/>
-                    :<input type="text" defaultValue={setTwoDigit(getCurrentMinute())} onChange={this._changeMinute}/>
-                  </div>
-                  <div className="days">
-                    {Object.keys(this.state.days).map(function(key, index) {
-                      var dayClass = 'day';
-                      if (this.state.days[key]) dayClass += ' day-on';
-                      return <button data-day={key} className={dayClass} key={index} onClick={this._selectDay}>{capitalize(key)}</button>;
-                    }, this)}
-                    {/* needs to handle selected state*/}
-                  </div>
-                  <div className="snooze">Snooze<input type="checkbox" data-input="snooze" defaultChecked={this.state.snooze} onChange={this._switchToggle}/></div>
-                  <div className="vibrate">Vibrate<input type="checkbox" data-input="vibrate" defaultChecked={this.state.vibrate} onChange={this._switchToggle}/></div>
-                  <button onClick={this._onSave}>Save</button>
+              <div className="SettingsPage">
+                <button onClick={this.props._closeSettingsPage}>&#60;</button>
+                <h1>Settings</h1>
+                <div className="militarytime">24-Hour Time<input type="checkbox" defaultChecked={this.props.settings.militarytime} onClick={this._setMilitaryTimeEvent}/></div>
+                <div className="temperatureFormat">
+                  Temperature: {this._renderTemperatureButton()}
                 </div>
-            )
-          } else {
-            return null;
-          }
-        }
-      });
-
-      var SettingsPage = React.createClass({
-        _setTemperatureSettingEvent: function(event) {
-          this.props._setTemperatureSetting(event);
-        },
-        _renderTemperatureButton: function() {
-          if (this.props.settings.temperature === 'c') {
-            return (
-              <span>
-                <button data-temp="c" className="temperatureButton temp-on" onClick={this._setTemperatureSettingEvent}>&deg;C</button>
-                <button data-temp="f" className="temperatureButton" onClick={this._setTemperatureSettingEvent}>&deg;F</button>
-              </span>
-            )
-          } else if (this.props.settings.temperature === 'f') {
-            return (
-              <span>
-                <button data-temp="c" className="temperatureButton" onClick={this._setTemperatureSettingEvent}>&deg;C</button>
-                <button data-temp="f" className="temperatureButton temp-on" onClick={this._setTemperatureSettingEvent}>&deg;F</button>
-              </span>
-            )
-          }
-        },
-        _setMilitaryTimeEvent: function(event) {
-          this.props._setMilitaryTime(event);
-        },
-        render: function() {
-          return (
-            <div className="SettingsPage">
-              <button onClick={this.props._closeSettingsPage}>&#60;</button>
-              <h1>Settings</h1>
-              <div className="militarytime">24-Hour Time<input type="checkbox" defaultChecked={this.props.settings.militarytime} onClick={this._setMilitaryTimeEvent}/></div>
-              <div className="temperature">
-                Temperature: {this._renderTemperatureButton()}
               </div>
-            </div>
-          )
-        }
-      });
+            )
+          }
+        });
 
-      ReactDOM.render(
-        <Main />,
-        document.getElementById('main')
-      );
+        var AlarmTriggeredPage = React.createClass({
+          _onStop: function() {
+            this.props._closeAlarmTriggeredPage();
+          },
+          render: function() {
+            return (
+              <div className="AlarmTriggeredPage">
+                <h1>Alarm Triggered Page</h1>
+                <div className="weatherImage">Put weather image here</div>
+                <div className="temperature">Temperature here</div>
+                <div className="currentTime">{this.props.currentTime.hour}:{this.props.currentTime.minute}:{this.props.currentTime.second}</div>
+                <div className="triggerPageDescription">Tap to snooze</div>
+                <button onClick={this._onStop}>Stop</button>
+              </div>
+            )
+          }
+        });
 
-                        // Helper functions
-                        function setTwoDigit(number) {
-                          return (number < 10) ? '0' + number.toString() : number.toString();
-                        }
+        ReactDOM.render(
+          <Main />,
+          document.getElementById('main')
+        );
 
-                        function capitalize(str) {
-                          return str[0].toUpperCase() + str.slice(1);
-                        }
+                          // Helper functions
+                          function setTwoDigit(number) {
+                            return (number < 10) ? '0' + number.toString() : number.toString();
+                          }
 
-                        function getCurrentHour() {
-                          var currentDate = new Date();
-                          return currentDate.getHours();
-                        }
+                          function capitalize(str) {
+                            return str[0].toUpperCase() + str.slice(1);
+                          }
 
-                        function getCurrentMinute() {
-                          var currentDate = new Date();
-                          return currentDate.getMinutes();
-                        }
+                          function getCurrentHour() {
+                            var currentDate = new Date();
+                            return currentDate.getHours();
+                          }
 
-                        //get local time in hh:mm 24-hour format as a string
-                        function getCurrentTime() {
-                          var currentDate = new Date();
-                          return setTwoDigit(currentDate.getHours()) + ':' + setTwoDigit(currentDate.getMinutes());
-                        }
+                          function getCurrentMinute() {
+                            var currentDate = new Date();
+                            return currentDate.getMinutes();
+                          }
+
+                          //get local time in hh:mm 24-hour format as a string
+                          function getCurrentTime() {
+                            var currentDate = new Date();
+                            return setTwoDigit(currentDate.getHours()) + ':' + setTwoDigit(currentDate.getMinutes());
+                          }
+
+                          function convertDayToIndex(day) {
+                            switch (day) {
+                              case "sun":
+                                return 0;
+                              case "mon":
+                                return 1;
+                              case "tue":
+                                return 2;
+                              case "wed":
+                                return 3;
+                              case "thu":
+                                return 4;
+                              case "fri":
+                                return 5;
+                              case "sat":
+                                return 6;
+                              default:
+                                console.log("convertDayToIndex function: invalid input argument");
+                            }
+                          }
+
+                          function convertIndextoDay(index) {
+                            switch (index) {
+                              case 0:
+                                return 'sun';
+                              case 1:
+                                return 'mon';
+                              case 2:
+                                return 'tue';
+                              case 3:
+                                return 'wed';
+                              case 4:
+                                return 'thu';
+                              case 5:
+                                return 'fri';
+                              case 6:
+                                return 'sat';
+                              default:
+                                console.log("convertDayToIndex function: invalid input argument");
+                            }
+                          }
+      })();
     </script>
   </body>
 </html>

@@ -1,12 +1,12 @@
 .AlarmElement {
   border: 1px solid black;
   margin: 1em 0;
-  width: 180px;
+  width: 230px;
   height: 60px;
 }
 
 .AlarmElement .day {
-  margin-right: 6px;
+  margin-right: 7px;
 }
 
 .AddAlarmPage .days {

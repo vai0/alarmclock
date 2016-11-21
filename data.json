@@ -4,7 +4,8 @@
     "id": 0,
     "time": {
       "hour": 7,
-      "minute": 30
+      "minute": 30,
+      "second": 0
     },
     "days": {
       "sun": false,
@@ -15,6 +16,7 @@
       "fri": true,
       "sat": false
     },
+    "repeat": true,
     "snooze": true,
     "vibrate": false,
     "activated": true
@@ -23,7 +25,8 @@
     "id": 1,
     "time": {
       "hour": 10,
-      "minute": 0
+      "minute": 0,
+      "second": 0
     },
     "days": {
       "sun": true,
@@ -34,6 +37,7 @@
       "fri": false,
       "sat": true
     },
+    "repeat": true,
     "snooze": true,
     "vibrate": false,
     "activated": false
