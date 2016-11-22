@@ -31,8 +31,34 @@
             return {
               alarms: this.props.alarms,
               settings: this.props.settings,
-              currentTime: null // {hour: [int], minute: [int], second: [int]}
+              currentTime: null, // {hour: [int], minute: [int], second: [int]}
+              location: null,
+              weather: null
             };
+          },
+          _getLocation: function() {
+            if (!navigator.geolocation) return 'Geolocation is not supported by your browser';
+            function success(position) {
+              var latitude = position.coords.latitude;
+              var longitude = position.coords.longitude;
+              this.setState({
+                location: {
+                  latitude: latitude,
+                  longitude: longitude
+                }
+              });
+              
+            }
+            function error() {
+              this.setState({
+                location: 'location blocked!'
+              });
+            }
+            navigator.geolocation.getCurrentPosition(success.bind(this), error.bind(this));
+          },
+          _getWeather: function() {
+            this._getLocation();
+
           },
           _startClock: function() {
             var time = new Date();
@@ -106,6 +132,7 @@
           },
           componentWillMount: function() {
             this._startClock();
+            this._getWeather();
           },
           render: function() {
             return (
@@ -174,15 +201,15 @@
             });
           },
           componentWillReceiveProps: function(nextProps) {
-            console.log(this.props.currentTime.hour + ':' + this.props.currentTime.minute + ':' + this.props.currentTime.second);
+            //console.log(this.props.currentTime.hour + ':' + this.props.currentTime.minute + ':' + this.props.currentTime.second);
+            //trigger alarm when time's up
             this.props.alarms.forEach(function(alarm) {
               if (alarm.activated &&
                 (alarm.time.hour === this.props.currentTime.hour) &&
                 (alarm.time.minute === this.props.currentTime.minute) &&
-                (alarm.time.second === this.props.currentTime.second)) {
-                //add condition - when current day === selected repeat day
-                //if no repeat, then ignore this rule: set to true?
-                console.log('alarm triggered!', alarm);
+                (alarm.time.second === this.props.currentTime.second) &&
+                ((alarm.repeat === false) || (alarm.repeat === true && alarm.days[convertIndextoDay(this.props.currentTime.day)]))) {
+                //console.log('alarm triggered!', alarm);
                 if (!alarm.repeat) this.props._toggleAlarm(alarm.id);
                 this.setState({
                   showAlarmTriggeredPage: true
@@ -508,6 +535,13 @@
         });
 
         var AlarmTriggeredPage = React.createClass({
+          //weather conditions
+          // < 600 is rain
+          // 600 < x < 700 is snow
+          // 800 is sunny
+          // 801 few clouds
+          // 802 <= x <= 804 overcast
+
           _onStop: function() {
             this.props._closeAlarmTriggeredPage();
           },
@@ -517,7 +551,7 @@
                 <h1>Alarm Triggered Page</h1>
                 <div className="weatherImage">Put weather image here</div>
                 <div className="temperature">Temperature here</div>
-                <div className="currentTime">{this.props.currentTime.hour}:{this.props.currentTime.minute}:{this.props.currentTime.second}</div>
+                <div className="currentTime">{this.props.currentTime.hour}:{this.props.currentTime.minute}</div>
                 <div className="triggerPageDescription">Tap to snooze</div>
                 <button onClick={this._onStop}>Stop</button>
               </div>
@@ -530,72 +564,42 @@
           document.getElementById('main')
         );
 
-                          // Helper functions
-                          function setTwoDigit(number) {
-                            return (number < 10) ? '0' + number.toString() : number.toString();
-                          }
+                  // Helper functions
+                  function setTwoDigit(number) {
+                    return (number < 10) ? '0' + number.toString() : number.toString();
+                  }
 
-                          function capitalize(str) {
-                            return str[0].toUpperCase() + str.slice(1);
-                          }
+                  function capitalize(str) {
+                    return str[0].toUpperCase() + str.slice(1);
+                  }
 
-                          function getCurrentHour() {
-                            var currentDate = new Date();
-                            return currentDate.getHours();
-                          }
+                  function getCurrentHour() {
+                    var currentDate = new Date();
+                    return currentDate.getHours();
+                  }
 
-                          function getCurrentMinute() {
-                            var currentDate = new Date();
-                            return currentDate.getMinutes();
-                          }
+                  function getCurrentMinute() {
+                    var currentDate = new Date();
+                    return currentDate.getMinutes();
+                  }
 
-                          //get local time in hh:mm 24-hour format as a string
-                          function getCurrentTime() {
-                            var currentDate = new Date();
-                            return setTwoDigit(currentDate.getHours()) + ':' + setTwoDigit(currentDate.getMinutes());
-                          }
+                  //get local time in hh:mm 24-hour format as a string
+                  function getCurrentTime() {
+                    var currentDate = new Date();
+                    return setTwoDigit(currentDate.getHours()) + ':' + setTwoDigit(currentDate.getMinutes());
+                  }
 
-                          function convertDayToIndex(day) {
-                            switch (day) {
-                              case "sun":
-                                return 0;
-                              case "mon":
-                                return 1;
-                              case "tue":
-                                return 2;
-                              case "wed":
-                                return 3;
-                              case "thu":
-                                return 4;
-                              case "fri":
-                                return 5;
-                              case "sat":
-                                return 6;
-                              default:
-                                console.log("convertDayToIndex function: invalid input argument");
-                            }
-                          }
+                  function convertDayToIndex(day) {
+                    return ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'].indexOf(day);
+                  }
 
-                          function convertIndextoDay(index) {
-                            switch (index) {
-                              case 0:
-                                return 'sun';
-                              case 1:
-                                return 'mon';
-                              case 2:
-                                return 'tue';
-                              case 3:
-                                return 'wed';
-                              case 4:
-                                return 'thu';
-                              case 5:
-                                return 'fri';
-                              case 6:
-                                return 'sat';
-                              default:
-                                console.log("convertDayToIndex function: invalid input argument");
-                            }
-                          }
+                  function convertIndextoDay(index) {
+                    return ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][index];
+                  }
+
+                  function getLocation() {
+
+                  }
       })();
     </script>
   </body>
