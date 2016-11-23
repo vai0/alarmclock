@@ -37,7 +37,9 @@
             };
           },
           _getLocation: function() {
-            if (!navigator.geolocation) return 'Geolocation is not supported by your browser';
+            if (!navigator.geolocation) {
+              alert('Geolocation is not supported by this browser, maybe use a pop-up and ask user for zipcode?');
+            }
             function success(position) {
               var latitude = position.coords.latitude;
               var longitude = position.coords.longitude;
@@ -47,18 +49,31 @@
                   longitude: longitude
                 }
               });
-              
+              this._getWeather(this.state.location.latitude, this.state.location.longitude);
             }
             function error() {
               this.setState({
-                location: 'location blocked!'
+                location: 'location blocked'
               });
             }
             navigator.geolocation.getCurrentPosition(success.bind(this), error.bind(this));
           },
-          _getWeather: function() {
-            this._getLocation();
-
+          _getWeather: function(latitude, longitude) {
+            var request = new XMLHttpRequest();
+            request.open('GET', 'http://api.openweathermap.org/data/2.5/weather?lat='+latitude+'&lon='+longitude+'&APPID=11063795b43e3d923147da4c5f10100b', true);
+            request.onload = function() {
+              if (request.status >= 200 && request.status < 400) { //success
+                this.setState({
+                  weather: JSON.parse(request.responseText)
+                });
+              } else { //reach server, but receive an error
+                console.log('openweathermap API reached, but received status error: ', request.status);
+              }
+            }.bind(this);
+            request.onerror = function() {
+              console.log('openweathermap request - some sort of connection error occurred');
+            };
+            request.send();
           },
           _startClock: function() {
             var time = new Date();
@@ -74,6 +89,7 @@
                 second: second
               }
             });
+            console.log(day+':'+hour+':'+minute+':'+second);
             setTimeout(this._startClock, 1000);
           },
           _toggleAlarm: function(alarmid) {
@@ -132,12 +148,12 @@
           },
           componentWillMount: function() {
             this._startClock();
-            this._getWeather();
+            this._getLocation();
           },
           render: function() {
             return (
               <div className="Main">
-                <AlarmPage alarms={this.state.alarms} _toggleAlarm={this._toggleAlarm} currentTime={this.state.currentTime} _updateAlarm={this._updateAlarm} _deleteAlarm={this._deleteAlarm} _toggleAlarm={this._toggleAlarm} _getAlarmCount={this._getAlarmCount} _addAlarm={this._addAlarm} settings={this.state.settings} _setTemperatureSetting={this._setTemperatureSetting} _setMilitaryTime={this._setMilitaryTime} />
+                <AlarmPage alarms={this.state.alarms} weather={this.state.weather} _toggleAlarm={this._toggleAlarm} currentTime={this.state.currentTime} _updateAlarm={this._updateAlarm} _deleteAlarm={this._deleteAlarm} _toggleAlarm={this._toggleAlarm} _getAlarmCount={this._getAlarmCount} _addAlarm={this._addAlarm} settings={this.state.settings} _setTemperatureSetting={this._setTemperatureSetting} _setMilitaryTime={this._setMilitaryTime} />
               </div>
             )
           }
@@ -228,7 +244,7 @@
               return <SettingsPage settings={this.props.settings} _setTemperatureSetting={this.props._setTemperatureSetting} _setMilitaryTime={this.props._setMilitaryTime} _closeSettingsPage={this._closeSettingsPage}/>
             }
             if (this.state.showAlarmTriggeredPage) {
-              return <AlarmTriggeredPage currentTime={this.props.currentTime} _closeAlarmTriggeredPage={this._closeAlarmTriggeredPage} />
+              return <AlarmTriggeredPage weather={this.props.weather} currentTime={this.props.currentTime} _closeAlarmTriggeredPage={this._closeAlarmTriggeredPage} />
             }
             return (
               <div className="AlarmPage">
@@ -538,19 +554,40 @@
           //weather conditions
           // < 600 is rain
           // 600 < x < 700 is snow
-          // 800 is sunny
-          // 801 few clouds
+          // 800 is clear_day
+          // 801 partly_cloudy
           // 802 <= x <= 804 overcast
 
           _onStop: function() {
             this.props._closeAlarmTriggeredPage();
           },
           render: function() {
+            var weatherImage;
+            var weatherConditionId = this.props.weather.weather[0].id;
+
+            if (this.props.weather) {
+              if (weatherConditionId < 600) {
+                weatherImage = <img src="./images/rain.png" />
+              } else if (weatherConditionId < 700) {
+                weatherImage = <img src="./images/snow.png" />
+              } else if (weatherConditionId === 800) {
+                weatherImage = <img src="./images/clear_day.png" />
+              } else if (weatherConditionId === 801) {
+                weatherImage = <img src="./images/partly_cloudy.png" />
+              } else if (weatherConditionId < 805) {
+                weatherImage = <img src="./images/overcast.png" />
+              } else {
+                weatherImage = <span>weather id is invalid, check the API docs: http://openweathermap.org/weather-conditions weatherConditionId: {weatherConditionId}</span>;
+              }
+            } else {
+              console.log('geolocation or weather data was not received when alarm triggered, will not display weather information.');
+            }
+
             return (
               <div className="AlarmTriggeredPage">
                 <h1>Alarm Triggered Page</h1>
-                <div className="weatherImage">Put weather image here</div>
-                <div className="temperature">Temperature here</div>
+                <div className="weatherImage">{weatherImage}</div>
+                <div className="temperature">{this.props.weather.main.temp}&deg;</div>
                 <div className="currentTime">{this.props.currentTime.hour}:{this.props.currentTime.minute}</div>
                 <div className="triggerPageDescription">Tap to snooze</div>
                 <button onClick={this._onStop}>Stop</button>
@@ -597,8 +634,12 @@
                     return ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][index];
                   }
 
-                  function getLocation() {
+                  function convertKelvinToFahrenheit(k) {
+                    return Math.round(9/5 * (k - 273) + 32);
+                  }
 
+                  function convertKelvinToCelsius(k) {
+                    return Math.round(k - 273);
                   }
       })();
     </script>
