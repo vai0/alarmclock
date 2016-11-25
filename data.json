@@ -3,9 +3,17 @@
   {
     "id": 0,
     "time": {
-      "hour": 7,
-      "minute": 30,
-      "second": 0
+      "src": {
+        "hour": 7,
+        "minute": 30,
+        "second": 0
+      },
+      "formatted": {
+        "hour": 7,
+        "minute": 30,
+        "period": "AM",
+        "second": 0
+      }
     },
     "days": {
       "sun": false,
@@ -24,9 +32,17 @@
   {
     "id": 1,
     "time": {
-      "hour": 10,
-      "minute": 0,
-      "second": 0
+      "src": {
+        "hour": 22,
+        "minute": 30,
+        "second": 0
+      },
+      "formatted": {
+        "hour": 10,
+        "minute": 30,
+        "period": "PM",
+        "second": 0
+      }
     },
     "days": {
       "sun": true,

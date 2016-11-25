@@ -31,7 +31,7 @@
             return {
               alarms: this.props.alarms,
               settings: this.props.settings,
-              currentTime: null, // {hour: [int], minute: [int], second: [int]}
+              currentTime: null,
               location: null,
               weather: null
             };
@@ -153,7 +153,7 @@
           render: function() {
             return (
               <div className="Main">
-                <AlarmPage alarms={this.state.alarms} weather={this.state.weather} _toggleAlarm={this._toggleAlarm} currentTime={this.state.currentTime} _updateAlarm={this._updateAlarm} _deleteAlarm={this._deleteAlarm} _toggleAlarm={this._toggleAlarm} _getAlarmCount={this._getAlarmCount} _addAlarm={this._addAlarm} settings={this.state.settings} _setTemperatureSetting={this._setTemperatureSetting} _setMilitaryTime={this._setMilitaryTime} />
+                <AlarmPage alarms={this.state.alarms} weather={this.state.weather} settings={this.state.settings} _toggleAlarm={this._toggleAlarm} currentTime={this.state.currentTime} _updateAlarm={this._updateAlarm} _deleteAlarm={this._deleteAlarm} _toggleAlarm={this._toggleAlarm} _getAlarmCount={this._getAlarmCount} _addAlarm={this._addAlarm} _setTemperatureSetting={this._setTemperatureSetting} _setMilitaryTime={this._setMilitaryTime} />
               </div>
             )
           }
@@ -225,8 +225,9 @@
                 (alarm.time.minute === this.props.currentTime.minute) &&
                 (alarm.time.second === this.props.currentTime.second) &&
                 ((alarm.repeat === false) || (alarm.repeat === true && alarm.days[convertIndextoDay(this.props.currentTime.day)]))) {
-                //console.log('alarm triggered!', alarm);
-                if (!alarm.repeat) this.props._toggleAlarm(alarm.id);
+                if (!alarm.repeat) {
+                  this.props._toggleAlarm(alarm.id);
+                }
                 this.setState({
                   showAlarmTriggeredPage: true
                 });
@@ -244,7 +245,7 @@
               return <SettingsPage settings={this.props.settings} _setTemperatureSetting={this.props._setTemperatureSetting} _setMilitaryTime={this.props._setMilitaryTime} _closeSettingsPage={this._closeSettingsPage}/>
             }
             if (this.state.showAlarmTriggeredPage) {
-              return <AlarmTriggeredPage weather={this.props.weather} currentTime={this.props.currentTime} _closeAlarmTriggeredPage={this._closeAlarmTriggeredPage} />
+              return <AlarmTriggeredPage weather={this.props.weather} currentTime={this.props.currentTime} settings={this.props.settings} _closeAlarmTriggeredPage={this._closeAlarmTriggeredPage} />
             }
             return (
               <div className="AlarmPage">
@@ -557,25 +558,43 @@
           // 800 is clear_day
           // 801 partly_cloudy
           // 802 <= x <= 804 overcast
+          _playTrack: function() {
 
+          },
           _onStop: function() {
             this.props._closeAlarmTriggeredPage();
           },
           render: function() {
             var weatherImage;
             var weatherConditionId = this.props.weather.weather[0].id;
+            var audioPath = './audio/';
+            var audioSrc;
+            var temperature;
+
+            if (this.props.settings.temperature === "c") {
+              temperature = convertKelvinToCelsius(this.props.weather.main.temp);
+            } else if (this.props.settings.temperature === "f") {
+              temperature = convertKelvinToFahrenheit(this.props.weather.main.temp);
+            } else {
+              temperature = "something's not right...check this.props.settings.temperature";
+            }
 
             if (this.props.weather) {
               if (weatherConditionId < 600) {
                 weatherImage = <img src="./images/rain.png" />
+                audioSrc = audioPath + "1.mp3";
               } else if (weatherConditionId < 700) {
                 weatherImage = <img src="./images/snow.png" />
+                audioSrc = audioPath + "2.mp3";
               } else if (weatherConditionId === 800) {
                 weatherImage = <img src="./images/clear_day.png" />
+                audioSrc = audioPath + "3.mp3";
               } else if (weatherConditionId === 801) {
                 weatherImage = <img src="./images/partly_cloudy.png" />
+                audioSrc = audioPath + "4.mp3";
               } else if (weatherConditionId < 805) {
                 weatherImage = <img src="./images/overcast.png" />
+                audioSrc = audioPath + "5.mp3";
               } else {
                 weatherImage = <span>weather id is invalid, check the API docs: http://openweathermap.org/weather-conditions weatherConditionId: {weatherConditionId}</span>;
               }
@@ -587,10 +606,11 @@
               <div className="AlarmTriggeredPage">
                 <h1>Alarm Triggered Page</h1>
                 <div className="weatherImage">{weatherImage}</div>
-                <div className="temperature">{this.props.weather.main.temp}&deg;</div>
+                <div className="temperature">{temperature}&deg;</div>
                 <div className="currentTime">{this.props.currentTime.hour}:{this.props.currentTime.minute}</div>
                 <div className="triggerPageDescription">Tap to snooze</div>
                 <button onClick={this._onStop}>Stop</button>
+                <audio id="weatherTrack" src={audioSrc} autoPlay loop></audio>
               </div>
             )
           }
