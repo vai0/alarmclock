@@ -655,7 +655,7 @@
           },
           _renderTime: function() {
             if (this.props.settings.militarytime) {
-              return <div className="currentTime">{this.props.currentTime.src.hour}:{this.props.currentTime.src.minute}:{this.props.currentTime.src.second}</div>
+              return <div className="currentTime">{this.props.currentTime.src.hour}:{this.props.currentTime.src.minute}</div>
             } else {
               return <div className="currentTime">{this.props.currentTime.formatted.hour}:{this.props.currentTime.formatted.minute + ' ' + this.props.currentTime.formatted.period}</div>
             }
