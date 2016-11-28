@@ -16,8 +16,8 @@
       (function() {
 
         //INITIAL DATA
-        var alarmsdata = '[ { "id": 0, "time": { "hour": 7, "minute": 30, "second": 0 }, "days": { "sun": false, "mon": true, "tue": true, "wed": true, "thu": true, "fri": true, "sat": false }, "repeat": true, "snooze": true, "vibrate": false, "activated": true }, { "id": 1, "time": { "hour": 10, "minute": 0, "second": 0 }, "days": { "sun": true, "mon": false, "tue": false, "wed": false, "thu": false, "fri": false, "sat": true }, "repeat": true, "snooze": true, "vibrate": false, "activated": false }]';
-        var settingsdata = '{"militarytime": true, "temperature": "c", "locationservice": true}';
+        var alarmsdata = '[{ "id": 0, "time": { "src": { "hour": 7, "minute": 30, "second": 0 }, "formatted": { "hour": 7, "minute": 30, "period": "AM", "second": 0 } }, "days": { "sun": false, "mon": true, "tue": true, "wed": true, "thu": true, "fri": true, "sat": false }, "repeat": true, "snooze": true, "vibrate": false, "activated": true }, { "id": 1, "time": { "src": { "hour": 22, "minute": 30, "second": 0 }, "formatted": { "hour": 10, "minute": 30, "period": "PM", "second": 0 } }, "days": { "sun": true, "mon": false, "tue": false, "wed": false, "thu": false, "fri": false, "sat": true }, "repeat": true, "snooze": true, "vibrate": false, "activated": false }]';
+        var settingsdata = '{"militarytime": false, "temperature": "f", "locationservice": true}';
 
         //React App
         var Main = React.createClass({
@@ -90,7 +90,7 @@
               }
             });
             console.log(day+':'+hour+':'+minute+':'+second);
-            setTimeout(this._startClock, 1000);
+            setTimeout(this._startClock, 10000);
           },
           _toggleAlarm: function(alarmid) {
             var newAlarms = this.state.alarms.map(function(alarm) {
@@ -111,7 +111,6 @@
           _updateAlarm: function(updatedalarm) {
             var newAlarms = this.state.alarms.map(function(alarm) {
               if (alarm.id === updatedalarm.id) {
-                updatedalarm.activated = alarm.activated;
                 return updatedalarm;
               }
               return alarm;
@@ -150,6 +149,9 @@
             this._startClock();
             this._getLocation();
           },
+          // shouldComponentUpdate: function(nextProps, nextState) {
+          //   return nextState !== this.state;
+          // },
           render: function() {
             return (
               <div className="Main">
@@ -221,9 +223,9 @@
             //trigger alarm when time's up
             this.props.alarms.forEach(function(alarm) {
               if (alarm.activated &&
-                (alarm.time.hour === this.props.currentTime.hour) &&
-                (alarm.time.minute === this.props.currentTime.minute) &&
-                (alarm.time.second === this.props.currentTime.second) &&
+                (alarm.time.src.hour === this.props.currentTime.hour) &&
+                (alarm.time.src.minute === this.props.currentTime.minute) &&
+                (alarm.time.src.second === this.props.currentTime.second) &&
                 ((alarm.repeat === false) || (alarm.repeat === true && alarm.days[convertIndextoDay(this.props.currentTime.day)]))) {
                 if (!alarm.repeat) {
                   this.props._toggleAlarm(alarm.id);
@@ -236,10 +238,10 @@
           },
           render: function() {
             if (this.state.showEditAlarmPage) {
-              return <EditAlarmPage _updateAlarm={this.props._updateAlarm} _deleteAlarm={this.props._deleteAlarm} alarmBeingEdited={this.state.alarmBeingEdited} _closeEditAlarmPage={this._closeEditAlarmPage} />
+              return <EditAlarmPage settings={this.props.settings} alarmBeingEdited={this.state.alarmBeingEdited} _updateAlarm={this.props._updateAlarm} _deleteAlarm={this.props._deleteAlarm} _closeEditAlarmPage={this._closeEditAlarmPage} />
             }
             if (this.state.showAddAlarmPage) {
-              return <AddAlarmPage currentTime={this.props.currentTime} _getAlarmCount={this.props._getAlarmCount} _addAlarm={this.props._addAlarm} showAddAlarmPage={this.state.showAddAlarmPage} _closeAddAlarmPage={this._closeAddAlarmPage} />
+              return <AddAlarmPage settings={this.props.settings} currentTime={this.props.currentTime} _getAlarmCount={this.props._getAlarmCount} _addAlarm={this.props._addAlarm} showAddAlarmPage={this.state.showAddAlarmPage} _closeAddAlarmPage={this._closeAddAlarmPage} />
             }
             if (this.state.showSettingsPage) {
               return <SettingsPage settings={this.props.settings} _setTemperatureSetting={this.props._setTemperatureSetting} _setMilitaryTime={this.props._setMilitaryTime} _closeSettingsPage={this._closeSettingsPage}/>
@@ -301,7 +303,7 @@
             return (
               <div className="AlarmElement">
                 <div data-alarmid={this.props.alarm.id} onClick={this.props._openEditAlarmPage}>
-                  <div className="time">{this.props.alarm.time.hour + ':' + setTwoDigit(this.props.alarm.time.minute)}</div>
+                  <div className="time">{this.props.alarm.time.formatted.hour + ':' + setTwoDigit(this.props.alarm.time.formatted.minute) + ' ' + this.props.alarm.time.formatted.period}</div>
                   {this._renderDays()}
                 </div>
                 <input type="checkbox" id={this.props.alarm.id} defaultChecked={this.props.alarm.activated} onClick={this._toggleAlarmActivated} />
@@ -315,9 +317,17 @@
             return {
               id: this.props.alarmBeingEdited.id,
               time: {
-                hour: this.props.alarmBeingEdited.time.hour,
-                minute: this.props.alarmBeingEdited.time.minute,
-                second: this.props.alarmBeingEdited.time.second
+                src: {
+                  hour: this.props.alarmBeingEdited.time.src.hour,
+                  minute: this.props.alarmBeingEdited.time.src.minute,
+                  second: this.props.alarmBeingEdited.time.src.second
+                },
+                formatted: {
+                  hour: this.props.alarmBeingEdited.time.formatted.hour,
+                  minute: this.props.alarmBeingEdited.time.formatted.minute,
+                  second: this.props.alarmBeingEdited.time.formatted.second,
+                  period: this.props.alarmBeingEdited.time.formatted.period
+                }
               },
               days: {
                 'sun': this.props.alarmBeingEdited.days['sun'],
@@ -330,7 +340,8 @@
               },
               repeat: this.props.alarmBeingEdited.repeat,
               snooze: this.props.alarmBeingEdited.snooze,
-              vibrate: this.props.alarmBeingEdited.vibrate
+              vibrate: this.props.alarmBeingEdited.vibrate,
+              activated: this.props.alarmBeingEdited.activated
             }
           },
           _switchToggle: function(event) {
@@ -357,14 +368,16 @@
           },
           _changeHour: function(event) {
             var newTime = JSON.parse(JSON.stringify(this.state.time));
-            newTime.hour = parseInt(event.target.value);
+            newTime.formatted.hour = parseInt(event.target.value);
+            newTime.src.hour = convertFormattedToSrcTime(newTime.formatted.hour, newTime.formatted.minute, 0, newTime.formatted.period).hour;
             this.setState({
               time: newTime
             });
           },
           _changeMinute: function(event) {
             var newTime = JSON.parse(JSON.stringify(this.state.time));
-            newTime.minute = parseInt(event.target.value);
+            newTime.formatted.minute = parseInt(event.target.value);
+            newTime.src.minute = newTime.formatted.minute;
             this.setState({
               time: newTime
             });
@@ -396,8 +409,8 @@
                 <button onClick={this._onDelete}>Delete</button>
                 <h1>Edit</h1>
                 <div className="time">
-                  <input type="text" defaultValue={setTwoDigit(this.state.time.hour)} onChange={this._changeHour}/>
-                  :<input type="text" defaultValue={setTwoDigit(this.state.time.minute)} onChange={this._changeMinute}/>
+                  <input type="text" defaultValue={setTwoDigit(this.state.time.formatted.hour)} onChange={this._changeHour}/>
+                  :<input type="text" defaultValue={setTwoDigit(this.state.time.formatted.minute)} onChange={this._changeMinute}/>
                 </div>
                 Repeat: <input type="checkbox" defaultChecked={this.state.repeat} onClick={this._onClickRepeat} />
                 {this._renderDays()}
@@ -411,12 +424,19 @@
 
         var AddAlarmPage = React.createClass({
           getInitialState: function() {
+            var formattedTime;
+            var currentHour = this.props.currentTime.hour;
+            var currentMinute = this.props.currentTime.minute;
+            var twelveHourTime = convertSrcTimeToTwelveHour(currentHour, currentMinute, 0);
             return {
               id: this.props._getAlarmCount(),
               time: {
-                hour: this.props.currentTime.hour,
-                minute: this.props.currentTime.minute,
-                second: 0
+                src: {
+                  hour: currentHour,
+                  minute: currentMinute,
+                  second: 0
+                },
+                formatted: twelveHourTime
               },
               days: {
                 'sun': true,
@@ -453,14 +473,29 @@
           },
           _changeHour: function(event) {
             var newTime = JSON.parse(JSON.stringify(this.state.time));
-            newTime.hour = parseInt(event.target.value);
+            if (this.props.settings.militarytime) {
+              newTime.src.hour = parseInt(event.target.value);
+              newTime.formatted.hour = convertSrcTimeToTwelveHour(newTime.src.hour, newTime.src.minute, 0).hour;
+            } else {
+              newTime.formatted.hour = parseInt(event.target.value);
+              newTime.src.hour = convertFormattedToSrcTime(newTime.formatted.hour, newTime.formatted.minute, 0, newTime.formatted.period).hour;
+            }
             this.setState({
               time: newTime
             });
           },
           _changeMinute: function(event) {
             var newTime = JSON.parse(JSON.stringify(this.state.time));
-            newTime.minute = parseInt(event.target.value);
+            newTime.formatted.minute = parseInt(event.target.value);
+            newTime.src.minute = newTime.formatted.minute;
+            this.setState({
+              time: newTime
+            });
+          },
+          _changePeriod: function(event) {
+            var newTime = JSON.parse(JSON.stringify(this.state.time));
+            newTime.formatted.period = event.target.value;
+            newTime.src.hour = convertFormattedToSrcTime(newTime.formatted.hour, newTime.formatted.minute, 0, event.target.value).hour;
             this.setState({
               time: newTime
             });
@@ -490,16 +525,34 @@
               return null;
             }
           },
+          _renderTime: function() {
+            if (this.props.settings.militarytime) {
+              return (
+                <div className="time">
+                  <input type="text" defaultValue={this.state.time.src.hour} onChange={this._changeHour}/>
+                  :<input type="text" defaultValue={this.state.time.src.minute} onChange={this._changeMinute}/>
+                </div>
+              );
+            } else {
+              return (
+                <div className="time">
+                  <input type="text" defaultValue={this.state.time.formatted.hour} onChange={this._changeHour}/>
+                  :<input type="text" defaultValue={this.state.time.formatted.minute} onChange={this._changeMinute}/>
+                  <div className="period">
+                   <input type="radio" name="period" value="AM" checked={this.state.time.formatted.period === 'AM'} onChange={this._changePeriod} />AM
+                   <input type="radio" name="period" value="PM" checked={this.state.time.formatted.period === 'PM'} onChange={this._changePeriod} />PM
+                 </div>
+                </div>
+              );
+            }
+          },
           render: function() {
             if (this.props.showAddAlarmPage) {
               return (
                   <div className="AddAlarmPage">
                     <button onClick={this.props._closeAddAlarmPage}>&#60;</button>
                     <h1>New Alarm</h1>
-                    <div className="time">
-                      <input type="text" defaultValue={this.props.currentTime.hour} onChange={this._changeHour}/>
-                      :<input type="text" defaultValue={this.props.currentTime.minute} onChange={this._changeMinute}/>
-                    </div>
+                    {this._renderTime()}
                     Repeat: <input type="checkbox" defaultChecked={this.state.repeat} onClick={this._onClickRepeat} />
                     {this._renderDays()}
                     <div className="snooze">Snooze<input type="checkbox" data-input="snooze" defaultChecked={this.state.snooze} onChange={this._switchToggle}/></div>
@@ -630,22 +683,6 @@
                     return str[0].toUpperCase() + str.slice(1);
                   }
 
-                  function getCurrentHour() {
-                    var currentDate = new Date();
-                    return currentDate.getHours();
-                  }
-
-                  function getCurrentMinute() {
-                    var currentDate = new Date();
-                    return currentDate.getMinutes();
-                  }
-
-                  //get local time in hh:mm 24-hour format as a string
-                  function getCurrentTime() {
-                    var currentDate = new Date();
-                    return setTwoDigit(currentDate.getHours()) + ':' + setTwoDigit(currentDate.getMinutes());
-                  }
-
                   function convertDayToIndex(day) {
                     return ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'].indexOf(day);
                   }
@@ -660,6 +697,37 @@
 
                   function convertKelvinToCelsius(k) {
                     return Math.round(k - 273);
+                  }
+
+                  function convertFormattedToSrcTime(hour, minute, second, period) {
+                    var militaryHour = hour;
+                    if (period === 'PM') {
+                    	militaryHour = (hour === 12) ? 12 : hour + 12;
+                    } else if (period === 'AM') {
+                    	militaryHour = (hour === 12) ? 0 : hour;
+                    }
+                    return {
+                      hour: militaryHour,
+                      minute: minute,
+                      second: second
+                    }
+                  }
+
+                  function convertSrcTimeToTwelveHour(hour, minute, second) {
+                    var newHour = hour;
+                    var period = 'AM';
+                    if (hour === 0) {
+                    	newHour = 12;
+                    } else if (hour > 12) {
+                      newHour = hour - 12;
+                      period = 'PM';
+                    }
+                    return {
+                      hour: newHour,
+                      minute: minute,
+                      second: second,
+                      period: period
+                    }
                   }
       })();
     </script>

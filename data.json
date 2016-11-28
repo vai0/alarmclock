@@ -11,8 +11,8 @@
       "formatted": {
         "hour": 7,
         "minute": 30,
+        "second": 0,
         "period": "AM",
-        "second": 0
       }
     },
     "days": {
@@ -40,8 +40,8 @@
       "formatted": {
         "hour": 10,
         "minute": 30,
-        "period": "PM",
-        "second": 0
+        "second": 0,
+        "period": "PM"
       }
     },
     "days": {
@@ -63,6 +63,6 @@
 //Settings
 {
   "militarytime": true,
-  "temperature": "c",
+  "temperature": "f",
   "locationservice": true
 }
