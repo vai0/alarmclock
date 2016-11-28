@@ -36,6 +36,27 @@
               weather: null
             };
           },
+          _startClock: function() {
+            var time = new Date();
+            var day = time.getDay();
+            var hour = time.getHours();
+            var minute = time.getMinutes();
+            var second = time.getSeconds();
+            var twelveHourTime = convertSrcTimeToTwelveHour(hour, minute, second);
+            this.setState({
+              currentTime: {
+                src: {
+                  day: day,
+                  hour: hour,
+                  minute: minute,
+                  second: second
+                },
+                formatted: twelveHourTime
+              }
+            });
+            console.log(day+':'+hour+':'+minute+':'+second);
+            setTimeout(this._startClock, 1000);
+          },
           _getLocation: function() {
             if (!navigator.geolocation) {
               alert('Geolocation is not supported by this browser, maybe use a pop-up and ask user for zipcode?');
@@ -74,23 +95,6 @@
               console.log('openweathermap request - some sort of connection error occurred');
             };
             request.send();
-          },
-          _startClock: function() {
-            var time = new Date();
-            var day = time.getDay();
-            var hour = time.getHours();
-            var minute = time.getMinutes();
-            var second = time.getSeconds();
-            this.setState({
-              currentTime: {
-                day: day,
-                hour: hour,
-                minute: minute,
-                second: second
-              }
-            });
-            console.log(day+':'+hour+':'+minute+':'+second);
-            setTimeout(this._startClock, 10000);
           },
           _toggleAlarm: function(alarmid) {
             var newAlarms = this.state.alarms.map(function(alarm) {
@@ -223,10 +227,10 @@
             //trigger alarm when time's up
             this.props.alarms.forEach(function(alarm) {
               if (alarm.activated &&
-                (alarm.time.src.hour === this.props.currentTime.hour) &&
-                (alarm.time.src.minute === this.props.currentTime.minute) &&
-                (alarm.time.src.second === this.props.currentTime.second) &&
-                ((alarm.repeat === false) || (alarm.repeat === true && alarm.days[convertIndextoDay(this.props.currentTime.day)]))) {
+                (alarm.time.src.hour === this.props.currentTime.src.hour) &&
+                (alarm.time.src.minute === this.props.currentTime.src.minute) &&
+                (alarm.time.src.second === this.props.currentTime.src.second) &&
+                ((alarm.repeat === false) || (alarm.repeat === true && alarm.days[convertIndextoDay(this.props.currentTime.src.day)]))) {
                 if (!alarm.repeat) {
                   this.props._toggleAlarm(alarm.id);
                 }
@@ -252,7 +256,7 @@
             return (
               <div className="AlarmPage">
                 <h1>Wakey</h1>
-                <AlarmList alarms={this.props.alarms} _getAlarmId={this._getAlarmId} _toggleAlarm={this.props._toggleAlarm} _closeEditAlarmPage={this._closeEditAlarmPage} _openEditAlarmPage={this._openEditAlarmPage} />
+                <AlarmList alarms={this.props.alarms} settings={this.props.settings} _getAlarmId={this._getAlarmId} _toggleAlarm={this.props._toggleAlarm} _closeEditAlarmPage={this._closeEditAlarmPage} _openEditAlarmPage={this._openEditAlarmPage} />
                 <button onClick={this._openSettingsPage}>Settings</button>
                 <button onClick={this._openAddAlarmPage}>&#43;</button>
               </div>
@@ -266,7 +270,7 @@
               <div className="AlarmList">
                 {this.props.alarms.map(function(alarm, index) {
                   return (
-                    <AlarmElement alarm={alarm} data-alarmid={alarm.id} key={index} _getAlarmId={this.props._getAlarmId} _toggleAlarm={this.props._toggleAlarm} _closeEditAlarmPage={this.props._closeEditAlarmPage} _openEditAlarmPage={this.props._openEditAlarmPage}></AlarmElement>
+                    <AlarmElement alarm={alarm} settings={this.props.settings} data-alarmid={alarm.id} key={index} _getAlarmId={this.props._getAlarmId} _toggleAlarm={this.props._toggleAlarm} _closeEditAlarmPage={this.props._closeEditAlarmPage} _openEditAlarmPage={this.props._openEditAlarmPage}></AlarmElement>
                   )
                 }, this)}
               </div>
@@ -298,12 +302,17 @@
               return null;
             }
           },
+          _renderTime: function() {
+            return (this.props.settings.militarytime) ?
+              <div className="time">{this.props.alarm.time.src.hour + ':' + setTwoDigit(this.props.alarm.time.src.minute)}</div> :
+              <div className="time">{this.props.alarm.time.formatted.hour + ':' + setTwoDigit(this.props.alarm.time.formatted.minute) + ' ' + this.props.alarm.time.formatted.period}</div>;
+          },
           render: function() {
             var activated = (this.props.alarm.activated) ? 'toggleOn' : 'toggleOff';
             return (
               <div className="AlarmElement">
                 <div data-alarmid={this.props.alarm.id} onClick={this.props._openEditAlarmPage}>
-                  <div className="time">{this.props.alarm.time.formatted.hour + ':' + setTwoDigit(this.props.alarm.time.formatted.minute) + ' ' + this.props.alarm.time.formatted.period}</div>
+                  {this._renderTime()}
                   {this._renderDays()}
                 </div>
                 <input type="checkbox" id={this.props.alarm.id} defaultChecked={this.props.alarm.activated} onClick={this._toggleAlarmActivated} />
@@ -368,8 +377,13 @@
           },
           _changeHour: function(event) {
             var newTime = JSON.parse(JSON.stringify(this.state.time));
-            newTime.formatted.hour = parseInt(event.target.value);
-            newTime.src.hour = convertFormattedToSrcTime(newTime.formatted.hour, newTime.formatted.minute, 0, newTime.formatted.period).hour;
+            if (this.props.settings.militarytime) {
+              newTime.src.hour = parseInt(event.target.value);
+              newTime.formatted = convertSrcTimeToTwelveHour(newTime.src.hour, newTime.src.minute, 0);
+            } else {
+              newTime.formatted.hour = parseInt(event.target.value);
+              newTime.src = convertFormattedToSrcTime(newTime.formatted.hour, newTime.formatted.minute, 0, newTime.formatted.period);
+            }
             this.setState({
               time: newTime
             });
@@ -378,6 +392,14 @@
             var newTime = JSON.parse(JSON.stringify(this.state.time));
             newTime.formatted.minute = parseInt(event.target.value);
             newTime.src.minute = newTime.formatted.minute;
+            this.setState({
+              time: newTime
+            });
+          },
+          _changePeriod: function(event) {
+            var newTime = JSON.parse(JSON.stringify(this.state.time));
+            newTime.formatted.period = event.target.value;
+            newTime.src = convertFormattedToSrcTime(newTime.formatted.hour, newTime.formatted.minute, 0, event.target.value);
             this.setState({
               time: newTime
             });
@@ -402,16 +424,34 @@
               return null;
             }
           },
+          _renderTime: function() {
+            if (this.props.settings.militarytime) {
+              return (
+                <div className="time">
+                  <input type="text" defaultValue={this.state.time.src.hour} onChange={this._changeHour}/>
+                  :<input type="text" defaultValue={this.state.time.src.minute} onChange={this._changeMinute}/>
+                </div>
+              );
+            } else {
+              return (
+                <div className="time">
+                  <input type="text" defaultValue={this.state.time.formatted.hour} onChange={this._changeHour}/>
+                  :<input type="text" defaultValue={this.state.time.formatted.minute} onChange={this._changeMinute}/>
+                  <div className="period">
+                   <input type="radio" name="period" value="AM" checked={this.state.time.formatted.period === 'AM'} onChange={this._changePeriod} />AM
+                   <input type="radio" name="period" value="PM" checked={this.state.time.formatted.period === 'PM'} onChange={this._changePeriod} />PM
+                 </div>
+                </div>
+              );
+            }
+          },
           render: function() {
             return (
               <div className="EditAlarmPage">
                 <button onClick={this.props._closeEditAlarmPage}>&#60;</button>
                 <button onClick={this._onDelete}>Delete</button>
                 <h1>Edit</h1>
-                <div className="time">
-                  <input type="text" defaultValue={setTwoDigit(this.state.time.formatted.hour)} onChange={this._changeHour}/>
-                  :<input type="text" defaultValue={setTwoDigit(this.state.time.formatted.minute)} onChange={this._changeMinute}/>
-                </div>
+                {this._renderTime()}
                 Repeat: <input type="checkbox" defaultChecked={this.state.repeat} onClick={this._onClickRepeat} />
                 {this._renderDays()}
                 <div className="snooze">Snooze<input type="checkbox" data-input="snooze" defaultChecked={this.state.snooze} onChange={this._switchToggle}/></div>
@@ -424,9 +464,8 @@
 
         var AddAlarmPage = React.createClass({
           getInitialState: function() {
-            var formattedTime;
-            var currentHour = this.props.currentTime.hour;
-            var currentMinute = this.props.currentTime.minute;
+            var currentHour = this.props.currentTime.src.hour;
+            var currentMinute = this.props.currentTime.src.minute;
             var twelveHourTime = convertSrcTimeToTwelveHour(currentHour, currentMinute, 0);
             return {
               id: this.props._getAlarmCount(),
@@ -475,10 +514,10 @@
             var newTime = JSON.parse(JSON.stringify(this.state.time));
             if (this.props.settings.militarytime) {
               newTime.src.hour = parseInt(event.target.value);
-              newTime.formatted.hour = convertSrcTimeToTwelveHour(newTime.src.hour, newTime.src.minute, 0).hour;
+              newTime.formatted = convertSrcTimeToTwelveHour(newTime.src.hour, newTime.src.minute, 0);
             } else {
               newTime.formatted.hour = parseInt(event.target.value);
-              newTime.src.hour = convertFormattedToSrcTime(newTime.formatted.hour, newTime.formatted.minute, 0, newTime.formatted.period).hour;
+              newTime.src = convertFormattedToSrcTime(newTime.formatted.hour, newTime.formatted.minute, 0, newTime.formatted.period);
             }
             this.setState({
               time: newTime
@@ -495,7 +534,7 @@
           _changePeriod: function(event) {
             var newTime = JSON.parse(JSON.stringify(this.state.time));
             newTime.formatted.period = event.target.value;
-            newTime.src.hour = convertFormattedToSrcTime(newTime.formatted.hour, newTime.formatted.minute, 0, event.target.value).hour;
+            newTime.src = convertFormattedToSrcTime(newTime.formatted.hour, newTime.formatted.minute, 0, event.target.value);
             this.setState({
               time: newTime
             });
@@ -611,19 +650,63 @@
           // 800 is clear_day
           // 801 partly_cloudy
           // 802 <= x <= 804 overcast
-          _playTrack: function() {
-
-          },
           _onStop: function() {
             this.props._closeAlarmTriggeredPage();
           },
-          render: function() {
+          _renderTime: function() {
+            if (this.props.settings.militarytime) {
+              return <div className="currentTime">{this.props.currentTime.src.hour}:{this.props.currentTime.src.minute}:{this.props.currentTime.src.second}</div>
+            } else {
+              return <div className="currentTime">{this.props.currentTime.formatted.hour}:{this.props.currentTime.formatted.minute + ' ' + this.props.currentTime.formatted.period}</div>
+            }
+          },
+          _renderWeather: function() {
             var weatherImage;
+            var weatherConditionId = this.props.weather.weather[0].id;
+            if (this.props.weather) {
+              if (weatherConditionId < 600) {
+                weatherImage = <img src="./images/rain.png" />
+              } else if (weatherConditionId < 700) {
+                weatherImage = <img src="./images/snow.png" />
+              } else if (weatherConditionId === 800) {
+                weatherImage = <img src="./images/clear_day.png" />
+              } else if (weatherConditionId === 801) {
+                weatherImage = <img src="./images/partly_cloudy.png" />
+              } else if (weatherConditionId < 805) {
+                weatherImage = <img src="./images/overcast.png" />
+              } else {
+                weatherImage = <span>weather id is invalid, check the API docs: http://openweathermap.org/weather-conditions weatherConditionId: {weatherConditionId}</span>;
+              }
+            } else {
+              console.log('geolocation or weather data was not received when alarm triggered, will not display weather information.');
+            }
+            return <div className="weatherImage">{weatherImage}</div>;
+          },
+          _renderAudio: function() {
             var weatherConditionId = this.props.weather.weather[0].id;
             var audioPath = './audio/';
             var audioSrc;
+            if (this.props.weather) {
+              if (weatherConditionId < 600) {
+                audioSrc = audioPath + "1.mp3";
+              } else if (weatherConditionId < 700) {
+                audioSrc = audioPath + "2.mp3";
+              } else if (weatherConditionId === 800) {
+                audioSrc = audioPath + "3.mp3";
+              } else if (weatherConditionId === 801) {
+                audioSrc = audioPath + "4.mp3";
+              } else if (weatherConditionId < 805) {
+                audioSrc = audioPath + "5.mp3";
+              } else {
+                console.log("weather id is invalid, check the API docs: http://openweathermap.org/weather-conditions weatherConditionId: ", weatherConditionId);
+              }
+            } else {
+              console.log('will not display weather information. geolocation or weather data was not received when alarm triggered.');
+            }
+            return <audio id="weatherTrack" src={audioSrc} autoPlay loop></audio>;
+          },
+          _renderTemperature: function() {
             var temperature;
-
             if (this.props.settings.temperature === "c") {
               temperature = convertKelvinToCelsius(this.props.weather.main.temp);
             } else if (this.props.settings.temperature === "f") {
@@ -631,39 +714,18 @@
             } else {
               temperature = "something's not right...check this.props.settings.temperature";
             }
-
-            if (this.props.weather) {
-              if (weatherConditionId < 600) {
-                weatherImage = <img src="./images/rain.png" />
-                audioSrc = audioPath + "1.mp3";
-              } else if (weatherConditionId < 700) {
-                weatherImage = <img src="./images/snow.png" />
-                audioSrc = audioPath + "2.mp3";
-              } else if (weatherConditionId === 800) {
-                weatherImage = <img src="./images/clear_day.png" />
-                audioSrc = audioPath + "3.mp3";
-              } else if (weatherConditionId === 801) {
-                weatherImage = <img src="./images/partly_cloudy.png" />
-                audioSrc = audioPath + "4.mp3";
-              } else if (weatherConditionId < 805) {
-                weatherImage = <img src="./images/overcast.png" />
-                audioSrc = audioPath + "5.mp3";
-              } else {
-                weatherImage = <span>weather id is invalid, check the API docs: http://openweathermap.org/weather-conditions weatherConditionId: {weatherConditionId}</span>;
-              }
-            } else {
-              console.log('geolocation or weather data was not received when alarm triggered, will not display weather information.');
-            }
-
+            return <div className="temperature">{temperature}&deg;</div>
+          },
+          render: function() {
             return (
               <div className="AlarmTriggeredPage">
                 <h1>Alarm Triggered Page</h1>
-                <div className="weatherImage">{weatherImage}</div>
-                <div className="temperature">{temperature}&deg;</div>
-                <div className="currentTime">{this.props.currentTime.hour}:{this.props.currentTime.minute}</div>
+                {this._renderWeather()}
+                {this._renderTemperature()}
+                {this._renderTime()}
+                {this._renderAudio()}
                 <div className="triggerPageDescription">Tap to snooze</div>
                 <button onClick={this._onStop}>Stop</button>
-                <audio id="weatherTrack" src={audioSrc} autoPlay loop></audio>
               </div>
             )
           }
@@ -718,7 +780,8 @@
                     var period = 'AM';
                     if (hour === 0) {
                     	newHour = 12;
-                    } else if (hour > 12) {
+                    }
+                    if (hour > 12) {
                       newHour = hour - 12;
                       period = 'PM';
                     }
