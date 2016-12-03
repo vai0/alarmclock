@@ -70,6 +70,8 @@
 
 	_reactDom2.default.render(_react2.default.createElement(_App2.default, { alarms: _alarms2.default, settings: _settings2.default }), document.getElementById('app'));
 
+	//lkjnlnlibilbibuboubu
+
 /***/ },
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
@@ -21891,7 +21893,7 @@
 	  },
 	  _getWeather: function _getWeather(longitude, latitude) {
 	    var request = new XMLHttpRequest();
-	    request.open('GET', 'http://api.openweathermap.org/data/2.5/weather?lat=' + latitude + '&lon=' + longitude + '&APPID=11063795b43e3d923147da4c5f10100b', true);
+	    request.open('GET', 'http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&APPID=11063795b43e3d923147da4c5f10100b', true);
 	    request.onload = function () {
 	      if (request.status >= 200 && request.status < 400) {
 	        //success
