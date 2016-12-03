@@ -74,6 +74,9 @@ var AlarmPage = React.createClass({
           this.props._toggleAlarm(alarm.id);
         }
         this.setState({
+          showEditAlarmPage: false,
+          showAddAlarmPage: false,
+          showSettingsPage: false,
           showAlarmTriggeredPage: true
         });
       }

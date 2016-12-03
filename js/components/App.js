@@ -1,7 +1,9 @@
 import React from 'react';
 import AlarmPage from './AlarmPage.js';
+import LocalStorageMixin from 'react-localstorage'
 
 var App = React.createClass({
+  mixins: [LocalStorageMixin],
   getInitialState: function() {
     return {
       alarms: this.props.alarms,
@@ -41,20 +43,25 @@ var App = React.createClass({
       var longitude = position.coords.longitude;
       this.setState({
         location: {
-          latitude: latitude,
-          longitude: longitude
+          longitude: longitude,
+          latitude: latitude
         }
       });
-      this._getWeather(this.state.location.latitude, this.state.location.longitude);
+      this._getWeather(this.state.location.longitude, this.state.location.latitude);
     }
-    function error() {
+    function error(err) {
+      console.warn('ERROR(' + err.code + '): ' + err.message + '...falling back on default location value');
       this.setState({
-        location: 'location blocked'
+        location: {
+          longitude: '-121.876590',
+          latitude: '37.383573'
+        }
       });
+      this._getWeather(this.state.location.longitude, this.state.location.latitude);
     }
     navigator.geolocation.getCurrentPosition(success.bind(this), error.bind(this));
   },
-  _getWeather: function(latitude, longitude) {
+  _getWeather: function(longitude, latitude) {
     var request = new XMLHttpRequest();
     request.open('GET', 'http://api.openweathermap.org/data/2.5/weather?lat='+latitude+'&lon='+longitude+'&APPID=11063795b43e3d923147da4c5f10100b', true);
     request.onload = function() {
