@@ -1,4 +1,15 @@
+.stretch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
 .AlarmElement {
+  position: relative;
+}
+
+/*.AlarmElement {
   border: 1px solid black;
   margin: 1em 0;
   width: 230px;
@@ -64,4 +75,4 @@ button:focus {
 .SettingsPage .temp-on {
   background-color: #E91E63;
   color: white;
-}
+}*/

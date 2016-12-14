@@ -96,12 +96,17 @@ var AlarmPage = React.createClass({
       return <AlarmTriggeredPage weather={this.props.weather} currentTime={this.props.currentTime} settings={this.props.settings} _closeAlarmTriggeredPage={this._closeAlarmTriggeredPage} />
     }
     return (
-      <div className="AlarmPage">
-        <h1>Wakey</h1>
-        <AlarmList alarms={this.props.alarms} settings={this.props.settings} _getAlarmId={this._getAlarmId} _toggleAlarm={this.props._toggleAlarm} _closeEditAlarmPage={this._closeEditAlarmPage} _openEditAlarmPage={this._openEditAlarmPage} />
-        <button onClick={this._openSettingsPage}>Settings</button>
-        <button onClick={this._openAddAlarmPage}>&#43;</button>
-      </div>
+      <paper-header-panel className="flex">
+        <paper-toolbar>
+          <div className="title">Wakey</div>
+          <span className="flex"></span>
+          <paper-icon-button icon="settings" onClick={this._openSettingsPage}></paper-icon-button>
+        </paper-toolbar>
+        <div className="content">
+          <AlarmList alarms={this.props.alarms} settings={this.props.settings} _getAlarmId={this._getAlarmId} _toggleAlarm={this.props._toggleAlarm} _closeEditAlarmPage={this._closeEditAlarmPage} _openEditAlarmPage={this._openEditAlarmPage} />
+          <paper-fab id="addAlarm" icon="add" title="add" elevation="5" onClick={this._openAddAlarmPage}></paper-fab>
+        </div>
+      </paper-header-panel>
     )
   }
 });

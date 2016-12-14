@@ -1,3 +1,4 @@
+import reactPolymer from 'react-polymer'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './components/App.js'

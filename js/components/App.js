@@ -140,10 +140,10 @@ var App = React.createClass({
   // },
   render: function() {
     return (
-      <div className="Main">
+      <paper-material className="container" elevation="5">
         <AlarmPage alarms={this.state.alarms} weather={this.state.weather} settings={this.state.settings} _toggleAlarm={this._toggleAlarm} currentTime={this.state.currentTime} _updateAlarm={this._updateAlarm} _deleteAlarm={this._deleteAlarm} _toggleAlarm={this._toggleAlarm} _getAlarmCount={this._getAlarmCount} _addAlarm={this._addAlarm} _setTemperatureSetting={this._setTemperatureSetting} _setMilitaryTime={this._setMilitaryTime} />
-      </div>
-    )
+      </paper-material>
+  )
   }
 });
 

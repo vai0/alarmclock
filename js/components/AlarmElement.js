@@ -1,4 +1,7 @@
+import reactPolymer from 'react-polymer'
 import React from 'react'
+
+reactPolymer.registerAttribute('secondary');
 
 var AlarmElement = React.createClass({
   getInitialState: function() {
@@ -11,37 +14,46 @@ var AlarmElement = React.createClass({
   },
   _renderDays: function() {
     if (this.props.alarm.repeat) {
-      return (
-        <div className="days">
-          {Object.keys(this.props.alarm.days).map(function(key, index) {
-            if (this.props.alarm.days[key]) {
-              return <span className="day" key={index}>{capitalize(key)}</span>;
-            }
-          }, this)}
-        </div>
-      )
+      var dayString = '';
+      Object.keys(this.props.alarm.days).forEach(function(key, index) {
+        if (this.props.alarm.days[key]) {
+          dayString += capitalize(key) + ', ';
+        }
+      }, this);
+      return dayString.slice(0, dayString.length - 2);
     } else {
       return null;
     }
   },
   _renderTime: function() {
     return (this.props.settings.militarytime) ?
-      <div className="time">{this.props.alarm.time.src.hour + ':' + setTwoDigit(this.props.alarm.time.src.minute)}</div> :
-      <div className="time">{this.props.alarm.time.formatted.hour + ':' + setTwoDigit(this.props.alarm.time.formatted.minute) + ' ' + this.props.alarm.time.formatted.period}</div>;
+      this.props.alarm.time.src.hour + ':' + setTwoDigit(this.props.alarm.time.src.minute) :
+      this.props.alarm.time.formatted.hour + ':' + setTwoDigit(this.props.alarm.time.formatted.minute) + ' ' + this.props.alarm.time.formatted.period;
   },
   render: function() {
     var activated = (this.props.alarm.activated) ? 'toggleOn' : 'toggleOff';
     return (
-      <div className="AlarmElement">
-        <div data-alarmid={this.props.alarm.id} onClick={this.props._openEditAlarmPage}>
-          {this._renderTime()}
-          {this._renderDays()}
-        </div>
-        <input type="checkbox" id={this.props.alarm.id} defaultChecked={this.props.alarm.activated} onClick={this._toggleAlarmActivated} />
+      <div className="AlarmElement stretch">
+        <paper-item>
+          <paper-item-body two-line data-alarmid={this.props.alarm.id} onClick={this.props._openEditAlarmPage}>
+            <div>{this._renderTime()}</div>
+            <div secondary>{this._renderDays()}</div>
+          </paper-item-body>
+          <paper-toggle-button checked={this.props.alarm.activated} id={this.props.alarm.id} onClick={this._toggleAlarmActivated}></paper-toggle-button>
+        </paper-item>
+        <paper-ripple></paper-ripple>
       </div>
     )
   }
 });
+
+// <div className="AlarmElement">
+//   <div data-alarmid={this.props.alarm.id} onClick={this.props._openEditAlarmPage}>
+//     {this._renderTime()}
+//     {this._renderDays()}
+//   </div>
+//   <input type="checkbox" id={this.props.alarm.id} defaultChecked={this.props.alarm.activated} onClick={this._toggleAlarmActivated} />
+// </div>
 
 // Helpers
 function setTwoDigit(number) {
