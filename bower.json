@@ -1,5 +1,5 @@
 {
-  "name": "polymer-AlarmList",
+  "name": "polymer-alarmlist",
   "version": "0.0.0",
   "dependencies": {
     "paper-header-panel": "PolymerElements/paper-header-panel#^1.1.7",
