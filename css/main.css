@@ -1,3 +1,19 @@
+.container {
+  height: 98vh;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.add-alarm-button {
+  position: fixed;
+  right: 10%;
+  bottom: 8%;
+}
+
 .stretch {
   display: flex;
   flex-direction: column;
