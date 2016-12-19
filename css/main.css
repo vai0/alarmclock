@@ -9,6 +9,175 @@
   position: relative;
 }
 
+.AddAlarmPage {
+  font-family: 'Roboto', 'Noto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.AddAlarmPage .toggle-block {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  line-height: 55px;
+  font-size: 1.1em;
+  width: 80%;
+}
+
+.AddAlarmPage .toggle-block-body {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 1;
+}
+
+.AddAlarmPage .days {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 2px solid rgb(249, 249, 249);
+  border-bottom: 2px solid rgb(249, 249, 249);
+  width: 88%;
+}
+
+.AddAlarmPage .day {
+  background-color: white;
+  color: black;
+  font-size: 0.63em;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  margin-top: 24px;
+  margin-bottom: 24px;
+  width: 39px;
+  height: 39px;
+  border-radius: 50%;
+}
+
+.AddAlarmPage .day-on {
+  background-color: #F6528F;
+  color: white;
+}
+
+.save-button {
+  background-color: #F6528F;
+  color: white;
+  font-size: 1.2em;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  width: 180px;
+  border-radius: 26px;
+  padding: 13px;
+  margin-top: 20px;
+}
+
+.item{
+   position: relative;
+   margin: 0px 5px;
+   width: 25%;
+}
+
+.scroller{
+   overflow-x:hidden;
+   overflow-y:scroll;
+   height: 210px;
+   border: 1px solid red;
+}
+
+.item ul{
+  padding-top:70px;
+  padding-bottom: 70px;
+}
+
+.item li{
+  color: inherit;
+  font-size: 3.5em;
+  font-weight: 500;
+  width: 100%;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+}
+
+.scroll-time-hour {
+  color: #F6528F;
+}
+
+.filter{
+    position: absolute;
+    width: 100%;
+    border:1px solid green;
+    height: 70px;
+    top:70px;
+}
+
+.glass-top {
+  position: absolute;
+  width: 100%;
+  height: 70px;
+  top: 0px;
+  background: white;
+  opacity:0.8;
+  z-index: 1;
+}
+
+.glass-bottom {
+  position: absolute;
+  width: 100%;
+  height: 70px;
+  top: 140px;
+  background: white;
+  opacity:0.9;
+  z-index: 1;
+}
+
+.scroll-time-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  margin-top: 30px;
+}
+
+.scroll-time-period {
+  width: 13%;
+}
+
+.scroll-time-period li {
+  font-size: 2em;
+  line-height: 55px;
+}
+
+.semicolon {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.semicolon .dot {
+  background-color: black;
+  width: 6px;
+  height: 6px;
+  margin: 5px 2px;
+  border-radius: 50%;
+}
+
+*{
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-text-size-adjust: none;
+}
+
+body, ul, li, div, img {
+    padding: 0;
+    margin:0;
+}
+
 /*.AlarmElement {
   border: 1px solid black;
   margin: 1em 0;

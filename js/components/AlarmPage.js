@@ -105,7 +105,7 @@ var AlarmPage = React.createClass({
         </paper-toolbar>
         <div className="content">
           <AlarmList alarms={this.props.alarms} settings={this.props.settings} _getAlarmId={this._getAlarmId} _toggleAlarm={this.props._toggleAlarm} _closeEditAlarmPage={this._closeEditAlarmPage} _openEditAlarmPage={this._openEditAlarmPage} />
-          <paper-fab id="addAlarm" icon="add" title="add" elevation="5" onClick={this._openAddAlarmPage}></paper-fab>
+          <paper-fab className="add-alarm-button" icon="add" title="add" elevation="5" onClick={this._openAddAlarmPage}></paper-fab>
         </div>
       </paper-header-panel>
     )

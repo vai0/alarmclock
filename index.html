@@ -3,6 +3,7 @@
   <head>
     <title>Alarm Clock!</title>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale = 1.0">
     <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
     <link rel="import" href="./bower_components/paper-header-panel/paper-header-panel.html">
     <link rel="import" href="./bower_components/paper-toolbar/paper-toolbar.html">
@@ -19,10 +20,7 @@
   </head>
   <style is="custom-style">
     .container {
-      height: 100vh;
-      min-width: 300px;
-      max-width: 500px;
-      margin: 0 auto;
+      height: 98vh;
     }
 
     .content {
@@ -31,10 +29,10 @@
       align-items: center;
     }
 
-    #addAlarm {
-      position: absolute;
+    .add-alarm-button {
+      position: fixed;
       right: 10%;
-      bottom: 10%;
+      bottom: 8%;
     }
 
     paper-toolbar {
@@ -70,5 +68,6 @@
   <body class="fullbleed">
     <div class="container" id="app"></div>
     <script src="bundle.js"></script>
+    <script src="./node_modules/xscroll/lib/sea.js"></script>
   </body>
 </html>
