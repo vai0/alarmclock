@@ -18,6 +18,20 @@
     <link rel="import" href="./bower_components/paper-material/paper-material.html">
     <link rel="stylesheet" type="text/css" href="./css/main.css">
   </head>
+  <script>
+  (function() {
+    if ('registerElement' in document
+        && 'import' in document.createElement('link')
+        && 'content' in document.createElement('template')) {
+      // platform is good!
+    } else {
+      // polyfill the platform!
+      var e = document.createElement('script');
+      e.src = '/bower_components/webcomponentsjs/webcomponents-lite.min.js';
+      document.body.appendChild(e);
+    }
+  })();
+  </script>
   <style is="custom-style">
     paper-toolbar {
       --paper-toolbar-background: rgb(124, 124, 124);
