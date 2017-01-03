@@ -4,7 +4,6 @@
     <title>Alarm Clock!</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale = 1.0">
-    <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
     <link rel="import" href="./bower_components/paper-header-panel/paper-header-panel.html">
     <link rel="import" href="./bower_components/paper-toolbar/paper-toolbar.html">
     <link rel="import" href="./bower_components/iron-icons/iron-icons.html">
@@ -18,20 +17,7 @@
     <link rel="import" href="./bower_components/paper-material/paper-material.html">
     <link rel="stylesheet" type="text/css" href="./css/main.css">
   </head>
-  <script>
-  (function() {
-    if ('registerElement' in document
-        && 'import' in document.createElement('link')
-        && 'content' in document.createElement('template')) {
-      // platform is good!
-    } else {
-      // polyfill the platform!
-      var e = document.createElement('script');
-      e.src = '/bower_components/webcomponentsjs/webcomponents-lite.min.js';
-      document.body.appendChild(e);
-    }
-  })();
-  </script>
+  <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
   <style is="custom-style">
     paper-toolbar {
       --paper-toolbar-background: rgb(124, 124, 124);
