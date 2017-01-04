@@ -23124,8 +23124,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	// //Xscroll objects
+	// Xscroll objects
 	var hourScroll, minuteScroll, periodScroll;
+
+	// MutationObservers to detect changes to scroller
+	var hourObserver, minuteObserver, periodObserver;
 
 	var AddAlarmPage = _react2.default.createClass({
 	  displayName: 'AddAlarmPage',
@@ -23174,25 +23177,16 @@
 	    });
 	  },
 	  _onSave: function _onSave() {
-	    var hourInput = this._getTimeInput(70, hourScroll.getScrollTop());
-	    var minuteInput = this._getTimeInput(70, minuteScroll.getScrollTop());
-	    var periodInput = this._getPeriodInput(70, periodScroll.getScrollTop());
-	    console.log('hour: ', hourInput);
-	    console.log('minute: ', minuteInput);
-	    console.log('period: ', periodInput);
-	    this._changeHour(hourInput);
-	    this._changeMinute(minuteInput);
-	    this._changePeriod(periodInput);
 	    this.props._addAlarm(this.state);
 	    this.props._closeAddAlarmPage();
 	  },
 	  _changeHour: function _changeHour(hour) {
 	    var newTime = JSON.parse(JSON.stringify(this.state.time));
 	    if (this.props.settings.militarytime) {
-	      newTime.src.hour = parseInt(hour);
+	      newTime.src.hour = Math.round(hour);
 	      newTime.formatted = (0, _helpers.convertSrcTimeToTwelveHour)(newTime.src.hour, newTime.src.minute, 0);
 	    } else {
-	      newTime.formatted.hour = parseInt(hour);
+	      newTime.formatted.hour = Math.round(hour);
 	      newTime.src = (0, _helpers.convertFormattedToSrcTime)(newTime.formatted.hour, newTime.formatted.minute, 0, newTime.formatted.period);
 	    }
 	    this.setState({
@@ -23201,7 +23195,7 @@
 	  },
 	  _changeMinute: function _changeMinute(minute) {
 	    var newTime = JSON.parse(JSON.stringify(this.state.time));
-	    newTime.formatted.minute = parseInt(minute);
+	    newTime.formatted.minute = Math.round(minute);
 	    newTime.src.minute = newTime.formatted.minute;
 	    this.setState({
 	      time: newTime
@@ -23226,48 +23220,89 @@
 	    });
 	  },
 	  componentDidMount: function componentDidMount() {
+	    var self = this;
+	    var hourScrollPosition = self.props.settings.militarytime ? self.state.time.src.hour * 70 : self.state.time.formatted.hour * 70 - 70;
+
+	    var periodScrollPosition = self.state.time.formatted.period === 'AM' ? 0 : 1;
+
+	    //initialize scroller objects
 	    seajs.config({
 	      base: "./node_modules/xscroll/build/cmd"
 	    });
+
 	    seajs.use(["simulate-scroll", "plugins/snap", "plugins/infinite"], function (XScroll, Snap, Infinite) {
-	      hourScroll = new XScroll({
-	        renderTo: ".scroll-time-hour",
-	        scrollbarY: false
-	      });
-	      console.log('hour in componentDidMount: ', hourScroll);
-	      var cellHeight = document.querySelector(".scroll-time-hour li").offsetHeight;
-	      hourScroll.plug(new Snap({
-	        snapHeight: cellHeight,
-	        autoStep: true,
-	        snapRowsNum: document.querySelectorAll(".scroll-time-hour li").length
-	      }));
-	      hourScroll.render();
+	      // poll for elements existence before creating XScroll objects with said elements
+	      (function scrollerElementsExist() {
+	        if (document.querySelector('.scroll-time-hour') && document.querySelector('.scroll-time-minute') && document.querySelector('.scroll-time-period')) {
+	          hourScroll = new XScroll({
+	            renderTo: ".scroll-time-hour",
+	            scrollbarY: false
+	          });
+	          var cellHeight = document.querySelector(".scroll-time-hour li").offsetHeight;
+	          hourScroll.plug(new Snap({
+	            snapHeight: cellHeight,
+	            autoStep: true,
+	            snapRowsNum: document.querySelectorAll(".scroll-time-hour li").length
+	          }));
+	          hourScroll.render();
+	          hourScroll.scrollTop(hourScrollPosition, 500, 'ease');
 
-	      minuteScroll = new XScroll({
-	        renderTo: ".scroll-time-minute",
-	        scrollbarY: false
-	      });
-	      console.log('minuteScroll in componentDidMount: ', minuteScroll);
-	      var cellHeight = document.querySelector(".scroll-time-minute li").offsetHeight;
-	      minuteScroll.plug(new Snap({
-	        snapHeight: cellHeight,
-	        autoStep: true,
-	        snapRowsNum: document.querySelectorAll(".scroll-time-minute li").length
-	      }));
-	      minuteScroll.render();
+	          minuteScroll = new XScroll({
+	            renderTo: ".scroll-time-minute",
+	            scrollbarY: false
+	          });
+	          var cellHeight = document.querySelector(".scroll-time-minute li").offsetHeight;
+	          minuteScroll.plug(new Snap({
+	            snapHeight: cellHeight,
+	            autoStep: true,
+	            snapRowsNum: document.querySelectorAll(".scroll-time-minute li").length
+	          }));
+	          minuteScroll.render();
+	          minuteScroll.scrollTop(self.state.time.formatted.minute * 70, 600, 'ease');
 
-	      periodScroll = new XScroll({
-	        renderTo: ".scroll-time-period",
-	        scrollbarY: false
-	      });
-	      console.log('periodScroll in componentDidMount: ', periodScroll);
-	      var cellHeight = document.querySelector(".scroll-time-period li").offsetHeight;
-	      periodScroll.plug(new Snap({
-	        snapHeight: cellHeight,
-	        autoStep: true,
-	        snapRowsNum: document.querySelectorAll(".scroll-time-period li").length
-	      }));
-	      periodScroll.render();
+	          if (!self.props.settings.militarytime) {
+	            periodScroll = new XScroll({
+	              renderTo: ".scroll-time-period",
+	              scrollbarY: false
+	            });
+	            var cellHeight = document.querySelector(".scroll-time-period li").offsetHeight;
+	            periodScroll.plug(new Snap({
+	              snapHeight: cellHeight,
+	              autoStep: true,
+	              snapRowsNum: document.querySelectorAll(".scroll-time-period li").length
+	            }));
+	            periodScroll.render();
+	            periodScroll.scrollTop(periodScrollPosition * 70, 1000, 'ease');
+	          }
+
+	          var hourObsTarget = document.querySelector(".scroll-time-hour .xs-container");
+	          hourObserver = new MutationObserver(function (mutations) {
+	            mutations.forEach(function (mutation) {
+	              self._changeHour(self._getHourInput(70, hourScroll.getScrollTop()));
+	            });
+	          });
+	          var config = { attributes: true, childList: true, characterData: true };
+	          hourObserver.observe(hourObsTarget, config);
+
+	          var minuteObsTarget = document.querySelector(".scroll-time-minute .xs-container");
+	          minuteObserver = new MutationObserver(function (mutations) {
+	            mutations.forEach(function (mutation) {
+	              self._changeMinute(self._getMinuteInput(70, minuteScroll.getScrollTop()));
+	            });
+	          });
+	          minuteObserver.observe(minuteObsTarget, config);
+
+	          var periodObsTarget = document.querySelector(".scroll-time-period .xs-container");
+	          periodObserver = new MutationObserver(function (mutations) {
+	            mutations.forEach(function (mutation) {
+	              self._changePeriod(self._getPeriodInput(70, periodScroll.getScrollTop()));
+	            });
+	          });
+	          periodObserver.observe(periodObsTarget, config);
+	        } else {
+	          setTimeout(scrollerElementsExist, 5);
+	        }
+	      })();
 	    });
 	  },
 	  _renderDays: function _renderDays() {
@@ -23316,12 +23351,14 @@
 	      );
 	    }
 	  },
-	  _getTimeInput: function _getTimeInput(cellHeight, scrollTop) {
+	  _getHourInput: function _getHourInput(cellHeight, scrollTop) {
+	    return !this.props.settings.militarytime ? (scrollTop + cellHeight) / cellHeight : scrollTop / cellHeight;
+	  },
+	  _getMinuteInput: function _getMinuteInput(cellHeight, scrollTop) {
 	    return scrollTop / cellHeight;
 	  },
 	  _getPeriodInput: function _getPeriodInput(cellHeight, scrollTop) {
-	    var index = scrollTop / cellHeight;
-	    var period = index === 0 ? 'AM' : 'PM';
+	    return scrollTop / cellHeight === 0 ? 'AM' : 'PM';
 	  },
 	  _renderScroller: function _renderScroller() {
 	    var minHour = this.props.settings.militarytime ? 0 : 1;
@@ -23335,6 +23372,7 @@
 	    for (var i = 0; i < 60; i++) {
 	      minuteOptions.push((0, _helpers.setTwoDigit)(i));
 	    }
+
 	    if (!this.props.settings.militarytime) {
 	      var periodScroller = _react2.default.createElement(
 	        'div',
@@ -23449,7 +23487,7 @@
 	          this._renderScroller(),
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'toggle-block' },
+	            { className: 'toggle-block first-toggle-block' },
 	            _react2.default.createElement(
 	              'div',
 	              { className: 'toggle-block-body' },
@@ -23492,7 +23530,7 @@
 	          ),
 	          _react2.default.createElement(
 	            'button',
-	            { className: 'save-button', onClick: this._onSave },
+	            { className: 'save-button shadow-4dp', onClick: this._onSave },
 	            'Save'
 	          )
 	        )

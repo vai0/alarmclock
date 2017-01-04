@@ -30,6 +30,10 @@
   -webkit-font-smoothing: antialiased;
 }
 
+.AddAlarmPage .highlight {
+  color: #F6528F;
+}
+
 .AddAlarmPage .toggle-block {
   display: flex;
   flex-direction: row;
@@ -37,6 +41,10 @@
   line-height: 55px;
   font-size: 1.1em;
   width: 80%;
+}
+
+.AddAlarmPage .first-toggle-block {
+  margin-top: 5%;
 }
 
 .AddAlarmPage .toggle-block-body {
@@ -103,11 +111,17 @@
    width: 21%;
 }
 
-.scroller{
+.scroller {
    overflow-x:hidden;
    overflow-y:scroll;
    height: 210px;
-   border: 1px solid red;
+   max-width: 100%;
+   border: 1px solid black;
+}
+
+.scroll-time-hour > .xs-content {
+  transform-origin: 0px 0px 0px;
+  transform: translate(0px, 0px) scale(1) translateZ(0px);
 }
 
 .item ul{
@@ -125,17 +139,17 @@
   text-align: center;
 }
 
-.scroll-time-hour {
+/*.scroll-time-hour {
   color: #F6528F;
-}
+}*/
 
-.filter{
+/*.filter{
     position: absolute;
     width: 100%;
     border:1px solid green;
     height: 70px;
     top:70px;
-}
+}*/
 
 .glass-top {
   position: absolute;
@@ -162,7 +176,7 @@
   flex-direction: row;
   justify-content: center;
   width: 100%;
-  margin-top: 30px;
+  margin-top: 13%;
 }
 
 .scroll-time-period {

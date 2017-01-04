@@ -309,7 +309,7 @@ var AddAlarmPage = React.createClass({
           </paper-toolbar>
           <div className="content">
             {this._renderScroller()}
-            <div className="toggle-block">
+            <div className="toggle-block first-toggle-block">
               <div className="toggle-block-body">
                 <div>Repeat</div>
               </div>
