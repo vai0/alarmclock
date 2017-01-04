@@ -23757,31 +23757,49 @@
 	  _renderTemperatureButton: function _renderTemperatureButton() {
 	    if (this.props.settings.temperature === 'c') {
 	      return _react2.default.createElement(
-	        'span',
-	        null,
+	        'div',
+	        { className: 'toggle-block' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'toggle-block-body' },
+	          _react2.default.createElement(
+	            'div',
+	            null,
+	            'Temperature'
+	          )
+	        ),
 	        _react2.default.createElement(
 	          'button',
-	          { 'data-temp': 'c', className: 'temperatureButton temp-on', onClick: this._setTemperatureSettingEvent },
+	          { 'data-temp': 'c', className: 'temp-button temp-button-on', onClick: this._setTemperatureSettingEvent },
 	          '\xB0C'
 	        ),
 	        _react2.default.createElement(
 	          'button',
-	          { 'data-temp': 'f', className: 'temperatureButton', onClick: this._setTemperatureSettingEvent },
+	          { 'data-temp': 'f', className: 'temp-button', onClick: this._setTemperatureSettingEvent },
 	          '\xB0F'
 	        )
 	      );
 	    } else if (this.props.settings.temperature === 'f') {
 	      return _react2.default.createElement(
-	        'span',
-	        null,
+	        'div',
+	        { className: 'toggle-block' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'toggle-block-body' },
+	          _react2.default.createElement(
+	            'div',
+	            null,
+	            'Temperature'
+	          )
+	        ),
 	        _react2.default.createElement(
 	          'button',
-	          { 'data-temp': 'c', className: 'temperatureButton', onClick: this._setTemperatureSettingEvent },
+	          { 'data-temp': 'c', className: 'temp-button', onClick: this._setTemperatureSettingEvent },
 	          '\xB0C'
 	        ),
 	        _react2.default.createElement(
 	          'button',
-	          { 'data-temp': 'f', className: 'temperatureButton temp-on', onClick: this._setTemperatureSettingEvent },
+	          { 'data-temp': 'f', className: 'temp-button temp-button-on', onClick: this._setTemperatureSettingEvent },
 	          '\xB0F'
 	        )
 	      );
@@ -23792,35 +23810,79 @@
 	  },
 	  render: function render() {
 	    return _react2.default.createElement(
-	      'div',
-	      { className: 'SettingsPage' },
+	      'paper-header-panel',
+	      { className: 'SettingsPage flex' },
 	      _react2.default.createElement(
-	        'button',
-	        { onClick: this.props._closeSettingsPage },
-	        '<'
-	      ),
-	      _react2.default.createElement(
-	        'h1',
+	        'paper-toolbar',
 	        null,
-	        'Settings'
+	        _react2.default.createElement('paper-icon-button', { icon: 'chevron-left', onClick: this.props._closeSettingsPage }),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'title' },
+	          'Settings'
+	        ),
+	        _react2.default.createElement('span', { className: 'flex' })
 	      ),
 	      _react2.default.createElement(
 	        'div',
-	        { className: 'militarytime' },
-	        '24-Hour Time',
-	        _react2.default.createElement('input', { type: 'checkbox', defaultChecked: this.props.settings.militarytime, onClick: this._setMilitaryTimeEvent })
-	      ),
-	      _react2.default.createElement(
-	        'div',
-	        { className: 'temperatureFormat' },
-	        'Temperature: ',
-	        this._renderTemperatureButton()
+	        { className: 'content' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'toggle-block first-toggle-block' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'toggle-block-body' },
+	            _react2.default.createElement(
+	              'div',
+	              null,
+	              '24-Hour Time'
+	            )
+	          ),
+	          _react2.default.createElement('paper-toggle-button', { checked: this.props.settings.militarytime, onClick: this._setMilitaryTimeEvent })
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'toggle-block' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'toggle-block-body' },
+	            _react2.default.createElement(
+	              'div',
+	              null,
+	              'Location Service'
+	            )
+	          ),
+	          _react2.default.createElement('paper-toggle-button', null)
+	        ),
+	        this._renderTemperatureButton(),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'toggle-block' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'toggle-block-body' },
+	            _react2.default.createElement(
+	              'div',
+	              null,
+	              'Terms and Conditions'
+	            )
+	          )
+	        )
 	      )
 	    );
 	  }
 	});
 
 	exports.default = SettingsPage;
+
+	// <div className="SettingsPage">
+	//   <button onClick={this.props._closeSettingsPage}>&#60;</button>
+	//   <h1>Settings</h1>
+	//   <div className="militarytime">24-Hour Time<input type="checkbox" defaultChecked={this.props.settings.militarytime} onClick={this._setMilitaryTimeEvent}/></div>
+	//   <div className="temperatureFormat">
+	//     Temperature: {this._renderTemperatureButton()}
+	//   </div>
+	// </div>
 
 /***/ },
 /* 194 */

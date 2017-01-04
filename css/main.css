@@ -1,3 +1,20 @@
+*{
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-text-size-adjust: none;
+}
+
+body, ul, li, div, img {
+  padding: 0;
+  margin:0;
+}
+
+body {
+  font-family: 'Roboto', 'Noto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
 .container {
   height: 98vh;
 }
@@ -23,11 +40,6 @@
 
 .AlarmElement {
   position: relative;
-}
-
-.AddAlarmPage {
-  font-family: 'Roboto', 'Noto', sans-serif;
-  -webkit-font-smoothing: antialiased;
 }
 
 .AddAlarmPage .highlight {
@@ -82,11 +94,6 @@
 .AddAlarmPage .day-on {
   background-color: #F6528F;
   color: white;
-}
-
-.EditAlarmPage {
-  font-family: 'Roboto', 'Noto', sans-serif;
-  -webkit-font-smoothing: antialiased;
 }
 
 .EditAlarmPage .highlight {
@@ -156,6 +163,45 @@
   padding: 13px;
   position: fixed;
   bottom: 4%;
+}
+
+.SettingsPage .toggle-block {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  line-height: 65px;
+  font-size: 1em;
+  width: 80%;
+}
+
+.SettingsPage .first-toggle-block {
+  margin-top: 8%;
+}
+
+.SettingsPage .toggle-block-body {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 1;
+}
+
+.SettingsPage .temp-button {
+  background-color: white;
+  color: black;
+  font-size: 0.7em;
+  font-weight: 500;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  width: 39px;
+  height: 39px;
+  margin-left: 15px;
+  border-radius: 50%;
+}
+
+.SettingsPage .temp-button-on {
+  background-color: #F6528F;
+  color: white;
 }
 
 .shadow-4dp {
@@ -257,17 +303,7 @@
   border-radius: 50%;
 }
 
-*{
-  -webkit-tap-highlight-color: rgba(0,0,0,0);
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-  -webkit-text-size-adjust: none;
-}
 
-body, ul, li, div, img {
-  padding: 0;
-  margin:0;
-}
 
 /*.AlarmElement {
   border: 1px solid black;
