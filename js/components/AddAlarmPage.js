@@ -197,27 +197,6 @@ var AddAlarmPage = React.createClass({
       return null;
     }
   },
-  _renderTime: function() {
-    if (this.props.settings.militarytime) {
-      return (
-        <div className="time">
-          <input type="text" defaultValue={this.state.time.src.hour} onChange={this._changeHour}/>
-          :<input type="text" defaultValue={this.state.time.src.minute} onChange={this._changeMinute}/>
-        </div>
-      );
-    } else {
-      return (
-        <div className="time">
-          <input type="text" defaultValue={this.state.time.formatted.hour} onChange={this._changeHour}/>
-          :<input type="text" defaultValue={this.state.time.formatted.minute} onChange={this._changeMinute}/>
-          <div className="period">
-           <input type="radio" name="period" value="AM" checked={this.state.time.formatted.period === 'AM'} onChange={this._changePeriod} />AM
-           <input type="radio" name="period" value="PM" checked={this.state.time.formatted.period === 'PM'} onChange={this._changePeriod} />PM
-         </div>
-        </div>
-      );
-    }
-  },
   _getHourInput: function(cellHeight, scrollTop) {
     return !this.props.settings.militarytime
       ? (scrollTop + cellHeight) / cellHeight
@@ -229,7 +208,7 @@ var AddAlarmPage = React.createClass({
   _getPeriodInput: function (cellHeight, scrollTop) {
     return scrollTop / cellHeight === 0 ? 'AM' : 'PM';
   },
-  _renderScroller: function() {
+  _renderTime: function() {
     var minHour = this.props.settings.militarytime ? 0 : 1;
     var maxHour = this.props.settings.militarytime ? 23 : 12;
     var hourOptions = [];
@@ -308,7 +287,7 @@ var AddAlarmPage = React.createClass({
             <span className="flex"></span>
           </paper-toolbar>
           <div className="content">
-            {this._renderScroller()}
+            {this._renderTime()}
             <div className="toggle-block first-toggle-block">
               <div className="toggle-block-body">
                 <div>Repeat</div>

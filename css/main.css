@@ -84,6 +84,65 @@
   color: white;
 }
 
+.EditAlarmPage {
+  font-family: 'Roboto', 'Noto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.EditAlarmPage .highlight {
+  color: #F6528F;
+}
+
+.EditAlarmPage .toggle-block {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  line-height: 55px;
+  font-size: 1.1em;
+  width: 80%;
+}
+
+.EditAlarmPage .first-toggle-block {
+  margin-top: 5%;
+}
+
+.EditAlarmPage .toggle-block-body {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 1;
+}
+
+.EditAlarmPage .days {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 2px solid rgb(249, 249, 249);
+  border-bottom: 2px solid rgb(249, 249, 249);
+  width: 88%;
+}
+
+.EditAlarmPage .day {
+  background-color: white;
+  color: black;
+  font-size: 0.63em;
+  font-weight: 500;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  margin-top: 24px;
+  margin-bottom: 24px;
+  width: 39px;
+  height: 39px;
+  border-radius: 50%;
+}
+
+.EditAlarmPage .day-on {
+  background-color: #F6528F;
+  color: white;
+}
+
 .save-button {
   background-color: #F6528F;
   color: white;
@@ -96,7 +155,7 @@
   border-radius: 26px;
   padding: 13px;
   position: fixed;
-  bottom: 8%;
+  bottom: 4%;
 }
 
 .shadow-4dp {
@@ -117,11 +176,6 @@
    height: 210px;
    max-width: 100%;
    border: 1px solid black;
-}
-
-.scroll-time-hour > .xs-content {
-  transform-origin: 0px 0px 0px;
-  transform: translate(0px, 0px) scale(1) translateZ(0px);
 }
 
 .item ul{

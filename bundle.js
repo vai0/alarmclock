@@ -22796,7 +22796,7 @@
 	  },
 	  render: function render() {
 	    if (this.state.showEditAlarmPage) {
-	      return _react2.default.createElement(_EditAlarmPage2.default, { settings: this.props.settings, alarmBeingEdited: this.state.alarmBeingEdited, _updateAlarm: this.props._updateAlarm, _deleteAlarm: this.props._deleteAlarm, _closeEditAlarmPage: this._closeEditAlarmPage });
+	      return _react2.default.createElement(_EditAlarmPage2.default, { settings: this.props.settings, alarmBeingEdited: this.state.alarmBeingEdited, _updateAlarm: this.props._updateAlarm, _deleteAlarm: this.props._deleteAlarm, showEditAlarmPage: this.state.showEditAlarmPage, _closeEditAlarmPage: this._closeEditAlarmPage });
 	    }
 	    if (this.state.showAddAlarmPage) {
 	      return _react2.default.createElement(_AddAlarmPage2.default, { settings: this.props.settings, currentTime: this.props.currentTime, _getAlarmCount: this.props._getAlarmCount, _addAlarm: this.props._addAlarm, showAddAlarmPage: this.state.showAddAlarmPage, _closeAddAlarmPage: this._closeAddAlarmPage });
@@ -22805,7 +22805,7 @@
 	      return _react2.default.createElement(_SettingsPage2.default, { settings: this.props.settings, _setTemperatureSetting: this.props._setTemperatureSetting, _setMilitaryTime: this.props._setMilitaryTime, _closeSettingsPage: this._closeSettingsPage });
 	    }
 	    if (this.state.showAlarmTriggeredPage) {
-	      return _react2.default.createElement(_AlarmTriggeredPage2.default, { weather: this.props.weather, currentTime: this.props.currentTime, settings: this.props.settings, _closeAlarmTriggeredPage: this._closeAlarmTriggeredPage });
+	      return _react2.default.createElement(_AlarmTriggeredPage2.default, { settings: this.props.settings, weather: this.props.weather, currentTime: this.props.currentTime, _closeAlarmTriggeredPage: this._closeAlarmTriggeredPage });
 	    }
 	    return _react2.default.createElement(
 	      'paper-header-panel',
@@ -22850,6 +22850,12 @@
 	var _helpers = __webpack_require__(191);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// Xscroll objects
+	var hourScroll, minuteScroll, periodScroll;
+
+	// MutationObservers to detect changes to scroller
+	var hourObserver, minuteObserver, periodObserver;
 
 	var EditAlarmPage = _react2.default.createClass({
 	  displayName: 'EditAlarmPage',
@@ -22907,31 +22913,31 @@
 	    this.props._deleteAlarm(this.state.id);
 	    this.props._closeEditAlarmPage();
 	  },
-	  _changeHour: function _changeHour(event) {
+	  _changeHour: function _changeHour(hour) {
 	    var newTime = JSON.parse(JSON.stringify(this.state.time));
 	    if (this.props.settings.militarytime) {
-	      newTime.src.hour = parseInt(event.target.value);
+	      newTime.src.hour = Math.round(hour);
 	      newTime.formatted = (0, _helpers.convertSrcTimeToTwelveHour)(newTime.src.hour, newTime.src.minute, 0);
 	    } else {
-	      newTime.formatted.hour = parseInt(event.target.value);
+	      newTime.formatted.hour = Math.round(hour);
 	      newTime.src = (0, _helpers.convertFormattedToSrcTime)(newTime.formatted.hour, newTime.formatted.minute, 0, newTime.formatted.period);
 	    }
 	    this.setState({
 	      time: newTime
 	    });
 	  },
-	  _changeMinute: function _changeMinute(event) {
+	  _changeMinute: function _changeMinute(minute) {
 	    var newTime = JSON.parse(JSON.stringify(this.state.time));
-	    newTime.formatted.minute = parseInt(event.target.value);
+	    newTime.formatted.minute = Math.round(minute);
 	    newTime.src.minute = newTime.formatted.minute;
 	    this.setState({
 	      time: newTime
 	    });
 	  },
-	  _changePeriod: function _changePeriod(event) {
+	  _changePeriod: function _changePeriod(period) {
 	    var newTime = JSON.parse(JSON.stringify(this.state.time));
-	    newTime.formatted.period = event.target.value;
-	    newTime.src = (0, _helpers.convertFormattedToSrcTime)(newTime.formatted.hour, newTime.formatted.minute, 0, event.target.value);
+	    newTime.formatted.period = period;
+	    newTime.src = (0, _helpers.convertFormattedToSrcTime)(newTime.formatted.hour, newTime.formatted.minute, 0, period);
 	    this.setState({
 	      time: newTime
 	    });
@@ -22939,6 +22945,92 @@
 	  _onClickRepeat: function _onClickRepeat() {
 	    this.setState({
 	      repeat: !this.state.repeat
+	    });
+	  },
+	  componentDidMount: function componentDidMount() {
+	    var self = this;
+	    var hourScrollPosition = self.props.settings.militarytime ? self.state.time.src.hour * 70 : self.state.time.formatted.hour * 70 - 70;
+
+	    var periodScrollPosition = self.state.time.formatted.period === 'AM' ? 0 : 1;
+
+	    //initialize scroller objects
+	    seajs.config({
+	      base: "./node_modules/xscroll/build/cmd"
+	    });
+
+	    seajs.use(["simulate-scroll", "plugins/snap", "plugins/infinite"], function (XScroll, Snap, Infinite) {
+	      // poll for elements existence before creating XScroll objects with said elements
+	      (function scrollerElementsExist() {
+	        if (document.querySelector('.scroll-time-hour') && document.querySelector('.scroll-time-minute') && document.querySelector('.scroll-time-period')) {
+	          hourScroll = new XScroll({
+	            renderTo: ".scroll-time-hour",
+	            scrollbarY: false
+	          });
+	          var cellHeight = document.querySelector(".scroll-time-hour li").offsetHeight;
+	          hourScroll.plug(new Snap({
+	            snapHeight: cellHeight,
+	            autoStep: true,
+	            snapRowsNum: document.querySelectorAll(".scroll-time-hour li").length
+	          }));
+	          hourScroll.render();
+	          hourScroll.scrollTop(hourScrollPosition, 500, 'ease');
+
+	          minuteScroll = new XScroll({
+	            renderTo: ".scroll-time-minute",
+	            scrollbarY: false
+	          });
+	          var cellHeight = document.querySelector(".scroll-time-minute li").offsetHeight;
+	          minuteScroll.plug(new Snap({
+	            snapHeight: cellHeight,
+	            autoStep: true,
+	            snapRowsNum: document.querySelectorAll(".scroll-time-minute li").length
+	          }));
+	          minuteScroll.render();
+	          minuteScroll.scrollTop(self.state.time.formatted.minute * 70, 600, 'ease');
+
+	          if (!self.props.settings.militarytime) {
+	            periodScroll = new XScroll({
+	              renderTo: ".scroll-time-period",
+	              scrollbarY: false
+	            });
+	            var cellHeight = document.querySelector(".scroll-time-period li").offsetHeight;
+	            periodScroll.plug(new Snap({
+	              snapHeight: cellHeight,
+	              autoStep: true,
+	              snapRowsNum: document.querySelectorAll(".scroll-time-period li").length
+	            }));
+	            periodScroll.render();
+	            periodScroll.scrollTop(periodScrollPosition * 70, 1000, 'ease');
+	          }
+
+	          var hourObsTarget = document.querySelector(".scroll-time-hour .xs-container");
+	          hourObserver = new MutationObserver(function (mutations) {
+	            mutations.forEach(function (mutation) {
+	              self._changeHour(self._getHourInput(70, hourScroll.getScrollTop()));
+	            });
+	          });
+	          var config = { attributes: true, childList: true, characterData: true };
+	          hourObserver.observe(hourObsTarget, config);
+
+	          var minuteObsTarget = document.querySelector(".scroll-time-minute .xs-container");
+	          minuteObserver = new MutationObserver(function (mutations) {
+	            mutations.forEach(function (mutation) {
+	              self._changeMinute(self._getMinuteInput(70, minuteScroll.getScrollTop()));
+	            });
+	          });
+	          minuteObserver.observe(minuteObsTarget, config);
+
+	          var periodObsTarget = document.querySelector(".scroll-time-period .xs-container");
+	          periodObserver = new MutationObserver(function (mutations) {
+	            mutations.forEach(function (mutation) {
+	              self._changePeriod(self._getPeriodInput(70, periodScroll.getScrollTop()));
+	            });
+	          });
+	          periodObserver.observe(periodObsTarget, config);
+	        } else {
+	          setTimeout(scrollerElementsExist, 5);
+	        }
+	      })();
 	    });
 	  },
 	  _renderDays: function _renderDays() {
@@ -22960,74 +23052,198 @@
 	      return null;
 	    }
 	  },
+	  _getHourInput: function _getHourInput(cellHeight, scrollTop) {
+	    return !this.props.settings.militarytime ? (scrollTop + cellHeight) / cellHeight : scrollTop / cellHeight;
+	  },
+	  _getMinuteInput: function _getMinuteInput(cellHeight, scrollTop) {
+	    return scrollTop / cellHeight;
+	  },
+	  _getPeriodInput: function _getPeriodInput(cellHeight, scrollTop) {
+	    return scrollTop / cellHeight === 0 ? 'AM' : 'PM';
+	  },
 	  _renderTime: function _renderTime() {
-	    if (this.props.settings.militarytime) {
-	      return _react2.default.createElement(
+	    var minHour = this.props.settings.militarytime ? 0 : 1;
+	    var maxHour = this.props.settings.militarytime ? 23 : 12;
+	    var hourOptions = [];
+	    var minuteOptions = [];
+	    var periodOptions = ['AM', 'PM'];
+	    for (var i = minHour; i <= maxHour; i++) {
+	      hourOptions.push((0, _helpers.setTwoDigit)(i));
+	    }
+	    for (var i = 0; i < 60; i++) {
+	      minuteOptions.push((0, _helpers.setTwoDigit)(i));
+	    }
+
+	    if (!this.props.settings.militarytime) {
+	      var periodScroller = _react2.default.createElement(
 	        'div',
-	        { className: 'time' },
-	        _react2.default.createElement('input', { type: 'text', defaultValue: this.state.time.src.hour, onChange: this._changeHour }),
-	        ':',
-	        _react2.default.createElement('input', { type: 'text', defaultValue: this.state.time.src.minute, onChange: this._changeMinute })
+	        { className: 'item scroll-time-period' },
+	        _react2.default.createElement('div', { className: 'glass-top' }),
+	        _react2.default.createElement('div', { className: 'glass-bottom' }),
+	        _react2.default.createElement('div', { className: 'filter' }),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'scroller' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'xs-container' },
+	            _react2.default.createElement(
+	              'ul',
+	              { className: 'xs-content' },
+	              periodOptions.map(function (period, index) {
+	                return _react2.default.createElement(
+	                  'li',
+	                  { key: index },
+	                  period
+	                );
+	              })
+	            )
+	          )
+	        )
+	      );
+	    }
+	    return _react2.default.createElement(
+	      'div',
+	      { className: 'scroll-time-container' },
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'item scroll-time-hour' },
+	        _react2.default.createElement('div', { className: 'glass-top' }),
+	        _react2.default.createElement('div', { className: 'glass-bottom' }),
+	        _react2.default.createElement('div', { className: 'filter' }),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'scroller' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'xs-container' },
+	            _react2.default.createElement(
+	              'ul',
+	              { className: 'xs-content' },
+	              hourOptions.map(function (hour) {
+	                return _react2.default.createElement(
+	                  'li',
+	                  { key: hour },
+	                  hour
+	                );
+	              })
+	            )
+	          )
+	        )
+	      ),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'semicolon' },
+	        _react2.default.createElement('div', { className: 'dot' }),
+	        _react2.default.createElement('div', { className: 'dot' })
+	      ),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'item scroll-time-minute' },
+	        _react2.default.createElement('div', { className: 'glass-top' }),
+	        _react2.default.createElement('div', { className: 'glass-bottom' }),
+	        _react2.default.createElement('div', { className: 'filter' }),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'scroller' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'xs-container' },
+	            _react2.default.createElement(
+	              'ul',
+	              { className: 'xs-content' },
+	              minuteOptions.map(function (minute) {
+	                return _react2.default.createElement(
+	                  'li',
+	                  { key: minute },
+	                  minute
+	                );
+	              })
+	            )
+	          )
+	        )
+	      ),
+	      periodScroller
+	    );
+	  },
+	  render: function render() {
+	    if (this.props.showEditAlarmPage) {
+	      return _react2.default.createElement(
+	        'paper-header-panel',
+	        { className: 'EditAlarmPage flex' },
+	        _react2.default.createElement(
+	          'paper-toolbar',
+	          null,
+	          _react2.default.createElement('paper-icon-button', { icon: 'chevron-left', onClick: this.props._closeEditAlarmPage }),
+	          _react2.default.createElement('paper-icon-button', { icon: 'delete', onClick: this._onDelete }),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'title' },
+	            'Edit'
+	          ),
+	          _react2.default.createElement('span', { className: 'flex' })
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'content' },
+	          this._renderTime(),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'toggle-block first-toggle-block' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'toggle-block-body' },
+	              _react2.default.createElement(
+	                'div',
+	                null,
+	                'Repeat'
+	              )
+	            ),
+	            _react2.default.createElement('paper-toggle-button', { checked: this.state.repeat, onClick: this._onClickRepeat })
+	          ),
+	          this._renderDays(),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'toggle-block' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'toggle-block-body' },
+	              _react2.default.createElement(
+	                'div',
+	                null,
+	                'Snooze'
+	              )
+	            ),
+	            _react2.default.createElement('paper-toggle-button', { 'data-input': 'snooze', checked: this.state.snooze, onClick: this._switchToggle })
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'toggle-block' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'toggle-block-body' },
+	              _react2.default.createElement(
+	                'div',
+	                null,
+	                'Vibrate'
+	              )
+	            ),
+	            _react2.default.createElement('paper-toggle-button', { 'data-input': 'vibrate', checked: this.state.vibrate, onClick: this._switchToggle })
+	          ),
+	          _react2.default.createElement(
+	            'button',
+	            { className: 'save-button shadow-4dp', onClick: this._onSave },
+	            'Save'
+	          )
+	        )
 	      );
 	    } else {
 	      return _react2.default.createElement(
 	        'div',
-	        { className: 'time' },
-	        _react2.default.createElement('input', { type: 'text', defaultValue: this.state.time.formatted.hour, onChange: this._changeHour }),
-	        ':',
-	        _react2.default.createElement('input', { type: 'text', defaultValue: this.state.time.formatted.minute, onChange: this._changeMinute }),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'period' },
-	          _react2.default.createElement('input', { type: 'radio', name: 'period', value: 'AM', checked: this.state.time.formatted.period === 'AM', onChange: this._changePeriod }),
-	          'AM',
-	          _react2.default.createElement('input', { type: 'radio', name: 'period', value: 'PM', checked: this.state.time.formatted.period === 'PM', onChange: this._changePeriod }),
-	          'PM'
-	        )
+	        null,
+	        'Nothing here!'
 	      );
 	    }
-	  },
-	  render: function render() {
-	    return _react2.default.createElement(
-	      'div',
-	      { className: 'EditAlarmPage' },
-	      _react2.default.createElement(
-	        'button',
-	        { onClick: this.props._closeEditAlarmPage },
-	        '<'
-	      ),
-	      _react2.default.createElement(
-	        'button',
-	        { onClick: this._onDelete },
-	        'Delete'
-	      ),
-	      _react2.default.createElement(
-	        'h1',
-	        null,
-	        'Edit'
-	      ),
-	      this._renderTime(),
-	      'Repeat: ',
-	      _react2.default.createElement('input', { type: 'checkbox', defaultChecked: this.state.repeat, onClick: this._onClickRepeat }),
-	      this._renderDays(),
-	      _react2.default.createElement(
-	        'div',
-	        { className: 'snooze' },
-	        'Snooze',
-	        _react2.default.createElement('input', { type: 'checkbox', 'data-input': 'snooze', defaultChecked: this.state.snooze, onChange: this._switchToggle })
-	      ),
-	      _react2.default.createElement(
-	        'div',
-	        { className: 'vibrate' },
-	        'Vibrate',
-	        _react2.default.createElement('input', { type: 'checkbox', 'data-input': 'vibrate', defaultChecked: this.state.vibrate, onChange: this._switchToggle })
-	      ),
-	      _react2.default.createElement(
-	        'button',
-	        { onClick: this._onSave },
-	        'Save'
-	      )
-	    );
 	  }
 	});
 
@@ -23324,33 +23540,6 @@
 	      return null;
 	    }
 	  },
-	  _renderTime: function _renderTime() {
-	    if (this.props.settings.militarytime) {
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'time' },
-	        _react2.default.createElement('input', { type: 'text', defaultValue: this.state.time.src.hour, onChange: this._changeHour }),
-	        ':',
-	        _react2.default.createElement('input', { type: 'text', defaultValue: this.state.time.src.minute, onChange: this._changeMinute })
-	      );
-	    } else {
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'time' },
-	        _react2.default.createElement('input', { type: 'text', defaultValue: this.state.time.formatted.hour, onChange: this._changeHour }),
-	        ':',
-	        _react2.default.createElement('input', { type: 'text', defaultValue: this.state.time.formatted.minute, onChange: this._changeMinute }),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'period' },
-	          _react2.default.createElement('input', { type: 'radio', name: 'period', value: 'AM', checked: this.state.time.formatted.period === 'AM', onChange: this._changePeriod }),
-	          'AM',
-	          _react2.default.createElement('input', { type: 'radio', name: 'period', value: 'PM', checked: this.state.time.formatted.period === 'PM', onChange: this._changePeriod }),
-	          'PM'
-	        )
-	      );
-	    }
-	  },
 	  _getHourInput: function _getHourInput(cellHeight, scrollTop) {
 	    return !this.props.settings.militarytime ? (scrollTop + cellHeight) / cellHeight : scrollTop / cellHeight;
 	  },
@@ -23360,7 +23549,7 @@
 	  _getPeriodInput: function _getPeriodInput(cellHeight, scrollTop) {
 	    return scrollTop / cellHeight === 0 ? 'AM' : 'PM';
 	  },
-	  _renderScroller: function _renderScroller() {
+	  _renderTime: function _renderTime() {
 	    var minHour = this.props.settings.militarytime ? 0 : 1;
 	    var maxHour = this.props.settings.militarytime ? 23 : 12;
 	    var hourOptions = [];
@@ -23484,7 +23673,7 @@
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'content' },
-	          this._renderScroller(),
+	          this._renderTime(),
 	          _react2.default.createElement(
 	            'div',
 	            { className: 'toggle-block first-toggle-block' },

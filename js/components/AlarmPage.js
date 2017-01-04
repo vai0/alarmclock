@@ -85,7 +85,7 @@ var AlarmPage = React.createClass({
   },
   render: function() {
     if (this.state.showEditAlarmPage) {
-      return <EditAlarmPage settings={this.props.settings} alarmBeingEdited={this.state.alarmBeingEdited} _updateAlarm={this.props._updateAlarm} _deleteAlarm={this.props._deleteAlarm} _closeEditAlarmPage={this._closeEditAlarmPage} />
+      return <EditAlarmPage settings={this.props.settings} alarmBeingEdited={this.state.alarmBeingEdited} _updateAlarm={this.props._updateAlarm} _deleteAlarm={this.props._deleteAlarm} showEditAlarmPage={this.state.showEditAlarmPage} _closeEditAlarmPage={this._closeEditAlarmPage} />
     }
     if (this.state.showAddAlarmPage) {
       return <AddAlarmPage settings={this.props.settings} currentTime={this.props.currentTime} _getAlarmCount={this.props._getAlarmCount} _addAlarm={this.props._addAlarm} showAddAlarmPage={this.state.showAddAlarmPage} _closeAddAlarmPage={this._closeAddAlarmPage} />
@@ -94,7 +94,7 @@ var AlarmPage = React.createClass({
       return <SettingsPage settings={this.props.settings} _setTemperatureSetting={this.props._setTemperatureSetting} _setMilitaryTime={this.props._setMilitaryTime} _closeSettingsPage={this._closeSettingsPage}/>
     }
     if (this.state.showAlarmTriggeredPage) {
-      return <AlarmTriggeredPage weather={this.props.weather} currentTime={this.props.currentTime} settings={this.props.settings} _closeAlarmTriggeredPage={this._closeAlarmTriggeredPage} />
+      return <AlarmTriggeredPage settings={this.props.settings} weather={this.props.weather} currentTime={this.props.currentTime} _closeAlarmTriggeredPage={this._closeAlarmTriggeredPage} />
     }
     return (
       <paper-header-panel className="flex">
