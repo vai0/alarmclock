@@ -6,8 +6,7 @@ The design was intended to be built on the iOS or Android platform. However, I w
 
 ####Goals for this project:
 - Performant. The app must feel like a native app.
-- Responsive design. UI shouldn't break on mobile devices
-- Match spec'ed design
+- Responsive. UI shouldn't break on mobile devices
 
 <br>
 
