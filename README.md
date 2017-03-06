@@ -9,5 +9,6 @@ The design was intended to be built on the iOS or Android platform. However, I w
 - Responsive design. UI shouldn't break on mobile devices
 - Match spec'ed design
 
-Libraries: React, Polymer, [react-polymer](https://www.npmjs.com/package/react-polymer), [react-localstorage](https://github.com/STRML/react-localstorage), [XScroll](http://xscroll.github.io/)
-Tools: webpack, bower, npm
+__Libraries:__ React, Polymer, [react-polymer](https://www.npmjs.com/package/react-polymer), [react-localstorage](https://github.com/STRML/react-localstorage), [XScroll](http://xscroll.github.io/)
+
+__Tools:__ webpack, bower, npm
