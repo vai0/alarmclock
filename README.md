@@ -5,7 +5,7 @@ An alarm clock app with weather forecasts meant to be used on your phone. This p
 The design was intended to be built on the iOS or Android platform. However, I wanted to challenge myself by building a dynamic web application that relies entirely on managing all logic, data, and the view locally.
 
 ####Goals for this project:
-- Performant. The app must feel like a native app.
+- Performant. Must feel like a native app.
 - Responsive. UI shouldn't break on mobile devices
 
 <br>
