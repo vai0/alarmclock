@@ -1,4 +1,4 @@
-#Wakey Alarm Clock Web App
+#Wakey Alarm Clock
 
 An alarm clock app with weather forecasts meant to be used on your phone. This project was designed by [Xiaotong Yuchi](http://www.xiaotongyuchi.com/wakeyalarm).
 
