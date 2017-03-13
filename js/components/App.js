@@ -6,21 +6,46 @@ import { convertSrcTimeToTwelveHour } from '../helpers.js'
 var App = React.createClass({
   mixins: [LocalStorageMixin],
   getInitialState: function() {
-    return {
-      alarms: this.props.alarms,
-      settings: this.props.settings,
-      currentTime: null,
-      location: null,
-      weather: null
-    };
-  },
-  _startClock: function() {
     var time = new Date();
     var day = time.getDay();
     var hour = time.getHours();
     var minute = time.getMinutes();
     var second = time.getSeconds();
-    var twelveHourTime = convertSrcTimeToTwelveHour(hour, minute, second);
+    return {
+      alarms: this.props.alarms,
+      settings: this.props.settings,
+      currentTime: {
+        src: {
+          day: day,
+          hour: hour,
+          minute: minute,
+          second: second
+        },
+        formatted: convertSrcTimeToTwelveHour(hour, minute, second)
+      },
+      location: null,
+      weather: null
+    };
+  },
+  componentWillMount: function() {
+    var self = this;
+    this.timerID = setInterval(function() {
+      self._tick();
+    }, 1000);
+    this._getLocation();
+  },
+  componentWillUnmount: function() {
+    clearInterval(this.timerID);
+  },
+  // shouldComponentUpdate: function(nextProps, nextState) {
+  //   return nextState !== this.state;
+  // },
+  _tick: function() {
+    var time = new Date();
+    var day = time.getDay();
+    var hour = time.getHours();
+    var minute = time.getMinutes();
+    var second = time.getSeconds();
     this.setState({
       currentTime: {
         src: {
@@ -29,11 +54,11 @@ var App = React.createClass({
           minute: minute,
           second: second
         },
-        formatted: twelveHourTime
+        formatted: convertSrcTimeToTwelveHour(hour, minute, second)
       }
     });
     console.log(day+':'+hour+':'+minute+':'+second);
-    setTimeout(this._startClock, 1000);
+    // setTimeout(this._startClock, 1000);
   },
   _getLocation: function() {
     if (!navigator.geolocation) {
@@ -132,13 +157,6 @@ var App = React.createClass({
   _getAlarmCount: function() {
     return this.state.alarms.length;
   },
-  componentWillMount: function() {
-    this._startClock();
-    this._getLocation();
-  },
-  // shouldComponentUpdate: function(nextProps, nextState) {
-  //   return nextState !== this.state;
-  // },
   render: function() {
     return (
       <AlarmPage alarms={this.state.alarms} weather={this.state.weather} settings={this.state.settings} _toggleAlarm={this._toggleAlarm} currentTime={this.state.currentTime} _updateAlarm={this._updateAlarm} _deleteAlarm={this._deleteAlarm} _toggleAlarm={this._toggleAlarm} _getAlarmCount={this._getAlarmCount} _addAlarm={this._addAlarm} _setTemperatureSetting={this._setTemperatureSetting} _setMilitaryTime={this._setMilitaryTime} />

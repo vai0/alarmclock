@@ -17,9 +17,7 @@ var AlarmSlider = React.createClass({
     var slider = new Dragdealer('slider', {
       steps: 2,
       speed: .3,
-      // loose: true,
       animationCallback: function(x, y) {
-        console.log('animationCallback initiated!');
         handlePosition = x;
         path.style.left = x * (pathContainer.offsetWidth - handle.offsetWidth) + 'px';
         if (x < 1) {

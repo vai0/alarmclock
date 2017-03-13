@@ -96,11 +96,11 @@ var AddAlarmPage = React.createClass({
   },
   componentDidMount: function() {
     var self = this;
-    var hourScrollPosition = self.props.settings.militarytime
-      ? self.state.time.src.hour * 70
-      : self.state.time.formatted.hour * 70 - 70;
+    var hourScrollPosition = this.props.settings.militarytime
+      ? this.state.time.src.hour * 70
+      : this.state.time.formatted.hour * 70 - 70;
 
-    var periodScrollPosition = self.state.time.formatted.period === 'AM' ? 0 : 1;
+    var periodScrollPosition = this.state.time.formatted.period === 'AM' ? 0 : 1;
 
     //initialize scroller objects
     seajs.config({
@@ -110,8 +110,7 @@ var AddAlarmPage = React.createClass({
     seajs.use(["simulate-scroll", "plugins/snap", "plugins/infinite"], function(XScroll, Snap, Infinite) {
       // poll for elements existence before creating XScroll objects with said elements
       (function scrollerElementsExist() {
-        if (document.querySelector('.scroll-time-hour') && document.querySelector('.scroll-time-minute') && document.querySelector('.scroll-time-period')) {
-
+        if (document.querySelector('.scroll-time-hour') && document.querySelector('.scroll-time-minute')) {
           // HOUR SCROLLER
           hourScroll = new XScroll({
             renderTo: ".scroll-time-hour",
@@ -203,7 +202,7 @@ var AddAlarmPage = React.createClass({
           {Object.keys(this.state.days).map(function(key, index) {
             var dayClass = 'day';
             if (this.state.days[key]) dayClass += ' day-on';
-            return <button data-day={key} className={dayClass} key={index} onClick={this._selectDay}>{capitalize(key)}</button>;
+            return <button data-day={key} className={dayClass} key={index} onClick={this._selectDay}>{capitalize(key.charAt(0))}</button>;
           }, this)}
         </div>
       )

@@ -70,7 +70,7 @@ var AlarmPage = React.createClass({
         (alarm.time.src.hour === this.props.currentTime.src.hour) &&
         (alarm.time.src.minute === this.props.currentTime.src.minute) &&
         (alarm.time.src.second === this.props.currentTime.src.second) &&
-        ((alarm.repeat === false) || (alarm.repeat === true && alarm.days[convertIndextoDay(this.props.currentTime.src.day)]))) {
+        (!alarm.repeat || (alarm.repeat && alarm.days[convertIndextoDay(this.props.currentTime.src.day)]))) {
         if (!alarm.repeat) {
           this.props._toggleAlarm(alarm.id);
         }
@@ -105,7 +105,7 @@ var AlarmPage = React.createClass({
         </paper-toolbar>
         <div className="content">
           <AlarmList alarms={this.props.alarms} settings={this.props.settings} _getAlarmId={this._getAlarmId} _toggleAlarm={this.props._toggleAlarm} _closeEditAlarmPage={this._closeEditAlarmPage} _openEditAlarmPage={this._openEditAlarmPage} />
-          <paper-fab className="add-alarm-button" icon="add" title="add" elevation="5" onClick={this._openAddAlarmPage}></paper-fab>
+          <paper-fab className="add-alarm-button" icon="add" title="add" onClick={this._openAddAlarmPage}></paper-fab>
         </div>
       </paper-header-panel>
     )
