@@ -1,4 +1,6 @@
 import React from 'react'
+import { convertKelvinToCelsius, convertKelvinToFahrenheit, setTwoDigit } from '../helpers.js'
+import AlarmSlider from './AlarmSlider.js'
 
 var AlarmTriggeredPage = React.createClass({
   //weather conditions
@@ -7,37 +9,46 @@ var AlarmTriggeredPage = React.createClass({
   // 800 is clear_day
   // 801 partly_cloudy
   // 802 <= x <= 804 overcast
+  componentDidMount: function () {
+
+  },
   _onStop: function() {
     this.props._closeAlarmTriggeredPage();
   },
   _renderTime: function() {
     if (this.props.settings.militarytime) {
-      return <div className="currentTime">{this.props.currentTime.src.hour}:{this.props.currentTime.src.minute}</div>
+      return <div className="currentTime">{setTwoDigit(this.props.currentTime.src.hour) + ':' + setTwoDigit(this.props.currentTime.src.minute)}</div>
     } else {
-      return <div className="currentTime">{this.props.currentTime.formatted.hour}:{this.props.currentTime.formatted.minute + ' ' + this.props.currentTime.formatted.period}</div>
+      return <div className="currentTime">{setTwoDigit(this.props.currentTime.formatted.hour) + ':' + setTwoDigit(this.props.currentTime.formatted.minute) + ' ' + this.props.currentTime.formatted.period}</div>
     }
   },
   _renderWeather: function() {
-    var weatherImage;
+    var weatherImage = {
+      background: 'url("./images/rain.png") no-repeat center center fixed',
+      WebkitBackgroundSize: 'cover',
+      MozBackgroundSize: 'cover',
+      OBackgroundSize: 'cover',
+      backgroundSize: 'cover'
+    };
     var weatherConditionId = this.props.weather.weather[0].id;
     if (this.props.weather) {
       if (weatherConditionId < 600) {
-        weatherImage = <img src="./images/rain.png" />
+        weatherImage.background = 'url("./images/rain.png") no-repeat center center';
       } else if (weatherConditionId < 700) {
-        weatherImage = <img src="./images/snow.png" />
+        weatherImage.background = 'url("./images/snow.png") no-repeat center center';
       } else if (weatherConditionId === 800) {
-        weatherImage = <img src="./images/clear_day.png" />
+        weatherImage.background = 'url("./images/clear_day.png") no-repeat center center';
       } else if (weatherConditionId === 801) {
-        weatherImage = <img src="./images/partly_cloudy.png" />
+        weatherImage.background = 'url("./images/partly_cloudy.png") no-repeat center center';
       } else if (weatherConditionId < 805) {
-        weatherImage = <img src="./images/overcast.png" />
+        weatherImage.background = 'url("./images/overcast.png") no-repeat center center';
       } else {
-        weatherImage = <span>weather id is invalid, check the API docs: http://openweathermap.org/weather-conditions weatherConditionId: {weatherConditionId}</span>;
+        console.log('weather id is invalid, check the API docs: http://openweathermap.org/weather-conditions weatherConditionId: ' + weatherConditionId);
       }
     } else {
       console.log('geolocation or weather data was not received when alarm triggered, will not display weather information.');
     }
-    return <div className="weatherImage">{weatherImage}</div>;
+    return <div style={weatherImage} className="weatherBackground"></div>;
   },
   _renderAudio: function() {
     var weatherConditionId = this.props.weather.weather[0].id;
@@ -76,73 +87,20 @@ var AlarmTriggeredPage = React.createClass({
   render: function() {
     return (
       <div className="AlarmTriggeredPage">
-        <h1>Alarm Triggered Page</h1>
-        {this._renderWeather()}
-        {this._renderTemperature()}
-        {this._renderTime()}
+        <div className="topHalf">
+          {this._renderWeather()}
+          {this._renderTemperature()}
+        </div>
+        <div className="bottomHalf">
+          {this._renderTime()}
+          <div className="snoozeDescription">Tap to snooze</div>
+          <button onClick={this._onStop}>Stop</button>
+          <AlarmSlider />
+        </div>
         {this._renderAudio()}
-        <div className="triggerPageDescription">Tap to snooze</div>
-        <button onClick={this._onStop}>Stop</button>
       </div>
     )
   }
 });
-
-// Helpers
-function setTwoDigit(number) {
-  return (number < 10) ? '0' + number.toString() : number.toString();
-}
-
-function capitalize(str) {
-  return str[0].toUpperCase() + str.slice(1);
-}
-
-function convertDayToIndex(day) {
-  return ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'].indexOf(day);
-}
-
-function convertIndextoDay(index) {
-  return ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][index];
-}
-
-function convertKelvinToFahrenheit(k) {
-  return Math.round(9/5 * (k - 273) + 32);
-}
-
-function convertKelvinToCelsius(k) {
-  return Math.round(k - 273);
-}
-
-function convertFormattedToSrcTime(hour, minute, second, period) {
-  var militaryHour = hour;
-  if (period === 'PM') {
-    militaryHour = (hour === 12) ? 12 : hour + 12;
-  } else if (period === 'AM') {
-    militaryHour = (hour === 12) ? 0 : hour;
-  }
-  return {
-    hour: militaryHour,
-    minute: minute,
-    second: second
-  }
-}
-
-function convertSrcTimeToTwelveHour(hour, minute, second) {
-  var newHour = hour;
-  var period = 'AM';
-  if (hour === 0) {
-    newHour = 12;
-  }
-  if (hour > 12) {
-    newHour = hour - 12;
-    period = 'PM';
-  }
-  return {
-    hour: newHour,
-    minute: minute,
-    second: second,
-    period: period
-  }
-}
 
 export default AlarmTriggeredPage

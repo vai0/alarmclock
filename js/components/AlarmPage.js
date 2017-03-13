@@ -1,9 +1,10 @@
-import React from 'react';
-import EditAlarmPage from './EditAlarmPage.js';
-import AddAlarmPage from './AddAlarmPage.js';
-import SettingsPage from './SettingsPage.js';
-import AlarmTriggeredPage from './AlarmTriggeredPage.js';
-import AlarmList from './AlarmList.js';
+import React from 'react'
+import EditAlarmPage from './EditAlarmPage.js'
+import AddAlarmPage from './AddAlarmPage.js'
+import SettingsPage from './SettingsPage.js'
+import AlarmTriggeredPage from './AlarmTriggeredPage.js'
+import AlarmList from './AlarmList.js'
+import { convertIndextoDay } from '../helpers.js'
 
 var AlarmPage = React.createClass({
   getDefaultProps: function() {
@@ -84,7 +85,7 @@ var AlarmPage = React.createClass({
   },
   render: function() {
     if (this.state.showEditAlarmPage) {
-      return <EditAlarmPage settings={this.props.settings} alarmBeingEdited={this.state.alarmBeingEdited} _updateAlarm={this.props._updateAlarm} _deleteAlarm={this.props._deleteAlarm} _closeEditAlarmPage={this._closeEditAlarmPage} />
+      return <EditAlarmPage settings={this.props.settings} alarmBeingEdited={this.state.alarmBeingEdited} _updateAlarm={this.props._updateAlarm} _deleteAlarm={this.props._deleteAlarm} showEditAlarmPage={this.state.showEditAlarmPage} _closeEditAlarmPage={this._closeEditAlarmPage} />
     }
     if (this.state.showAddAlarmPage) {
       return <AddAlarmPage settings={this.props.settings} currentTime={this.props.currentTime} _getAlarmCount={this.props._getAlarmCount} _addAlarm={this.props._addAlarm} showAddAlarmPage={this.state.showAddAlarmPage} _closeAddAlarmPage={this._closeAddAlarmPage} />
@@ -93,74 +94,22 @@ var AlarmPage = React.createClass({
       return <SettingsPage settings={this.props.settings} _setTemperatureSetting={this.props._setTemperatureSetting} _setMilitaryTime={this.props._setMilitaryTime} _closeSettingsPage={this._closeSettingsPage}/>
     }
     if (this.state.showAlarmTriggeredPage) {
-      return <AlarmTriggeredPage weather={this.props.weather} currentTime={this.props.currentTime} settings={this.props.settings} _closeAlarmTriggeredPage={this._closeAlarmTriggeredPage} />
+      return <AlarmTriggeredPage settings={this.props.settings} weather={this.props.weather} currentTime={this.props.currentTime} _closeAlarmTriggeredPage={this._closeAlarmTriggeredPage} />
     }
     return (
-      <div className="AlarmPage">
-        <h1>Wakey</h1>
-        <AlarmList alarms={this.props.alarms} settings={this.props.settings} _getAlarmId={this._getAlarmId} _toggleAlarm={this.props._toggleAlarm} _closeEditAlarmPage={this._closeEditAlarmPage} _openEditAlarmPage={this._openEditAlarmPage} />
-        <button onClick={this._openSettingsPage}>Settings</button>
-        <button onClick={this._openAddAlarmPage}>&#43;</button>
-      </div>
+      <paper-header-panel className="flex">
+        <paper-toolbar>
+          <div className="title">Wakey</div>
+          <span className="flex"></span>
+          <paper-icon-button icon="settings" onClick={this._openSettingsPage}></paper-icon-button>
+        </paper-toolbar>
+        <div className="content">
+          <AlarmList alarms={this.props.alarms} settings={this.props.settings} _getAlarmId={this._getAlarmId} _toggleAlarm={this.props._toggleAlarm} _closeEditAlarmPage={this._closeEditAlarmPage} _openEditAlarmPage={this._openEditAlarmPage} />
+          <paper-fab className="add-alarm-button" icon="add" title="add" elevation="5" onClick={this._openAddAlarmPage}></paper-fab>
+        </div>
+      </paper-header-panel>
     )
   }
 });
-
-// Helpers
-function setTwoDigit(number) {
-  return (number < 10) ? '0' + number.toString() : number.toString();
-}
-
-function capitalize(str) {
-  return str[0].toUpperCase() + str.slice(1);
-}
-
-function convertDayToIndex(day) {
-  return ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'].indexOf(day);
-}
-
-function convertIndextoDay(index) {
-  return ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][index];
-}
-
-function convertKelvinToFahrenheit(k) {
-  return Math.round(9/5 * (k - 273) + 32);
-}
-
-function convertKelvinToCelsius(k) {
-  return Math.round(k - 273);
-}
-
-function convertFormattedToSrcTime(hour, minute, second, period) {
-  var militaryHour = hour;
-  if (period === 'PM') {
-    militaryHour = (hour === 12) ? 12 : hour + 12;
-  } else if (period === 'AM') {
-    militaryHour = (hour === 12) ? 0 : hour;
-  }
-  return {
-    hour: militaryHour,
-    minute: minute,
-    second: second
-  }
-}
-
-function convertSrcTimeToTwelveHour(hour, minute, second) {
-  var newHour = hour;
-  var period = 'AM';
-  if (hour === 0) {
-    newHour = 12;
-  }
-  if (hour > 12) {
-    newHour = hour - 12;
-    period = 'PM';
-  }
-  return {
-    hour: newHour,
-    minute: minute,
-    second: second,
-    period: period
-  }
-}
 
 export default AlarmPage
