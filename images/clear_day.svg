@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="375px" height="339px" viewBox="0 0 375 339" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 42 (36781) - http://www.bohemiancoding.com/sketch -->
+    <title>Oval + Oval + Oval + Oval + Oval + Combined Shape Mask</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="50%" y1="2.84423609%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#F84E66" offset="0%"></stop>
+            <stop stop-color="#FADE62" offset="100%"></stop>
+        </linearGradient>
+        <polygon id="path-2" points="0 0 375 0 375 109.5 375 339 0 339"></polygon>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Sunny">
+            <g id="Oval-+-Oval-+-Oval-+-Oval-+-Oval-+-Combined-Shape-Mask">
+                <mask id="mask-3" fill="white">
+                    <use xlink:href="#path-2"></use>
+                </mask>
+                <use id="Mask" fill="url(#linearGradient-1)" xlink:href="#path-2"></use>
+                <ellipse id="Oval" fill-opacity="0.3" fill="#FFFFFF" mask="url(#mask-3)" cx="217.5" cy="360" rx="137.5" ry="138"></ellipse>
+                <ellipse id="Oval" fill-opacity="0.3" fill="#FFFFFF" mask="url(#mask-3)" cx="159" cy="368.5" rx="136" ry="136.5"></ellipse>
+                <ellipse id="Oval" fill-opacity="0.3" fill="#FFFFFF" mask="url(#mask-3)" cx="205" cy="376.5" rx="125" ry="125.5"></ellipse>
+                <circle id="Oval" fill-opacity="0.3" fill="#FFFFFF" mask="url(#mask-3)" cx="162.5" cy="367.5" r="112.5"></circle>
+                <ellipse id="Oval" fill="#FFFFFF" mask="url(#mask-3)" cx="188" cy="352.092389" rx="81" ry="81.0923886"></ellipse>
+                <path d="M57.0413523,160.887556 C59.7446443,157.308244 64.0023397,155 68.7916667,155 C74.7527229,155 79.8901945,158.57585 82.2319997,163.727692 C83.1832905,163.223365 84.2673836,162.937853 85.4178714,162.937853 C89.1924826,162.937853 92.2524095,166.011153 92.2524095,169.80226 C92.2524095,173.593367 89.1924826,176.666667 85.4178714,176.666667 C84.3242324,176.666667 83.2905887,176.408673 82.3739822,175.949978 C80.1027901,181.274395 74.8762665,185 68.7916667,185 C64.2994273,185 60.2749097,182.96924 57.5621168,179.76361 C56.4555483,180.185567 55.2547622,180.416667 54,180.416667 C48.4771525,180.416667 44,175.939514 44,170.416667 C44,164.893819 48.4771525,160.416667 54,160.416667 C55.0604328,160.416667 56.0823138,160.581727 57.0413523,160.887556 Z" id="Combined-Shape" fill="#FFFFFF" mask="url(#mask-3)"></path>
+            </g>
+        </g>
+    </g>
+</svg>

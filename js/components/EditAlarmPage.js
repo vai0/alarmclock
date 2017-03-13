@@ -112,9 +112,13 @@ var EditAlarmPage = React.createClass({
       // poll for elements existence before creating XScroll objects with said elements
       (function scrollerElementsExist() {
         if (document.querySelector('.scroll-time-hour') && document.querySelector('.scroll-time-minute') && document.querySelector('.scroll-time-period')) {
+
+          // HOUR SCROLLER
           hourScroll = new XScroll({
             renderTo: ".scroll-time-hour",
-            scrollbarY: false
+            scrollbarY: false,
+            scrollbarX: false,
+            lockX: true
           })
           var cellHeight = document.querySelector(".scroll-time-hour li").offsetHeight;
           hourScroll.plug(new Snap({
@@ -125,9 +129,12 @@ var EditAlarmPage = React.createClass({
           hourScroll.render();
           hourScroll.scrollTop(hourScrollPosition, 500, 'ease');
 
+          // MINUTE SCROLLER
           minuteScroll = new XScroll({
             renderTo: ".scroll-time-minute",
-            scrollbarY: false
+            scrollbarY: false,
+            scrollbarX: false,
+            lockX: true
           })
           var cellHeight = document.querySelector(".scroll-time-minute li").offsetHeight;
           minuteScroll.plug(new Snap({
@@ -138,10 +145,13 @@ var EditAlarmPage = React.createClass({
           minuteScroll.render();
           minuteScroll.scrollTop(self.state.time.formatted.minute * 70, 600, 'ease');
 
+          // PERIOD SCROLLER
           if (!self.props.settings.militarytime) {
             periodScroll = new XScroll({
               renderTo: ".scroll-time-period",
-              scrollbarY: false
+              scrollbarY: false,
+              scrollbarX: false,
+              lockX: true
             })
             var cellHeight = document.querySelector(".scroll-time-period li").offsetHeight;
             periodScroll.plug(new Snap({
@@ -152,6 +162,10 @@ var EditAlarmPage = React.createClass({
             periodScroll.render();
             periodScroll.scrollTop(periodScrollPosition * 70, 1000, 'ease');
           }
+
+          //PREVENT HORIZONTAL SCROLL FOR HOUR AND MINUTE SCROLLERS
+          var hourulel = document.querySelector('.scroll-time-hour ul');
+          hourulel.style.transform = "none !important";
 
           var hourObsTarget = document.querySelector(".scroll-time-hour .xs-container");
           hourObserver = new MutationObserver(function(mutations) {

@@ -22964,9 +22964,13 @@
 	      // poll for elements existence before creating XScroll objects with said elements
 	      (function scrollerElementsExist() {
 	        if (document.querySelector('.scroll-time-hour') && document.querySelector('.scroll-time-minute') && document.querySelector('.scroll-time-period')) {
+
+	          // HOUR SCROLLER
 	          hourScroll = new XScroll({
 	            renderTo: ".scroll-time-hour",
-	            scrollbarY: false
+	            scrollbarY: false,
+	            scrollbarX: false,
+	            lockX: true
 	          });
 	          var cellHeight = document.querySelector(".scroll-time-hour li").offsetHeight;
 	          hourScroll.plug(new Snap({
@@ -22977,9 +22981,12 @@
 	          hourScroll.render();
 	          hourScroll.scrollTop(hourScrollPosition, 500, 'ease');
 
+	          // MINUTE SCROLLER
 	          minuteScroll = new XScroll({
 	            renderTo: ".scroll-time-minute",
-	            scrollbarY: false
+	            scrollbarY: false,
+	            scrollbarX: false,
+	            lockX: true
 	          });
 	          var cellHeight = document.querySelector(".scroll-time-minute li").offsetHeight;
 	          minuteScroll.plug(new Snap({
@@ -22990,10 +22997,13 @@
 	          minuteScroll.render();
 	          minuteScroll.scrollTop(self.state.time.formatted.minute * 70, 600, 'ease');
 
+	          // PERIOD SCROLLER
 	          if (!self.props.settings.militarytime) {
 	            periodScroll = new XScroll({
 	              renderTo: ".scroll-time-period",
-	              scrollbarY: false
+	              scrollbarY: false,
+	              scrollbarX: false,
+	              lockX: true
 	            });
 	            var cellHeight = document.querySelector(".scroll-time-period li").offsetHeight;
 	            periodScroll.plug(new Snap({
@@ -23004,6 +23014,10 @@
 	            periodScroll.render();
 	            periodScroll.scrollTop(periodScrollPosition * 70, 1000, 'ease');
 	          }
+
+	          //PREVENT HORIZONTAL SCROLL FOR HOUR AND MINUTE SCROLLERS
+	          var hourulel = document.querySelector('.scroll-time-hour ul');
+	          hourulel.style.transform = "none !important";
 
 	          var hourObsTarget = document.querySelector(".scroll-time-hour .xs-container");
 	          hourObserver = new MutationObserver(function (mutations) {
@@ -23928,7 +23942,6 @@
 	  // 800 is clear_day
 	  // 801 partly_cloudy
 	  // 802 <= x <= 804 overcast
-	  componentDidMount: function componentDidMount() {},
 	  _onStop: function _onStop() {
 	    this.props._closeAlarmTriggeredPage();
 	  },
@@ -23958,15 +23971,15 @@
 	    var weatherConditionId = this.props.weather.weather[0].id;
 	    if (this.props.weather) {
 	      if (weatherConditionId < 600) {
-	        weatherImage.background = 'url("./images/rain.png") no-repeat center center';
+	        weatherImage.background = 'url("./images/rain.svg") no-repeat center center';
 	      } else if (weatherConditionId < 700) {
-	        weatherImage.background = 'url("./images/snow.png") no-repeat center center';
+	        weatherImage.background = 'url("./images/snow.svg") no-repeat center center';
 	      } else if (weatherConditionId === 800) {
-	        weatherImage.background = 'url("./images/clear_day.png") no-repeat center center';
+	        weatherImage.background = 'url("./images/clear_day.svg") no-repeat center center';
 	      } else if (weatherConditionId === 801) {
-	        weatherImage.background = 'url("./images/partly_cloudy.png") no-repeat center center';
+	        weatherImage.background = 'url("./images/partly_cloudy.svg") no-repeat center center';
 	      } else if (weatherConditionId < 805) {
-	        weatherImage.background = 'url("./images/overcast.png") no-repeat center center';
+	        weatherImage.background = 'url("./images/overcast.svg") no-repeat center center';
 	      } else {
 	        console.log('weather id is invalid, check the API docs: http://openweathermap.org/weather-conditions weatherConditionId: ' + weatherConditionId);
 	      }
@@ -24033,12 +24046,7 @@
 	          { className: 'snoozeDescription' },
 	          'Tap to snooze'
 	        ),
-	        _react2.default.createElement(
-	          'button',
-	          { onClick: this._onStop },
-	          'Stop'
-	        ),
-	        _react2.default.createElement(_AlarmSlider2.default, null)
+	        _react2.default.createElement(_AlarmSlider2.default, { _onStop: this._onStop })
 	      ),
 	      this._renderAudio()
 	    );
@@ -24070,20 +24078,22 @@
 	var AlarmSlider = _react2.default.createClass({
 	  displayName: 'AlarmSlider',
 
-	  render: function render() {
+	  componentDidMount: function componentDidMount() {
+	    this._createSlider();
+	  },
+	  _createSlider: function _createSlider() {
 	    var handle = document.querySelector('.handle');
 	    var handleContainer = document.querySelector('.handle-container');
 	    var ringer = document.querySelector('.ringer-icon');
 	    var path = document.querySelector('.path');
 	    var pathContainer = document.querySelector('.path-container');
-
-	    console.log('alarmslider.js loaded!');
+	    var self = this;
 
 	    var handlePosition;
 	    var slider = new _dragdealer2.default('slider', {
 	      steps: 2,
 	      speed: .3,
-	      loose: true,
+	      // loose: true,
 	      animationCallback: function animationCallback(x, y) {
 	        console.log('animationCallback initiated!');
 	        handlePosition = x;
@@ -24093,7 +24103,6 @@
 	        }
 	      },
 	      dragStartCallback: function dragStartCallback(x, y) {
-	        console.log('dragStartCallback initiated!');
 	        handleContainer.classList.remove('scale');
 	        handle.classList.add('press');
 	        handle.classList.remove('raise');
@@ -24108,9 +24117,12 @@
 	          handleContainer.classList.add('scale');
 	        } else if (handlePosition === 1) {
 	          ringer.classList.remove('shake');
+	          self.props._onStop();
 	        }
 	      }
 	    });
+	  },
+	  render: function render() {
 	    return _react2.default.createElement(
 	      'div',
 	      { className: 'AlarmSlider' },

@@ -2,20 +2,22 @@ import React from 'react'
 import Dragdealer from 'dragdealer'
 
 var AlarmSlider = React.createClass({
-  render: function() {
+  componentDidMount: function() {
+    this._createSlider();
+  },
+  _createSlider: function() {
     var handle = document.querySelector('.handle');
     var handleContainer = document.querySelector('.handle-container');
     var ringer = document.querySelector('.ringer-icon');
     var path = document.querySelector('.path');
     var pathContainer = document.querySelector('.path-container');
-
-    console.log('alarmslider.js loaded!');
+    var self = this;
 
     var handlePosition;
     var slider = new Dragdealer('slider', {
       steps: 2,
       speed: .3,
-      loose: true,
+      // loose: true,
       animationCallback: function(x, y) {
         console.log('animationCallback initiated!');
         handlePosition = x;
@@ -25,7 +27,6 @@ var AlarmSlider = React.createClass({
         }
       },
       dragStartCallback: function(x, y) {
-        console.log('dragStartCallback initiated!');
         handleContainer.classList.remove('scale');
         handle.classList.add('press');
         handle.classList.remove('raise');
@@ -40,9 +41,12 @@ var AlarmSlider = React.createClass({
           handleContainer.classList.add('scale');
         } else if (handlePosition === 1) {
           ringer.classList.remove('shake');
+          self.props._onStop();
         }
       }
     });
+  },
+  render: function() {
     return (
       <div className="AlarmSlider">
         <div id="slider">

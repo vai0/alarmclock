@@ -9,9 +9,6 @@ var AlarmTriggeredPage = React.createClass({
   // 800 is clear_day
   // 801 partly_cloudy
   // 802 <= x <= 804 overcast
-  componentDidMount: function () {
-
-  },
   _onStop: function() {
     this.props._closeAlarmTriggeredPage();
   },
@@ -33,15 +30,15 @@ var AlarmTriggeredPage = React.createClass({
     var weatherConditionId = this.props.weather.weather[0].id;
     if (this.props.weather) {
       if (weatherConditionId < 600) {
-        weatherImage.background = 'url("./images/rain.png") no-repeat center center';
+        weatherImage.background = 'url("./images/rain.svg") no-repeat center center';
       } else if (weatherConditionId < 700) {
-        weatherImage.background = 'url("./images/snow.png") no-repeat center center';
+        weatherImage.background = 'url("./images/snow.svg") no-repeat center center';
       } else if (weatherConditionId === 800) {
-        weatherImage.background = 'url("./images/clear_day.png") no-repeat center center';
+        weatherImage.background = 'url("./images/clear_day.svg") no-repeat center center';
       } else if (weatherConditionId === 801) {
-        weatherImage.background = 'url("./images/partly_cloudy.png") no-repeat center center';
+        weatherImage.background = 'url("./images/partly_cloudy.svg") no-repeat center center';
       } else if (weatherConditionId < 805) {
-        weatherImage.background = 'url("./images/overcast.png") no-repeat center center';
+        weatherImage.background = 'url("./images/overcast.svg") no-repeat center center';
       } else {
         console.log('weather id is invalid, check the API docs: http://openweathermap.org/weather-conditions weatherConditionId: ' + weatherConditionId);
       }
@@ -94,8 +91,7 @@ var AlarmTriggeredPage = React.createClass({
         <div className="bottomHalf">
           {this._renderTime()}
           <div className="snoozeDescription">Tap to snooze</div>
-          <button onClick={this._onStop}>Stop</button>
-          <AlarmSlider />
+          <AlarmSlider _onStop={this._onStop} />
         </div>
         {this._renderAudio()}
       </div>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="375px" height="339px" viewBox="0 0 375 339" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 42 (36781) - http://www.bohemiancoding.com/sketch -->
+    <title>Oval 7 + Oval 7 + Oval 7 + Oval 7 + Oval 7 + Oval 7 + Oval 7 + Oval 7 + Oval 7 + Oval 7 + Oval 7 + Oval 7 + Oval 7 + Oval 7 + Oval 7 + Oval 7 + Oval 7 Mask</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="50%" y1="96.2527868%" x2="50%" y2="2.01997338%" id="linearGradient-1">
+            <stop stop-color="#9CAADE" offset="0%"></stop>
+            <stop stop-color="#B4D6FC" offset="100%"></stop>
+        </linearGradient>
+        <rect id="path-2" x="0" y="0" width="375" height="339"></rect>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Snowy">
+            <g id="Oval-7-+-Oval-7-+-Oval-7-+-Oval-7-+-Oval-7-+-Oval-7-+-Oval-7-+-Oval-7-+-Oval-7-+-Oval-7-+-Oval-7-+-Oval-7-+-Oval-7-+-Oval-7-+-Oval-7-+-Oval-7-+-Oval-7-Mask">
+                <mask id="mask-3" fill="white">
+                    <use xlink:href="#path-2"></use>
+                </mask>
+                <use id="Mask" fill="url(#linearGradient-1)" xlink:href="#path-2"></use>
+                <circle id="Oval-7" fill="#FFFFFF" opacity="0.3" mask="url(#mask-3)" cx="198.5" cy="115.5" r="3.5"></circle>
+                <circle id="Oval-7" fill="#FFFFFF" opacity="0.2" mask="url(#mask-3)" cx="104.5" cy="197.5" r="9.5"></circle>
+                <circle id="Oval-7" fill="#FFFFFF" opacity="0.2" mask="url(#mask-3)" cx="216.5" cy="264.5" r="9.5"></circle>
+                <circle id="Oval-7" fill="#FFFFFF" mask="url(#mask-3)" cx="342.5" cy="186.5" r="5.5"></circle>
+                <circle id="Oval-7" fill="#FFFFFF" opacity="0.2" mask="url(#mask-3)" cx="68.5" cy="61.5" r="9.5"></circle>
+                <circle id="Oval-7" fill="#FFFFFF" mask="url(#mask-3)" cx="134.5" cy="333.5" r="9.5"></circle>
+                <circle id="Oval-7" fill="#FFFFFF" mask="url(#mask-3)" cx="328" cy="337" r="38"></circle>
+                <circle id="Oval-7" fill="#FFFFFF" mask="url(#mask-3)" cx="259.5" cy="325.5" r="49.5"></circle>
+                <circle id="Oval-7" fill="#FFFFFF" mask="url(#mask-3)" cx="-0.5" cy="207.5" r="9.5"></circle>
+                <circle id="Oval-7" fill="#FFFFFF" opacity="0.2" mask="url(#mask-3)" cx="22.5" cy="314.5" r="9.5"></circle>
+                <ellipse id="Oval-7" fill="#FFFFFF" mask="url(#mask-3)" cx="337" cy="265.5" rx="6" ry="5.5"></ellipse>
+                <ellipse id="Oval-7" fill="#FFFFFF" mask="url(#mask-3)" cx="70" cy="269.5" rx="6" ry="5.5"></ellipse>
+                <ellipse id="Oval-7" fill="#FFFFFF" mask="url(#mask-3)" cx="182" cy="214.5" rx="6" ry="5.5"></ellipse>
+                <ellipse id="Oval-7" fill="#FFFFFF" opacity="0.3" mask="url(#mask-3)" cx="282" cy="196.5" rx="6" ry="5.5"></ellipse>
+                <circle id="Oval-7" fill="#FFFFFF" opacity="0.5" mask="url(#mask-3)" cx="51" cy="120" r="3"></circle>
+                <ellipse id="Oval-7" fill="#FFFFFF" mask="url(#mask-3)" cx="147" cy="144" rx="3" ry="3"></ellipse>
+                <circle id="Oval-7" fill="#FFFFFF" mask="url(#mask-3)" cx="372.5" cy="336.5" r="9.5"></circle>
+            </g>
+        </g>
+    </g>
+</svg>

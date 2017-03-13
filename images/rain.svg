@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="375px" height="339px" viewBox="0 0 375 339" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 42 (36781) - http://www.bohemiancoding.com/sketch -->
+    <title>Rectangle 2 + Rectangle 2 + Rectangle 2 + Rectangle 2 + Rectangle 2 + Rectangle 2 + Rectangle 2 + Rectangle 2 + Rectangle 2 + Rectangle 2 + Rectangle 2 + Rectangle 2 + Rectangle 2 + Rectangle 2 + Rectangle 2 + Rectangle 2 + Combined Shape + Oval 8 + Oval 9 + Oval 9 Mask</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="50%" y1="97.577341%" x2="50%" y2="0%" id="linearGradient-1">
+            <stop stop-color="#75FAE2" offset="0%"></stop>
+            <stop stop-color="#2DAFF6" offset="100%"></stop>
+        </linearGradient>
+        <rect id="path-2" x="0" y="0" width="375" height="339"></rect>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Rainy">
+            <g id="Rectangle-2-+-Rectangle-2-+-Rectangle-2-+-Rectangle-2-+-Rectangle-2-+-Rectangle-2-+-Rectangle-2-+-Rectangle-2-+-Rectangle-2-+-Rectangle-2-+-Rectangle-2-+-Rectangle-2-+-Rectangle-2-+-Rectangle-2-+-Rectangle-2-+-Rectangle-2-+-Combined-Shape-+-Oval-8-+-Oval-9-+-Oval-9-Mask">
+                <mask id="mask-3" fill="white">
+                    <use xlink:href="#path-2"></use>
+                </mask>
+                <use id="Mask" fill="url(#linearGradient-1)" xlink:href="#path-2"></use>
+                <rect id="Rectangle-2" fill="#FFFFFF" opacity="0.5" mask="url(#mask-3)" x="25" y="76" width="4" height="45" rx="2"></rect>
+                <rect id="Rectangle-2" fill="#FFFFFF" opacity="0.2" mask="url(#mask-3)" x="43" y="133" width="4" height="45" rx="2"></rect>
+                <rect id="Rectangle-2" fill="#FFFFFF" mask="url(#mask-3)" x="57" y="66" width="4" height="45" rx="2"></rect>
+                <rect id="Rectangle-2" fill="#FFFFFF" opacity="0.5" mask="url(#mask-3)" x="71" y="133" width="4" height="45" rx="2"></rect>
+                <rect id="Rectangle-2" fill="#FFFFFF" opacity="0.5" mask="url(#mask-3)" x="27" y="241" width="4" height="45" rx="2"></rect>
+                <rect id="Rectangle-2" fill="#FFFFFF" opacity="0.2" mask="url(#mask-3)" x="84" y="193" width="4" height="45" rx="2"></rect>
+                <rect id="Rectangle-2" fill="#FFFFFF" mask="url(#mask-3)" x="96" y="140" width="4" height="45" rx="2"></rect>
+                <rect id="Rectangle-2" fill="#FFFFFF" opacity="0.2" mask="url(#mask-3)" x="86" y="73" width="4" height="45" rx="2"></rect>
+                <rect id="Rectangle-2" fill="#FFFFFF" opacity="0.5" mask="url(#mask-3)" x="107" y="88" width="4" height="45" rx="2"></rect>
+                <rect id="Rectangle-2" fill="#FFFFFF" mask="url(#mask-3)" x="126" y="51" width="4" height="45" rx="2"></rect>
+                <rect id="Rectangle-2" fill="#FFFFFF" opacity="0.2" mask="url(#mask-3)" x="136" y="133" width="4" height="45" rx="2"></rect>
+                <rect id="Rectangle-2" fill="#FFFFFF" opacity="0.5" mask="url(#mask-3)" x="114" y="170" width="4" height="45" rx="2"></rect>
+                <rect id="Rectangle-2" fill="#FFFFFF" opacity="0.5" mask="url(#mask-3)" x="177" y="43" width="4" height="45" rx="2"></rect>
+                <rect id="Rectangle-2" fill="#FFFFFF" mask="url(#mask-3)" x="149" y="73" width="4" height="45" rx="2"></rect>
+                <rect id="Rectangle-2" fill="#FFFFFF" mask="url(#mask-3)" x="18" y="150" width="4" height="45" rx="2"></rect>
+                <rect id="Rectangle-2" fill="#FFFFFF" mask="url(#mask-3)" x="56" y="204" width="4" height="45" rx="2"></rect>
+                <path d="M128.531007,3.47476503 C124.857552,32.5304978 100.052793,55 70,55 C40.4957444,55 16.0496916,33.3432592 11.6911652,5.05910128 C8.02542458,6.31712368 4.09245944,7 0,7 C-19.882251,7 -36,-9.11774901 -36,-29 C-36,-48.882251 -19.882251,-65 0,-65 C12.9344311,-65 24.2756594,-58.1786874 30.6225293,-47.9372176 C41.0660058,-57.3031807 54.8677212,-63 70,-63 C92.3642085,-63 111.82216,-50.5568356 121.828307,-32.2160553 C125.670066,-35.8040645 130.828589,-38 136.5,-38 C148.374122,-38 158,-28.3741221 158,-16.5 C158,-4.62587788 148.374122,5 136.5,5 C133.684482,5 130.995366,4.45880461 128.531006,3.47476686 Z M30.6225293,-47.9372176 C18.5777475,-37.1351651 11,-21.4525214 11,-4 Z" id="Combined-Shape" fill="#FFFFFF" mask="url(#mask-3)" transform="translate(61.000000, -5.000000) scale(1, -1) translate(-61.000000, 5.000000) "></path>
+                <circle id="Oval-8" fill="#FFFFFF" mask="url(#mask-3)" cx="187.5" cy="4.5" r="14.5"></circle>
+                <circle id="Oval-9" fill="#FFFFFF" mask="url(#mask-3)" cx="338.5" cy="331.5" r="36.5"></circle>
+                <circle id="Oval-9" fill="#FFFFFF" mask="url(#mask-3)" cx="292.5" cy="343.5" r="24.5"></circle>
+            </g>
+        </g>
+    </g>
+</svg>
