@@ -28,8 +28,8 @@ var AlarmElement = React.createClass({
   },
   _renderTime: function() {
     return (this.props.settings.militarytime) ?
-      this.props.alarm.time.src.hour + ':' + setTwoDigit(this.props.alarm.time.src.minute) :
-      this.props.alarm.time.formatted.hour + ':' + setTwoDigit(this.props.alarm.time.formatted.minute) + ' ' + this.props.alarm.time.formatted.period;
+      setTwoDigit(this.props.alarm.time.src.hour) + ':' + setTwoDigit(this.props.alarm.time.src.minute) :
+      setTwoDigit(this.props.alarm.time.formatted.hour) + ':' + setTwoDigit(this.props.alarm.time.formatted.minute) + ' ' + this.props.alarm.time.formatted.period;
   },
   render: function() {
     var activated = (this.props.alarm.activated) ? 'toggleOn' : 'toggleOff';

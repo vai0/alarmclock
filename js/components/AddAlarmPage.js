@@ -111,9 +111,13 @@ var AddAlarmPage = React.createClass({
       // poll for elements existence before creating XScroll objects with said elements
       (function scrollerElementsExist() {
         if (document.querySelector('.scroll-time-hour') && document.querySelector('.scroll-time-minute') && document.querySelector('.scroll-time-period')) {
+
+          // HOUR SCROLLER
           hourScroll = new XScroll({
             renderTo: ".scroll-time-hour",
-            scrollbarY: false
+            scrollbarY: false,
+            scrollbarX: false,
+            lockX: true
           })
           var cellHeight = document.querySelector(".scroll-time-hour li").offsetHeight;
           hourScroll.plug(new Snap({
@@ -124,9 +128,12 @@ var AddAlarmPage = React.createClass({
           hourScroll.render();
           hourScroll.scrollTop(hourScrollPosition, 500, 'ease');
 
+          // MINUTE SCROLLER
           minuteScroll = new XScroll({
             renderTo: ".scroll-time-minute",
-            scrollbarY: false
+            scrollbarY: false,
+            scrollbarX: false,
+            lockX: true
           })
           var cellHeight = document.querySelector(".scroll-time-minute li").offsetHeight;
           minuteScroll.plug(new Snap({
@@ -137,10 +144,13 @@ var AddAlarmPage = React.createClass({
           minuteScroll.render();
           minuteScroll.scrollTop(self.state.time.formatted.minute * 70, 600, 'ease');
 
+          // PERIOD SCROLLER
           if (!self.props.settings.militarytime) {
             periodScroll = new XScroll({
               renderTo: ".scroll-time-period",
-              scrollbarY: false
+              scrollbarY: false,
+              scrollbarX: false,
+              lockX: true
             })
             var cellHeight = document.querySelector(".scroll-time-period li").offsetHeight;
             periodScroll.plug(new Snap({
@@ -151,6 +161,10 @@ var AddAlarmPage = React.createClass({
             periodScroll.render();
             periodScroll.scrollTop(periodScrollPosition * 70, 1000, 'ease');
           }
+
+          //PREVENT HORIZONTAL SCROLL FOR HOUR AND MINUTE SCROLLERS
+          var hourulel = document.querySelector('.scroll-time-hour ul');
+          hourulel.style.transform = "none !important";
 
           var hourObsTarget = document.querySelector(".scroll-time-hour .xs-container");
           hourObserver = new MutationObserver(function(mutations) {
@@ -226,15 +240,14 @@ var AddAlarmPage = React.createClass({
         <div className="item scroll-time-period">
           <div className="glass-top"></div>
           <div className="glass-bottom"></div>
-          <div className="filter"></div>
           <div className="scroller">
-          <div className="xs-container">
-            <ul className="xs-content">
-              {periodOptions.map(function(period, index) {
-                return <li key={index}>{period}</li>
-              })}
-            </ul>
-          </div>
+            <div className="xs-container">
+              <ul className="xs-content">
+                {periodOptions.map(function(period, index) {
+                  return <li key={index}>{period}</li>
+                })}
+              </ul>
+            </div>
           </div>
         </div>
       );
@@ -244,15 +257,14 @@ var AddAlarmPage = React.createClass({
         <div className="item scroll-time-hour">
           <div className="glass-top"></div>
           <div className="glass-bottom"></div>
-          <div className="filter"></div>
           <div className="scroller">
-          <div className="xs-container">
-            <ul className="xs-content">
-              {hourOptions.map(function(hour) {
-                return <li key={hour}>{hour}</li>;
-              })}
-            </ul>
-          </div>
+            <div className="xs-container">
+              <ul className="xs-content">
+                {hourOptions.map(function(hour) {
+                  return <li key={hour}>{hour}</li>;
+                })}
+              </ul>
+            </div>
           </div>
         </div>
         <div className="semicolon">
@@ -262,15 +274,14 @@ var AddAlarmPage = React.createClass({
         <div className="item scroll-time-minute">
           <div className="glass-top"></div>
           <div className="glass-bottom"></div>
-          <div className="filter"></div>
           <div className="scroller">
-          <div className="xs-container">
-            <ul className="xs-content">
-              {minuteOptions.map(function(minute) {
-                return <li key={minute}>{minute}</li>
-              })}
-            </ul>
-          </div>
+            <div className="xs-container">
+              <ul className="xs-content">
+                {minuteOptions.map(function(minute) {
+                  return <li key={minute}>{minute}</li>;
+                })}
+              </ul>
+            </div>
           </div>
         </div>
         {periodScroller}

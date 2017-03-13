@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom'
 import App from './components/App.js'
 import alarms from '../initial_data/alarms.json'
 import settings from '../initial_data/settings.json'
+import '../css/main.scss'
 
 ReactDOM.render(
   <App alarms={alarms} settings={settings} />,
