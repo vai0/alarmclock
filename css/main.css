@@ -186,7 +186,7 @@ body {
 
 .scroller {
   overflow-x: hidden;
-  overflow-y: scroll;
+  overflow-y: hidden;
   height: 210px;
   width: 100%; }
 

@@ -23913,7 +23913,7 @@
 
 	var _helpers = __webpack_require__(191);
 
-	var _AlarmSlider = __webpack_require__(209);
+	var _AlarmSlider = __webpack_require__(195);
 
 	var _AlarmSlider2 = _interopRequireDefault(_AlarmSlider);
 
@@ -24048,9 +24048,7 @@
 	exports.default = AlarmTriggeredPage;
 
 /***/ },
-/* 195 */,
-/* 196 */,
-/* 197 */
+/* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -24063,394 +24061,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _AlarmElement = __webpack_require__(198);
-
-	var _AlarmElement2 = _interopRequireDefault(_AlarmElement);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var AlarmList = _react2.default.createClass({
-	  displayName: 'AlarmList',
-
-	  render: function render() {
-	    return _react2.default.createElement(
-	      'div',
-	      { className: 'AlarmList stretch' },
-	      this.props.alarms.map(function (alarm, index) {
-	        return _react2.default.createElement(_AlarmElement2.default, { alarm: alarm, settings: this.props.settings, 'data-alarmid': alarm.id, key: index, _getAlarmId: this.props._getAlarmId, _toggleAlarm: this.props._toggleAlarm, _closeEditAlarmPage: this.props._closeEditAlarmPage, _openEditAlarmPage: this.props._openEditAlarmPage });
-	      }, this)
-	    );
-	  }
-	});
-
-	exports.default = AlarmList;
-
-/***/ },
-/* 198 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _reactPolymer = __webpack_require__(1);
-
-	var _reactPolymer2 = _interopRequireDefault(_reactPolymer);
-
-	var _react = __webpack_require__(65);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _helpers = __webpack_require__(191);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	_reactPolymer2.default.registerAttribute('secondary');
-
-	var AlarmElement = _react2.default.createClass({
-	  displayName: 'AlarmElement',
-
-	  getInitialState: function getInitialState() {
-	    return {
-	      editable: false
-	    };
-	  },
-	  _toggleAlarmActivated: function _toggleAlarmActivated() {
-	    this.props._toggleAlarm(this.props.alarm.id);
-	  },
-	  _renderDays: function _renderDays() {
-	    if (this.props.alarm.repeat) {
-	      var dayString = '';
-	      Object.keys(this.props.alarm.days).forEach(function (key, index) {
-	        if (this.props.alarm.days[key]) {
-	          dayString += (0, _helpers.capitalize)(key) + ', ';
-	        }
-	      }, this);
-	      return dayString.slice(0, dayString.length - 2);
-	    } else {
-	      return null;
-	    }
-	  },
-	  _renderTime: function _renderTime() {
-	    return this.props.settings.militarytime ? (0, _helpers.setTwoDigit)(this.props.alarm.time.src.hour) + ':' + (0, _helpers.setTwoDigit)(this.props.alarm.time.src.minute) : (0, _helpers.setTwoDigit)(this.props.alarm.time.formatted.hour) + ':' + (0, _helpers.setTwoDigit)(this.props.alarm.time.formatted.minute) + ' ' + this.props.alarm.time.formatted.period;
-	  },
-	  render: function render() {
-	    var activated = this.props.alarm.activated ? 'toggleOn' : 'toggleOff';
-	    return _react2.default.createElement(
-	      'div',
-	      { className: 'AlarmElement stretch' },
-	      _react2.default.createElement(
-	        'paper-item',
-	        null,
-	        _react2.default.createElement(
-	          'paper-item-body',
-	          { 'two-line': true, 'data-alarmid': this.props.alarm.id, onClick: this.props._openEditAlarmPage },
-	          _react2.default.createElement(
-	            'div',
-	            null,
-	            this._renderTime()
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            { secondary: true },
-	            this._renderDays()
-	          )
-	        ),
-	        _react2.default.createElement('paper-toggle-button', { checked: this.props.alarm.activated, id: this.props.alarm.id, onClick: this._toggleAlarmActivated })
-	      ),
-	      _react2.default.createElement('paper-ripple', null)
-	    );
-	  }
-	});
-
-	exports.default = AlarmElement;
-
-/***/ },
-/* 199 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(global, process) {'use strict';
-
-	var React = __webpack_require__(65);
-	var warn = __webpack_require__(200);
-	var hasLocalStorage = 'localStorage' in global;
-	var ls, testKey;
-
-	if (hasLocalStorage) {
-	  testKey = 'react-localstorage.mixin.test-key';
-	  try {
-	    // Access to global `localStorage` property must be guarded as it
-	    // fails under iOS private session mode.
-	    ls = global.localStorage;
-	    ls.setItem(testKey, 'foo');
-	    ls.removeItem(testKey);
-	  } catch (e) {
-	    hasLocalStorage = false;
-	  }
-	}
-
-	// Warn if localStorage cannot be found or accessed.
-	if (process.browser) {
-	  warn(hasLocalStorage, 'localStorage not found. Component state will not be stored to localStorage.');
-	}
-
-	var Mixin = module.exports = {
-	  /**
-	   * Error checking. On update, ensure that the last state stored in localStorage is equal
-	   * to the state on the component. We skip the check the first time around as state is left
-	   * alone until mount to keep server rendering working.
-	   *
-	   * If it is not consistent, we know that someone else is modifying localStorage out from under us, so we throw
-	   * an error.
-	   *
-	   * There are a lot of ways this can happen, so it is worth throwing the error.
-	   */
-	  componentWillUpdate: function componentWillUpdate(nextProps, nextState) {
-	    if (!hasLocalStorage || !this.__stateLoadedFromLS) return;
-	    var key = getLocalStorageKey(this);
-	    if (key === false) return;
-	    var prevStoredState = ls.getItem(key);
-	    if (prevStoredState && process.env.NODE_ENV !== "production") {
-	      warn(prevStoredState === JSON.stringify(getSyncState(this, this.state)), 'While component ' + getDisplayName(this) + ' was saving state to localStorage, ' + 'the localStorage entry was modified by another actor. This can happen when multiple ' + 'components are using the same localStorage key. Set the property `localStorageKey` ' + 'on ' + getDisplayName(this) + '.');
-	    }
-	    // Since setState() can't be called in CWU, it's a fine time to save the state.
-	    ls.setItem(key, JSON.stringify(getSyncState(this, nextState)));
-	  },
-
-	  /**
-	   * Load data.
-	   * This seems odd to do this on componentDidMount, but it prevents server checksum errors.
-	   * This is because the server has no way to know what is in your localStorage. So instead
-	   * of breaking the checksum and causing a full rerender, we instead change the component after mount
-	   * for an efficient diff.
-	   */
-	  componentDidMount: function componentDidMount() {
-	    if (!hasLocalStorage) return;
-	    var me = this;
-	    loadStateFromLocalStorage(this, function () {
-	      // After setting state, mirror back to localstorage.
-	      // This prevents invariants if the developer has changed the initial state of the component.
-	      ls.setItem(getLocalStorageKey(me), JSON.stringify(getSyncState(me, me.state)));
-	    });
-	  }
-	};
-
-	function loadStateFromLocalStorage(component, cb) {
-	  if (!ls) return;
-	  var key = getLocalStorageKey(component);
-	  if (key === false) return;
-	  var settingState = false;
-	  try {
-	    var storedState = JSON.parse(ls.getItem(key));
-	    if (storedState) {
-	      settingState = true;
-	      component.setState(storedState, done);
-	    }
-	  } catch (e) {
-	    if (console) console.warn("Unable to load state for", getDisplayName(component), "from localStorage.");
-	  }
-	  // If we didn't set state, run the callback right away.
-	  if (!settingState) done();
-
-	  function done() {
-	    // Flag this component as loaded.
-	    component.__stateLoadedFromLS = true;
-	    cb();
-	  }
-	}
-
-	function getDisplayName(component) {
-	  // at least, we cannot get displayname
-	  // via this.displayname in react 0.12
-	  return component.displayName || component.constructor.displayName || component.constructor.name;
-	}
-
-	function getLocalStorageKey(component) {
-	  if (component.getLocalStorageKey) return component.getLocalStorageKey();
-	  if (component.props.localStorageKey === false) return false;
-	  if (typeof component.props.localStorageKey === 'function') return component.props.localStorageKey.call(component);
-	  return component.props.localStorageKey || getDisplayName(component) || 'react-localstorage';
-	}
-
-	function getStateFilterKeys(component) {
-	  if (component.getStateFilterKeys) {
-	    return typeof component.getStateFilterKeys() === 'string' ? [component.getStateFilterKeys()] : component.getStateFilterKeys();
-	  }
-	  return typeof component.props.stateFilterKeys === 'string' ? [component.props.stateFilterKeys] : component.props.stateFilterKeys;
-	}
-
-	/**
-	* Filters state to only save keys defined in stateFilterKeys.
-	* If stateFilterKeys is not set, returns full state.
-	*/
-	function getSyncState(component, state) {
-	  var stateFilterKeys = getStateFilterKeys(component);
-	  if (!stateFilterKeys) return state;
-	  var result = {};
-	  stateFilterKeys.forEach(function (sk) {
-	    for (var key in state) {
-	      if (state.hasOwnProperty(key) && sk === key) result[key] = state[key];
-	    }
-	  });
-	  return result;
-	}
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(4)))
-
-/***/ },
-/* 200 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {/**
-	 * Copyright 2014 Facebook, Inc.
-	 *
-	 * Licensed under the Apache License, Version 2.0 (the "License");
-	 * you may not use this file except in compliance with the License.
-	 * You may obtain a copy of the License at
-	 *
-	 * http://www.apache.org/licenses/LICENSE-2.0
-	 *
-	 * Unless required by applicable law or agreed to in writing, software
-	 * distributed under the License is distributed on an "AS IS" BASIS,
-	 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	 * See the License for the specific language governing permissions and
-	 * limitations under the License.
-	 *
-	 * @providesModule warning
-	 */
-
-	"use strict";
-
-	/**
-	 * Similar to invariant but only logs a warning if the condition is not met.
-	 * This can be used to log issues in development environments in critical
-	 * paths. Removing the logging code for production environments will keep the
-	 * same logic and follow the same code paths.
-	 */
-
-	var warning = function warning() {};
-
-	if ("production" !== process.env.NODE_ENV) {
-	  warning = function warning(condition, format) {
-	    var args = Array.prototype.slice.call(arguments, 2);
-	    if (format === undefined) {
-	      throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
-	    }
-
-	    if (!condition) {
-	      var argIndex = 0;
-	      console.warn('Warning: ' + format.replace(/%s/g, function () {
-	        return args[argIndex++];
-	      }));
-	    }
-	  };
-	}
-
-	module.exports = warning;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
-
-/***/ },
-/* 201 */
-/***/ function(module, exports) {
-
-	module.exports = [
-		{
-			"id": 0,
-			"time": {
-				"src": {
-					"hour": 7,
-					"minute": 30,
-					"second": 0
-				},
-				"formatted": {
-					"hour": 7,
-					"minute": 30,
-					"period": "AM",
-					"second": 0
-				}
-			},
-			"days": {
-				"sun": false,
-				"mon": true,
-				"tue": true,
-				"wed": true,
-				"thu": true,
-				"fri": true,
-				"sat": false
-			},
-			"repeat": true,
-			"snooze": true,
-			"vibrate": false,
-			"activated": true
-		},
-		{
-			"id": 1,
-			"time": {
-				"src": {
-					"hour": 22,
-					"minute": 30,
-					"second": 0
-				},
-				"formatted": {
-					"hour": 10,
-					"minute": 30,
-					"period": "PM",
-					"second": 0
-				}
-			},
-			"days": {
-				"sun": true,
-				"mon": false,
-				"tue": false,
-				"wed": false,
-				"thu": false,
-				"fri": false,
-				"sat": true
-			},
-			"repeat": true,
-			"snooze": true,
-			"vibrate": false,
-			"activated": false
-		}
-	];
-
-/***/ },
-/* 202 */
-/***/ function(module, exports) {
-
-	module.exports = {
-		"militarytime": false,
-		"temperature": "f",
-		"locationservice": true
-	};
-
-/***/ },
-/* 203 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
-/* 204 */,
-/* 205 */,
-/* 206 */,
-/* 207 */,
-/* 208 */,
-/* 209 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _react = __webpack_require__(65);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _dragdealer = __webpack_require__(210);
+	var _dragdealer = __webpack_require__(196);
 
 	var _dragdealer2 = _interopRequireDefault(_dragdealer);
 
@@ -24534,7 +24145,7 @@
 	exports.default = AlarmSlider;
 
 /***/ },
-/* 210 */
+/* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
@@ -25443,6 +25054,388 @@
 
 	  return Dragdealer;
 	});
+
+/***/ },
+/* 197 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(65);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _AlarmElement = __webpack_require__(198);
+
+	var _AlarmElement2 = _interopRequireDefault(_AlarmElement);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var AlarmList = _react2.default.createClass({
+	  displayName: 'AlarmList',
+
+	  render: function render() {
+	    return _react2.default.createElement(
+	      'div',
+	      { className: 'AlarmList stretch' },
+	      this.props.alarms.map(function (alarm, index) {
+	        return _react2.default.createElement(_AlarmElement2.default, { alarm: alarm, settings: this.props.settings, 'data-alarmid': alarm.id, key: index, _getAlarmId: this.props._getAlarmId, _toggleAlarm: this.props._toggleAlarm, _closeEditAlarmPage: this.props._closeEditAlarmPage, _openEditAlarmPage: this.props._openEditAlarmPage });
+	      }, this)
+	    );
+	  }
+	});
+
+	exports.default = AlarmList;
+
+/***/ },
+/* 198 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _reactPolymer = __webpack_require__(1);
+
+	var _reactPolymer2 = _interopRequireDefault(_reactPolymer);
+
+	var _react = __webpack_require__(65);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _helpers = __webpack_require__(191);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	_reactPolymer2.default.registerAttribute('secondary');
+
+	var AlarmElement = _react2.default.createClass({
+	  displayName: 'AlarmElement',
+
+	  getInitialState: function getInitialState() {
+	    return {
+	      editable: false
+	    };
+	  },
+	  _toggleAlarmActivated: function _toggleAlarmActivated() {
+	    this.props._toggleAlarm(this.props.alarm.id);
+	  },
+	  _renderDays: function _renderDays() {
+	    if (this.props.alarm.repeat) {
+	      var dayString = '';
+	      Object.keys(this.props.alarm.days).forEach(function (key, index) {
+	        if (this.props.alarm.days[key]) {
+	          dayString += (0, _helpers.capitalize)(key) + ', ';
+	        }
+	      }, this);
+	      return dayString.slice(0, dayString.length - 2);
+	    } else {
+	      return null;
+	    }
+	  },
+	  _renderTime: function _renderTime() {
+	    return this.props.settings.militarytime ? (0, _helpers.setTwoDigit)(this.props.alarm.time.src.hour) + ':' + (0, _helpers.setTwoDigit)(this.props.alarm.time.src.minute) : (0, _helpers.setTwoDigit)(this.props.alarm.time.formatted.hour) + ':' + (0, _helpers.setTwoDigit)(this.props.alarm.time.formatted.minute) + ' ' + this.props.alarm.time.formatted.period;
+	  },
+	  render: function render() {
+	    var activated = this.props.alarm.activated ? 'toggleOn' : 'toggleOff';
+	    return _react2.default.createElement(
+	      'div',
+	      { className: 'AlarmElement stretch' },
+	      _react2.default.createElement(
+	        'paper-item',
+	        null,
+	        _react2.default.createElement(
+	          'paper-item-body',
+	          { 'two-line': true, 'data-alarmid': this.props.alarm.id, onClick: this.props._openEditAlarmPage },
+	          _react2.default.createElement(
+	            'div',
+	            null,
+	            this._renderTime()
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { secondary: true },
+	            this._renderDays()
+	          )
+	        ),
+	        _react2.default.createElement('paper-toggle-button', { checked: this.props.alarm.activated, id: this.props.alarm.id, onClick: this._toggleAlarmActivated })
+	      ),
+	      _react2.default.createElement('paper-ripple', null)
+	    );
+	  }
+	});
+
+	exports.default = AlarmElement;
+
+/***/ },
+/* 199 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global, process) {'use strict';
+
+	var React = __webpack_require__(65);
+	var warn = __webpack_require__(200);
+	var hasLocalStorage = 'localStorage' in global;
+	var ls, testKey;
+
+	if (hasLocalStorage) {
+	  testKey = 'react-localstorage.mixin.test-key';
+	  try {
+	    // Access to global `localStorage` property must be guarded as it
+	    // fails under iOS private session mode.
+	    ls = global.localStorage;
+	    ls.setItem(testKey, 'foo');
+	    ls.removeItem(testKey);
+	  } catch (e) {
+	    hasLocalStorage = false;
+	  }
+	}
+
+	// Warn if localStorage cannot be found or accessed.
+	if (process.browser) {
+	  warn(hasLocalStorage, 'localStorage not found. Component state will not be stored to localStorage.');
+	}
+
+	var Mixin = module.exports = {
+	  /**
+	   * Error checking. On update, ensure that the last state stored in localStorage is equal
+	   * to the state on the component. We skip the check the first time around as state is left
+	   * alone until mount to keep server rendering working.
+	   *
+	   * If it is not consistent, we know that someone else is modifying localStorage out from under us, so we throw
+	   * an error.
+	   *
+	   * There are a lot of ways this can happen, so it is worth throwing the error.
+	   */
+	  componentWillUpdate: function componentWillUpdate(nextProps, nextState) {
+	    if (!hasLocalStorage || !this.__stateLoadedFromLS) return;
+	    var key = getLocalStorageKey(this);
+	    if (key === false) return;
+	    var prevStoredState = ls.getItem(key);
+	    if (prevStoredState && process.env.NODE_ENV !== "production") {
+	      warn(prevStoredState === JSON.stringify(getSyncState(this, this.state)), 'While component ' + getDisplayName(this) + ' was saving state to localStorage, ' + 'the localStorage entry was modified by another actor. This can happen when multiple ' + 'components are using the same localStorage key. Set the property `localStorageKey` ' + 'on ' + getDisplayName(this) + '.');
+	    }
+	    // Since setState() can't be called in CWU, it's a fine time to save the state.
+	    ls.setItem(key, JSON.stringify(getSyncState(this, nextState)));
+	  },
+
+	  /**
+	   * Load data.
+	   * This seems odd to do this on componentDidMount, but it prevents server checksum errors.
+	   * This is because the server has no way to know what is in your localStorage. So instead
+	   * of breaking the checksum and causing a full rerender, we instead change the component after mount
+	   * for an efficient diff.
+	   */
+	  componentDidMount: function componentDidMount() {
+	    if (!hasLocalStorage) return;
+	    var me = this;
+	    loadStateFromLocalStorage(this, function () {
+	      // After setting state, mirror back to localstorage.
+	      // This prevents invariants if the developer has changed the initial state of the component.
+	      ls.setItem(getLocalStorageKey(me), JSON.stringify(getSyncState(me, me.state)));
+	    });
+	  }
+	};
+
+	function loadStateFromLocalStorage(component, cb) {
+	  if (!ls) return;
+	  var key = getLocalStorageKey(component);
+	  if (key === false) return;
+	  var settingState = false;
+	  try {
+	    var storedState = JSON.parse(ls.getItem(key));
+	    if (storedState) {
+	      settingState = true;
+	      component.setState(storedState, done);
+	    }
+	  } catch (e) {
+	    if (console) console.warn("Unable to load state for", getDisplayName(component), "from localStorage.");
+	  }
+	  // If we didn't set state, run the callback right away.
+	  if (!settingState) done();
+
+	  function done() {
+	    // Flag this component as loaded.
+	    component.__stateLoadedFromLS = true;
+	    cb();
+	  }
+	}
+
+	function getDisplayName(component) {
+	  // at least, we cannot get displayname
+	  // via this.displayname in react 0.12
+	  return component.displayName || component.constructor.displayName || component.constructor.name;
+	}
+
+	function getLocalStorageKey(component) {
+	  if (component.getLocalStorageKey) return component.getLocalStorageKey();
+	  if (component.props.localStorageKey === false) return false;
+	  if (typeof component.props.localStorageKey === 'function') return component.props.localStorageKey.call(component);
+	  return component.props.localStorageKey || getDisplayName(component) || 'react-localstorage';
+	}
+
+	function getStateFilterKeys(component) {
+	  if (component.getStateFilterKeys) {
+	    return typeof component.getStateFilterKeys() === 'string' ? [component.getStateFilterKeys()] : component.getStateFilterKeys();
+	  }
+	  return typeof component.props.stateFilterKeys === 'string' ? [component.props.stateFilterKeys] : component.props.stateFilterKeys;
+	}
+
+	/**
+	* Filters state to only save keys defined in stateFilterKeys.
+	* If stateFilterKeys is not set, returns full state.
+	*/
+	function getSyncState(component, state) {
+	  var stateFilterKeys = getStateFilterKeys(component);
+	  if (!stateFilterKeys) return state;
+	  var result = {};
+	  stateFilterKeys.forEach(function (sk) {
+	    for (var key in state) {
+	      if (state.hasOwnProperty(key) && sk === key) result[key] = state[key];
+	    }
+	  });
+	  return result;
+	}
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(4)))
+
+/***/ },
+/* 200 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright 2014 Facebook, Inc.
+	 *
+	 * Licensed under the Apache License, Version 2.0 (the "License");
+	 * you may not use this file except in compliance with the License.
+	 * You may obtain a copy of the License at
+	 *
+	 * http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 * Unless required by applicable law or agreed to in writing, software
+	 * distributed under the License is distributed on an "AS IS" BASIS,
+	 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	 * See the License for the specific language governing permissions and
+	 * limitations under the License.
+	 *
+	 * @providesModule warning
+	 */
+
+	"use strict";
+
+	/**
+	 * Similar to invariant but only logs a warning if the condition is not met.
+	 * This can be used to log issues in development environments in critical
+	 * paths. Removing the logging code for production environments will keep the
+	 * same logic and follow the same code paths.
+	 */
+
+	var warning = function warning() {};
+
+	if ("production" !== process.env.NODE_ENV) {
+	  warning = function warning(condition, format) {
+	    var args = Array.prototype.slice.call(arguments, 2);
+	    if (format === undefined) {
+	      throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
+	    }
+
+	    if (!condition) {
+	      var argIndex = 0;
+	      console.warn('Warning: ' + format.replace(/%s/g, function () {
+	        return args[argIndex++];
+	      }));
+	    }
+	  };
+	}
+
+	module.exports = warning;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
+
+/***/ },
+/* 201 */
+/***/ function(module, exports) {
+
+	module.exports = [
+		{
+			"id": 0,
+			"time": {
+				"src": {
+					"hour": 7,
+					"minute": 30,
+					"second": 0
+				},
+				"formatted": {
+					"hour": 7,
+					"minute": 30,
+					"period": "AM",
+					"second": 0
+				}
+			},
+			"days": {
+				"sun": false,
+				"mon": true,
+				"tue": true,
+				"wed": true,
+				"thu": true,
+				"fri": true,
+				"sat": false
+			},
+			"repeat": true,
+			"snooze": true,
+			"vibrate": false,
+			"activated": true
+		},
+		{
+			"id": 1,
+			"time": {
+				"src": {
+					"hour": 22,
+					"minute": 30,
+					"second": 0
+				},
+				"formatted": {
+					"hour": 10,
+					"minute": 30,
+					"period": "PM",
+					"second": 0
+				}
+			},
+			"days": {
+				"sun": true,
+				"mon": false,
+				"tue": false,
+				"wed": false,
+				"thu": false,
+				"fri": false,
+				"sat": true
+			},
+			"repeat": true,
+			"snooze": true,
+			"vibrate": false,
+			"activated": false
+		}
+	];
+
+/***/ },
+/* 202 */
+/***/ function(module, exports) {
+
+	module.exports = {
+		"militarytime": false,
+		"temperature": "f",
+		"locationservice": true
+	};
+
+/***/ },
+/* 203 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
 
 /***/ }
 /******/ ]);
