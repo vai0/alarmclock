@@ -5,6 +5,7 @@ import { convertSrcTimeToTwelveHour } from '../helpers.js'
 
 var App = React.createClass({
   mixins: [LocalStorageMixin],
+  localStorageKey: {},
   getInitialState: function() {
     var time = new Date();
     var day = time.getDay();
@@ -76,11 +77,11 @@ var App = React.createClass({
       this._getWeather(this.state.location.longitude, this.state.location.latitude);
     }
     function error(err) {
-      console.warn('ERROR(' + err.code + '): ' + err.message + '...falling back on default location value: San Francisco');
+      console.warn('Error code: ' + err.code + ', Error message: ' + err.message + '...falling back on default location value: San Francisco');
       this.setState({
         location: {
-          longitude: '37.7749',
-          latitude: '122.4194'
+          longitude: '-122.431297',
+          latitude: '37.773972'
         }
       });
       this._getWeather(this.state.location.longitude, this.state.location.latitude);
@@ -89,14 +90,46 @@ var App = React.createClass({
   },
   _getWeather: function(longitude, latitude) {
     var request = new XMLHttpRequest();
-    request.open('GET', 'https://api.openweathermap.org/data/2.5/weather?lat='+latitude+'&lon='+longitude+'&APPID=11063795b43e3d923147da4c5f10100b', true);
+    request.open('GET', 'https://api.darksky.net/forecast/' + '4c0201f38184db4de3d293a5bbd6cf3e/' + latitude + ',' + longitude, true);
     request.onload = function() {
       if (request.status >= 200 && request.status < 400) { //success
         this.setState({
           weather: JSON.parse(request.responseText)
         });
       } else { //reach server, but receive an error
-        console.log('openweathermap API reached, but received status error: ', request.status);
+        console.log('Dark Sky API reached, but received status error: ', request.status);
+        console.log('Default JSON response fed for a clear-night. clear_day background used in place until I create a night version');
+        this.setState({
+          weather: {
+            latitude: 37.7749,
+            longitude: -122.4194,
+            timezone: "America/Los_Angeles",
+            offset: -7,
+            currently: {
+              time: 1489464754,
+              summary: "Clear",
+              icon: "clear-night",
+              nearestStormDistance: 13,
+              nearestStormBearing: 176,
+              precipIntensity: 0,
+              precipProbability: 0,
+              temperature: 61.79,
+              apparentTemperature: 61.79,
+              dewPoint: 50.51,
+              humidity: 0.66,
+              windSpeed: 3.35,
+              windBearing: 324,
+              visibility: 8.62,
+              cloudCover: 0.11,
+              pressure: 1016.77,
+              ozone: 286.8
+            }
+          },
+          minutely: {},
+          hourly: {},
+          daily: {},
+          flags: {}
+        });
       }
     }.bind(this);
     request.onerror = function() {

@@ -3,82 +3,42 @@ import { convertKelvinToCelsius, convertKelvinToFahrenheit, setTwoDigit } from '
 import AlarmSlider from './AlarmSlider.js'
 
 var AlarmTriggeredPage = React.createClass({
-  //weather conditions
-  // < 600 is rain
-  // 600 < x < 700 is snow
-  // 800 is clear_day
-  // 801 partly_cloudy
-  // 802 <= x <= 804 overcast
   _onStop: function() {
     this.props._closeAlarmTriggeredPage();
   },
   _renderTime: function() {
-    if (this.props.settings.militarytime) {
-      return <div className="currentTime">{setTwoDigit(this.props.currentTime.src.hour) + ':' + setTwoDigit(this.props.currentTime.src.minute)}</div>
-    } else {
-      return <div className="currentTime">{setTwoDigit(this.props.currentTime.formatted.hour) + ':' + setTwoDigit(this.props.currentTime.formatted.minute) + ' ' + this.props.currentTime.formatted.period}</div>
-    }
+    return this.props.settings.militarytime
+      ? <div className="currentTime">{setTwoDigit(this.props.currentTime.src.hour) + ':' + setTwoDigit(this.props.currentTime.src.minute)}</div>
+      : <div className="currentTime">{setTwoDigit(this.props.currentTime.formatted.hour) + ':' + setTwoDigit(this.props.currentTime.formatted.minute) + ' ' + this.props.currentTime.formatted.period}</div>;
+  },
+  //temporary table mapping darkSky api's icon key to the available backgrounds
+  icontable: {
+    'clear-day': 'clear-day',
+    'clear-night': 'clear-day',
+    'partly-cloudy-day': 'partly-cloudy',
+    'partly-cloudy-night': 'partly-cloudy',
+    'cloudy': 'cloudy',
+    'rain': 'rain',
+    'sleet': 'rain',
+    'snow': 'snow',
+    'wind': 'partly-cloudy',
+    'fog': 'cloudy'
   },
   _renderWeather: function() {
     var weatherImage = {
-      background: 'url("./images/rain.png") no-repeat center center fixed',
-      WebkitBackgroundSize: 'cover',
-      MozBackgroundSize: 'cover',
-      OBackgroundSize: 'cover',
+      background: 'url("./images/' + this.iconTable[this.props.weather.currently.icon] + '.svg") no-repeat center center',
       backgroundSize: 'cover'
     };
-    var weatherConditionId = this.props.weather.weather[0].id;
-    if (this.props.weather) {
-      if (weatherConditionId < 600) {
-        weatherImage.background = 'url("./images/rain.svg") no-repeat center center';
-      } else if (weatherConditionId < 700) {
-        weatherImage.background = 'url("./images/snow.svg") no-repeat center center';
-      } else if (weatherConditionId === 800) {
-        weatherImage.background = 'url("./images/clear_day.svg") no-repeat center center';
-      } else if (weatherConditionId === 801) {
-        weatherImage.background = 'url("./images/partly_cloudy.svg") no-repeat center center';
-      } else if (weatherConditionId < 805) {
-        weatherImage.background = 'url("./images/overcast.svg") no-repeat center center';
-      } else {
-        console.log('weather id is invalid, check the API docs: http://openweathermap.org/weather-conditions weatherConditionId: ' + weatherConditionId);
-      }
-    } else {
-      console.log('geolocation or weather data was not received when alarm triggered, will not display weather information.');
-    }
     return <div style={weatherImage} className="weatherBackground"></div>;
   },
   _renderAudio: function() {
-    var weatherConditionId = this.props.weather.weather[0].id;
-    var audioPath = './audio/';
-    var audioSrc;
-    if (this.props.weather) {
-      if (weatherConditionId < 600) {
-        audioSrc = audioPath + "1.mp3";
-      } else if (weatherConditionId < 700) {
-        audioSrc = audioPath + "2.mp3";
-      } else if (weatherConditionId === 800) {
-        audioSrc = audioPath + "3.mp3";
-      } else if (weatherConditionId === 801) {
-        audioSrc = audioPath + "4.mp3";
-      } else if (weatherConditionId < 805) {
-        audioSrc = audioPath + "5.mp3";
-      } else {
-        console.log("weather id is invalid, check the API docs: http://openweathermap.org/weather-conditions weatherConditionId: ", weatherConditionId);
-      }
-    } else {
-      console.log('will not display weather information. geolocation or weather data was not received when alarm triggered.');
-    }
+    var audioSrc = './audio/' + this.iconTable[this.props.weather.currently.icon] + '.mp3';
     return <audio id="weatherTrack" src={audioSrc} autoPlay loop></audio>;
   },
   _renderTemperature: function() {
-    var temperature;
-    if (this.props.settings.temperature === "c") {
-      temperature = convertKelvinToCelsius(this.props.weather.main.temp);
-    } else if (this.props.settings.temperature === "f") {
-      temperature = convertKelvinToFahrenheit(this.props.weather.main.temp);
-    } else {
-      temperature = "something's not right...check this.props.settings.temperature";
-    }
+    var temperature = this.props.settings.temperature == 'c'
+      ? fahToCel(this.props.weather.currently.temperature)
+      : Math.round(this.props.weather.currently.temperature);
     return <div className="temperature">{temperature}&deg;</div>
   },
   render: function() {

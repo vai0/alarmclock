@@ -62,17 +62,17 @@
 
 	var _App2 = _interopRequireDefault(_App);
 
-	var _alarms = __webpack_require__(201);
+	var _alarms = __webpack_require__(189);
 
 	var _alarms2 = _interopRequireDefault(_alarms);
 
-	var _settings = __webpack_require__(202);
+	var _settings = __webpack_require__(190);
 
 	var _settings2 = _interopRequireDefault(_settings);
 
-	__webpack_require__(203);
+	__webpack_require__(191);
 
-	var _prefixfree = __webpack_require__(210);
+	var _prefixfree = __webpack_require__(197);
 
 	var _prefixfree2 = _interopRequireDefault(_prefixfree);
 
@@ -22524,15 +22524,15 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _AlarmPage = __webpack_require__(189);
+	var _AlarmPage = __webpack_require__(198);
 
 	var _AlarmPage2 = _interopRequireDefault(_AlarmPage);
 
-	var _reactLocalstorage = __webpack_require__(199);
+	var _reactLocalstorage = __webpack_require__(208);
 
 	var _reactLocalstorage2 = _interopRequireDefault(_reactLocalstorage);
 
-	var _helpers = __webpack_require__(191);
+	var _helpers = __webpack_require__(200);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22542,6 +22542,7 @@
 	  displayName: 'App',
 
 	  mixins: [_reactLocalstorage2.default],
+	  localStorageKey: {},
 	  getInitialState: function getInitialState() {
 	    var time = new Date();
 	    var day = time.getDay();
@@ -22613,11 +22614,11 @@
 	      this._getWeather(this.state.location.longitude, this.state.location.latitude);
 	    }
 	    function error(err) {
-	      console.warn('ERROR(' + err.code + '): ' + err.message + '...falling back on default location value');
+	      console.warn('Error code: ' + err.code + ', Error message: ' + err.message + '...falling back on default location value: San Francisco');
 	      this.setState({
 	        location: {
-	          longitude: '-121.876590',
-	          latitude: '37.383573'
+	          longitude: '-122.431297',
+	          latitude: '37.773972'
 	        }
 	      });
 	      this._getWeather(this.state.location.longitude, this.state.location.latitude);
@@ -22626,7 +22627,7 @@
 	  },
 	  _getWeather: function _getWeather(longitude, latitude) {
 	    var request = new XMLHttpRequest();
-	    request.open('GET', 'http://api.openweathermap.org/data/2.5/weather?lat=' + latitude + '&lon=' + longitude + '&APPID=11063795b43e3d923147da4c5f10100b', true);
+	    request.open('GET', 'https://api.darksky.net/forecast/' + '4c0201f38184db4de3d293a5bbd6cf3e/' + latitude + ',' + longitude, true);
 	    request.onload = function () {
 	      if (request.status >= 200 && request.status < 400) {
 	        //success
@@ -22635,7 +22636,39 @@
 	        });
 	      } else {
 	        //reach server, but receive an error
-	        console.log('openweathermap API reached, but received status error: ', request.status);
+	        console.log('Dark Sky API reached, but received status error: ', request.status);
+	        console.log('Default JSON response fed for a clear-night. clear_day background used in place until I create a night version');
+	        this.setState({
+	          weather: {
+	            latitude: 37.7749,
+	            longitude: -122.4194,
+	            timezone: "America/Los_Angeles",
+	            offset: -7,
+	            currently: {
+	              time: 1489464754,
+	              summary: "Clear",
+	              icon: "clear-night",
+	              nearestStormDistance: 13,
+	              nearestStormBearing: 176,
+	              precipIntensity: 0,
+	              precipProbability: 0,
+	              temperature: 61.79,
+	              apparentTemperature: 61.79,
+	              dewPoint: 50.51,
+	              humidity: 0.66,
+	              windSpeed: 3.35,
+	              windBearing: 324,
+	              visibility: 8.62,
+	              cloudCover: 0.11,
+	              pressure: 1016.77,
+	              ozone: 286.8
+	            }
+	          },
+	          minutely: {},
+	          hourly: {},
+	          daily: {},
+	          flags: {}
+	        });
 	      }
 	    }.bind(this);
 	    request.onerror = function () {
@@ -22707,6 +22740,585 @@
 
 /***/ },
 /* 189 */
+/***/ function(module, exports) {
+
+	module.exports = [
+		{
+			"id": 0,
+			"time": {
+				"src": {
+					"hour": 7,
+					"minute": 30,
+					"second": 0
+				},
+				"formatted": {
+					"hour": 7,
+					"minute": 30,
+					"period": "AM",
+					"second": 0
+				}
+			},
+			"days": {
+				"sun": false,
+				"mon": true,
+				"tue": true,
+				"wed": true,
+				"thu": true,
+				"fri": true,
+				"sat": false
+			},
+			"repeat": true,
+			"snooze": true,
+			"vibrate": false,
+			"activated": true
+		},
+		{
+			"id": 1,
+			"time": {
+				"src": {
+					"hour": 22,
+					"minute": 30,
+					"second": 0
+				},
+				"formatted": {
+					"hour": 10,
+					"minute": 30,
+					"period": "PM",
+					"second": 0
+				}
+			},
+			"days": {
+				"sun": true,
+				"mon": false,
+				"tue": false,
+				"wed": false,
+				"thu": false,
+				"fri": false,
+				"sat": true
+			},
+			"repeat": true,
+			"snooze": true,
+			"vibrate": false,
+			"activated": false
+		}
+	];
+
+/***/ },
+/* 190 */
+/***/ function(module, exports) {
+
+	module.exports = {
+		"militarytime": false,
+		"temperature": "f",
+		"locationservice": true
+	};
+
+/***/ },
+/* 191 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+
+/***/ },
+/* 192 */,
+/* 193 */,
+/* 194 */,
+/* 195 */,
+/* 196 */,
+/* 197 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	/**
+	 * StyleFix 1.0.3 & PrefixFree 1.0.7
+	 * @author Lea Verou
+	 * MIT license
+	 */
+
+	(function () {
+
+		if (!window.addEventListener) {
+			return;
+		}
+
+		var self = window.StyleFix = {
+			link: function link(_link) {
+				try {
+					// Ignore stylesheets with data-noprefix attribute as well as alternate stylesheets
+					if (_link.rel !== 'stylesheet' || _link.hasAttribute('data-noprefix')) {
+						return;
+					}
+				} catch (e) {
+					return;
+				}
+
+				var url = _link.href || _link.getAttribute('data-href'),
+				    base = url.replace(/[^\/]+$/, ''),
+				    base_scheme = (/^[a-z]{3,10}:/.exec(base) || [''])[0],
+				    base_domain = (/^[a-z]{3,10}:\/\/[^\/]+/.exec(base) || [''])[0],
+				    base_query = /^([^?]*)\??/.exec(url)[1],
+				    parent = _link.parentNode,
+				    xhr = new XMLHttpRequest(),
+				    process;
+
+				xhr.onreadystatechange = function () {
+					if (xhr.readyState === 4) {
+						process();
+					}
+				};
+
+				process = function process() {
+					var css = xhr.responseText;
+
+					if (css && _link.parentNode && (!xhr.status || xhr.status < 400 || xhr.status > 600)) {
+						css = self.fix(css, true, _link);
+
+						// Convert relative URLs to absolute, if needed
+						if (css && base) {
+							css = css.replace(/url\(\s*?((?:"|')?)(.+?)\1\s*?\)/gi, function ($0, quote, url) {
+								if (/^([a-z]{3,10}:|#)/i.test(url)) {
+									// Absolute & or hash-relative
+									return $0;
+								} else if (/^\/\//.test(url)) {
+									// Scheme-relative
+									// May contain sequences like /../ and /./ but those DO work
+									return 'url("' + base_scheme + url + '")';
+								} else if (/^\//.test(url)) {
+									// Domain-relative
+									return 'url("' + base_domain + url + '")';
+								} else if (/^\?/.test(url)) {
+									// Query-relative
+									return 'url("' + base_query + url + '")';
+								} else {
+									// Path-relative
+									return 'url("' + base + url + '")';
+								}
+							});
+
+							// behavior URLs shoudn’t be converted (Issue #19)
+							// base should be escaped before added to RegExp (Issue #81)
+							var escaped_base = base.replace(/([\\\^\$*+[\]?{}.=!:(|)])/g, "\\$1");
+							css = css.replace(RegExp('\\b(behavior:\\s*?url\\(\'?"?)' + escaped_base, 'gi'), '$1');
+						}
+
+						var style = document.createElement('style');
+						style.textContent = css;
+						style.media = _link.media;
+						style.disabled = _link.disabled;
+						style.setAttribute('data-href', _link.getAttribute('href'));
+
+						if (_link.id) style.id = _link.id;
+
+						parent.insertBefore(style, _link);
+						parent.removeChild(_link);
+
+						style.media = _link.media; // Duplicate is intentional. See issue #31
+					}
+				};
+
+				try {
+					xhr.open('GET', url);
+					xhr.send(null);
+				} catch (e) {
+					// Fallback to XDomainRequest if available
+					if (typeof XDomainRequest != "undefined") {
+						xhr = new XDomainRequest();
+						xhr.onerror = xhr.onprogress = function () {};
+						xhr.onload = process;
+						xhr.open("GET", url);
+						xhr.send(null);
+					}
+				}
+
+				_link.setAttribute('data-inprogress', '');
+			},
+
+			styleElement: function styleElement(style) {
+				if (style.hasAttribute('data-noprefix')) {
+					return;
+				}
+				var disabled = style.disabled;
+
+				style.textContent = self.fix(style.textContent, true, style);
+
+				style.disabled = disabled;
+			},
+
+			styleAttribute: function styleAttribute(element) {
+				var css = element.getAttribute('style');
+
+				css = self.fix(css, false, element);
+
+				element.setAttribute('style', css);
+			},
+
+			process: function process() {
+				// Linked stylesheets
+				$('link[rel="stylesheet"]:not([data-inprogress])').forEach(StyleFix.link);
+
+				// Inline stylesheets
+				$('style').forEach(StyleFix.styleElement);
+
+				// Inline styles
+				$('[style]').forEach(StyleFix.styleAttribute);
+			},
+
+			register: function register(fixer, index) {
+				(self.fixers = self.fixers || []).splice(index === undefined ? self.fixers.length : index, 0, fixer);
+			},
+
+			fix: function fix(css, raw, element) {
+				if (self.fixers) {
+					for (var i = 0; i < self.fixers.length; i++) {
+						css = self.fixers[i](css, raw, element) || css;
+					}
+				}
+
+				return css;
+			},
+
+			camelCase: function camelCase(str) {
+				return str.replace(/-([a-z])/g, function ($0, $1) {
+					return $1.toUpperCase();
+				}).replace('-', '');
+			},
+
+			deCamelCase: function deCamelCase(str) {
+				return str.replace(/[A-Z]/g, function ($0) {
+					return '-' + $0.toLowerCase();
+				});
+			}
+		};
+
+		/**************************************
+	  * Process styles
+	  **************************************/
+		(function () {
+			setTimeout(function () {
+				$('link[rel="stylesheet"]').forEach(StyleFix.link);
+			}, 10);
+
+			document.addEventListener('DOMContentLoaded', StyleFix.process, false);
+		})();
+
+		function $(expr, con) {
+			return [].slice.call((con || document).querySelectorAll(expr));
+		}
+	})();
+
+	/**
+	 * PrefixFree
+	 */
+	(function (root) {
+
+		if (!window.StyleFix || !window.getComputedStyle) {
+			return;
+		}
+
+		// Private helper
+		function fix(what, before, after, replacement, css) {
+			what = self[what];
+
+			if (what.length) {
+				var regex = RegExp(before + '(' + what.join('|') + ')' + after, 'gi');
+
+				css = css.replace(regex, replacement);
+			}
+
+			return css;
+		}
+
+		var self = window.PrefixFree = {
+			prefixCSS: function prefixCSS(css, raw, element) {
+				var prefix = self.prefix;
+
+				// Gradient angles hotfix
+				if (self.functions.indexOf('linear-gradient') > -1) {
+					// Gradients are supported with a prefix, convert angles to legacy
+					css = css.replace(/(\s|:|,)(repeating-)?linear-gradient\(\s*(-?\d*\.?\d*)deg/ig, function ($0, delim, repeating, deg) {
+						return delim + (repeating || '') + 'linear-gradient(' + (90 - deg) + 'deg';
+					});
+				}
+
+				css = fix('functions', '(\\s|:|,)', '\\s*\\(', '$1' + prefix + '$2(', css);
+				css = fix('keywords', '(\\s|:)', '(\\s|;|\\}|$)', '$1' + prefix + '$2$3', css);
+				css = fix('properties', '(^|\\{|\\s|;)', '\\s*:', '$1' + prefix + '$2:', css);
+
+				// Prefix properties *inside* values (issue #8)
+				if (self.properties.length) {
+					var regex = RegExp('\\b(' + self.properties.join('|') + ')(?!:)', 'gi');
+
+					css = fix('valueProperties', '\\b', ':(.+?);', function ($0) {
+						return $0.replace(regex, prefix + "$1");
+					}, css);
+				}
+
+				if (raw) {
+					css = fix('selectors', '', '\\b', self.prefixSelector, css);
+					css = fix('atrules', '@', '\\b', '@' + prefix + '$1', css);
+				}
+
+				// Fix double prefixing
+				css = css.replace(RegExp('-' + prefix, 'g'), '-');
+
+				// Prefix wildcard
+				css = css.replace(/-\*-(?=[a-z]+)/gi, self.prefix);
+
+				return css;
+			},
+
+			property: function property(_property) {
+				return (self.properties.indexOf(_property) >= 0 ? self.prefix : '') + _property;
+			},
+
+			value: function value(_value, property) {
+				_value = fix('functions', '(^|\\s|,)', '\\s*\\(', '$1' + self.prefix + '$2(', _value);
+				_value = fix('keywords', '(^|\\s)', '(\\s|$)', '$1' + self.prefix + '$2$3', _value);
+
+				if (self.valueProperties.indexOf(property) >= 0) {
+					_value = fix('properties', '(^|\\s|,)', '($|\\s|,)', '$1' + self.prefix + '$2$3', _value);
+				}
+
+				return _value;
+			},
+
+			// Warning: Prefixes no matter what, even if the selector is supported prefix-less
+			prefixSelector: function prefixSelector(selector) {
+				return selector.replace(/^:{1,2}/, function ($0) {
+					return $0 + self.prefix;
+				});
+			},
+
+			// Warning: Prefixes no matter what, even if the property is supported prefix-less
+			prefixProperty: function prefixProperty(property, camelCase) {
+				var prefixed = self.prefix + property;
+
+				return camelCase ? StyleFix.camelCase(prefixed) : prefixed;
+			}
+		};
+
+		/**************************************
+	  * Properties
+	  **************************************/
+		(function () {
+			var prefixes = {},
+			    properties = [],
+			    shorthands = {},
+			    style = getComputedStyle(document.documentElement, null),
+			    dummy = document.createElement('div').style;
+
+			// Why are we doing this instead of iterating over properties in a .style object? Cause Webkit won't iterate over those.
+			var iterate = function iterate(property) {
+				if (property.charAt(0) === '-') {
+					properties.push(property);
+
+					var parts = property.split('-'),
+					    prefix = parts[1];
+
+					// Count prefix uses
+					prefixes[prefix] = ++prefixes[prefix] || 1;
+
+					// This helps determining shorthands
+					while (parts.length > 3) {
+						parts.pop();
+
+						var shorthand = parts.join('-');
+
+						if (supported(shorthand) && properties.indexOf(shorthand) === -1) {
+							properties.push(shorthand);
+						}
+					}
+				}
+			},
+			    supported = function supported(property) {
+				return StyleFix.camelCase(property) in dummy;
+			};
+
+			// Some browsers have numerical indices for the properties, some don't
+			if (style && style.length > 0) {
+				for (var i = 0; i < style.length; i++) {
+					iterate(style[i]);
+				}
+			} else {
+				for (var property in style) {
+					iterate(StyleFix.deCamelCase(property));
+				}
+			}
+
+			// Find most frequently used prefix
+			var highest = { uses: 0 };
+			for (var prefix in prefixes) {
+				var uses = prefixes[prefix];
+
+				if (highest.uses < uses) {
+					highest = { prefix: prefix, uses: uses };
+				}
+			}
+
+			self.prefix = '-' + highest.prefix + '-';
+			self.Prefix = StyleFix.camelCase(self.prefix);
+
+			self.properties = [];
+
+			// Get properties ONLY supported with a prefix
+			for (var i = 0; i < properties.length; i++) {
+				var property = properties[i];
+
+				if (property.indexOf(self.prefix) === 0) {
+					// we might have multiple prefixes, like Opera
+					var unprefixed = property.slice(self.prefix.length);
+
+					if (!supported(unprefixed)) {
+						self.properties.push(unprefixed);
+					}
+				}
+			}
+
+			// IE fix
+			if (self.Prefix == 'Ms' && !('transform' in dummy) && !('MsTransform' in dummy) && 'msTransform' in dummy) {
+				self.properties.push('transform', 'transform-origin');
+			}
+
+			self.properties.sort();
+		})();
+
+		/**************************************
+	  * Values
+	  **************************************/
+		(function () {
+			// Values that might need prefixing
+			var functions = {
+				'linear-gradient': {
+					property: 'backgroundImage',
+					params: 'red, teal'
+				},
+				'calc': {
+					property: 'width',
+					params: '1px + 5%'
+				},
+				'element': {
+					property: 'backgroundImage',
+					params: '#foo'
+				},
+				'cross-fade': {
+					property: 'backgroundImage',
+					params: 'url(a.png), url(b.png), 50%'
+				}
+			};
+
+			functions['repeating-linear-gradient'] = functions['repeating-radial-gradient'] = functions['radial-gradient'] = functions['linear-gradient'];
+
+			// Note: The properties assigned are just to *test* support. 
+			// The keywords will be prefixed everywhere.
+			var keywords = {
+				'initial': 'color',
+				'zoom-in': 'cursor',
+				'zoom-out': 'cursor',
+				'box': 'display',
+				'flexbox': 'display',
+				'inline-flexbox': 'display',
+				'flex': 'display',
+				'inline-flex': 'display',
+				'grid': 'display',
+				'inline-grid': 'display',
+				'max-content': 'width',
+				'min-content': 'width',
+				'fit-content': 'width',
+				'fill-available': 'width'
+			};
+
+			self.functions = [];
+			self.keywords = [];
+
+			var style = document.createElement('div').style;
+
+			function supported(value, property) {
+				style[property] = '';
+				style[property] = value;
+
+				return !!style[property];
+			}
+
+			for (var func in functions) {
+				var test = functions[func],
+				    property = test.property,
+				    value = func + '(' + test.params + ')';
+
+				if (!supported(value, property) && supported(self.prefix + value, property)) {
+					// It's supported, but with a prefix
+					self.functions.push(func);
+				}
+			}
+
+			for (var keyword in keywords) {
+				var property = keywords[keyword];
+
+				if (!supported(keyword, property) && supported(self.prefix + keyword, property)) {
+					// It's supported, but with a prefix
+					self.keywords.push(keyword);
+				}
+			}
+		})();
+
+		/**************************************
+	  * Selectors and @-rules
+	  **************************************/
+		(function () {
+
+			var selectors = {
+				':read-only': null,
+				':read-write': null,
+				':any-link': null,
+				'::selection': null
+			},
+			    atrules = {
+				'keyframes': 'name',
+				'viewport': null,
+				'document': 'regexp(".")'
+			};
+
+			self.selectors = [];
+			self.atrules = [];
+
+			var style = root.appendChild(document.createElement('style'));
+
+			function supported(selector) {
+				style.textContent = selector + '{}'; // Safari 4 has issues with style.innerHTML
+
+				return !!style.sheet.cssRules.length;
+			}
+
+			for (var selector in selectors) {
+				var test = selector + (selectors[selector] ? '(' + selectors[selector] + ')' : '');
+
+				if (!supported(test) && supported(self.prefixSelector(test))) {
+					self.selectors.push(selector);
+				}
+			}
+
+			for (var atrule in atrules) {
+				var test = atrule + ' ' + (atrules[atrule] || '');
+
+				if (!supported('@' + test) && supported('@' + self.prefix + test)) {
+					self.atrules.push(atrule);
+				}
+			}
+
+			root.removeChild(style);
+		})();
+
+		// Properties that accept properties as their value
+		self.valueProperties = ['transition', 'transition-property'];
+
+		// Add class for current prefix
+		root.className += ' ' + self.prefix;
+
+		StyleFix.register(self.prefixCSS);
+	})(document.documentElement);
+
+/***/ },
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -22719,27 +23331,27 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _EditAlarmPage = __webpack_require__(190);
+	var _EditAlarmPage = __webpack_require__(199);
 
 	var _EditAlarmPage2 = _interopRequireDefault(_EditAlarmPage);
 
-	var _AddAlarmPage = __webpack_require__(192);
+	var _AddAlarmPage = __webpack_require__(201);
 
 	var _AddAlarmPage2 = _interopRequireDefault(_AddAlarmPage);
 
-	var _SettingsPage = __webpack_require__(193);
+	var _SettingsPage = __webpack_require__(202);
 
 	var _SettingsPage2 = _interopRequireDefault(_SettingsPage);
 
-	var _AlarmTriggeredPage = __webpack_require__(194);
+	var _AlarmTriggeredPage = __webpack_require__(203);
 
 	var _AlarmTriggeredPage2 = _interopRequireDefault(_AlarmTriggeredPage);
 
-	var _AlarmList = __webpack_require__(197);
+	var _AlarmList = __webpack_require__(206);
 
 	var _AlarmList2 = _interopRequireDefault(_AlarmList);
 
-	var _helpers = __webpack_require__(191);
+	var _helpers = __webpack_require__(200);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22858,7 +23470,7 @@
 	exports.default = AlarmPage;
 
 /***/ },
-/* 190 */
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -22871,19 +23483,19 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _helpers = __webpack_require__(191);
+	var _helpers = __webpack_require__(200);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	// Xscroll objects
-	var hourScroll, minuteScroll, periodScroll;
-
-	// MutationObservers to detect changes to scroller
-	var hourObserver, minuteObserver, periodObserver;
 
 	var EditAlarmPage = _react2.default.createClass({
 	  displayName: 'EditAlarmPage',
 
+	  hourScroll: null,
+	  minuteScroll: null,
+	  periodScroll: null,
+	  hourObserver: null,
+	  minuteObserver: null,
+	  periodObserver: null,
 	  getInitialState: function getInitialState() {
 	    return {
 	      id: this.props.alarmBeingEdited.id,
@@ -22986,85 +23598,80 @@
 	      // poll for elements existence before creating XScroll objects with said elements
 	      (function scrollerElementsExist() {
 	        if (document.querySelector('.scroll-time-hour') && document.querySelector('.scroll-time-minute')) {
-
 	          // HOUR SCROLLER
-	          hourScroll = new XScroll({
+	          self.hourScroll = new XScroll({
 	            renderTo: ".scroll-time-hour",
 	            scrollbarY: false,
 	            scrollbarX: false,
 	            lockX: true
 	          });
 	          var cellHeight = document.querySelector(".scroll-time-hour li").offsetHeight;
-	          hourScroll.plug(new Snap({
+	          self.hourScroll.plug(new Snap({
 	            snapHeight: cellHeight,
 	            autoStep: true,
 	            snapRowsNum: document.querySelectorAll(".scroll-time-hour li").length
 	          }));
-	          hourScroll.render();
-	          hourScroll.scrollTop(hourScrollPosition, 500, 'ease');
+	          self.hourScroll.render();
+	          self.hourScroll.scrollTop(hourScrollPosition, 500, 'ease');
 
 	          // MINUTE SCROLLER
-	          minuteScroll = new XScroll({
+	          self.minuteScroll = new XScroll({
 	            renderTo: ".scroll-time-minute",
 	            scrollbarY: false,
 	            scrollbarX: false,
 	            lockX: true
 	          });
 	          var cellHeight = document.querySelector(".scroll-time-minute li").offsetHeight;
-	          minuteScroll.plug(new Snap({
+	          self.minuteScroll.plug(new Snap({
 	            snapHeight: cellHeight,
 	            autoStep: true,
 	            snapRowsNum: document.querySelectorAll(".scroll-time-minute li").length
 	          }));
-	          minuteScroll.render();
-	          minuteScroll.scrollTop(self.state.time.formatted.minute * 70, 600, 'ease');
+	          self.minuteScroll.render();
+	          self.minuteScroll.scrollTop(self.state.time.formatted.minute * 70, 600, 'ease');
 
 	          // PERIOD SCROLLER
 	          if (!self.props.settings.militarytime) {
-	            periodScroll = new XScroll({
+	            self.periodScroll = new XScroll({
 	              renderTo: ".scroll-time-period",
 	              scrollbarY: false,
 	              scrollbarX: false,
 	              lockX: true
 	            });
 	            var cellHeight = document.querySelector(".scroll-time-period li").offsetHeight;
-	            periodScroll.plug(new Snap({
+	            self.periodScroll.plug(new Snap({
 	              snapHeight: cellHeight,
 	              autoStep: true,
 	              snapRowsNum: document.querySelectorAll(".scroll-time-period li").length
 	            }));
-	            periodScroll.render();
-	            periodScroll.scrollTop(periodScrollPosition * 70, 1000, 'ease');
+	            self.periodScroll.render();
+	            self.periodScroll.scrollTop(periodScrollPosition * 70, 1000, 'ease');
 	          }
 
-	          //PREVENT HORIZONTAL SCROLL FOR HOUR AND MINUTE SCROLLERS
-	          var hourulel = document.querySelector('.scroll-time-hour ul');
-	          hourulel.style.transform = "none !important";
-
 	          var hourObsTarget = document.querySelector(".scroll-time-hour .xs-container");
-	          hourObserver = new MutationObserver(function (mutations) {
+	          self.hourObserver = new MutationObserver(function (mutations) {
 	            mutations.forEach(function (mutation) {
-	              self._changeHour(self._getHourInput(70, hourScroll.getScrollTop()));
+	              self._changeHour(self._getHourInput(70, self.hourScroll.getScrollTop()));
 	            });
 	          });
 	          var config = { attributes: true, childList: true, characterData: true };
-	          hourObserver.observe(hourObsTarget, config);
+	          self.hourObserver.observe(hourObsTarget, config);
 
 	          var minuteObsTarget = document.querySelector(".scroll-time-minute .xs-container");
-	          minuteObserver = new MutationObserver(function (mutations) {
+	          self.minuteObserver = new MutationObserver(function (mutations) {
 	            mutations.forEach(function (mutation) {
-	              self._changeMinute(self._getMinuteInput(70, minuteScroll.getScrollTop()));
+	              self._changeMinute(self._getMinuteInput(70, self.minuteScroll.getScrollTop()));
 	            });
 	          });
-	          minuteObserver.observe(minuteObsTarget, config);
+	          self.minuteObserver.observe(minuteObsTarget, config);
 
 	          var periodObsTarget = document.querySelector(".scroll-time-period .xs-container");
-	          periodObserver = new MutationObserver(function (mutations) {
+	          self.periodObserver = new MutationObserver(function (mutations) {
 	            mutations.forEach(function (mutation) {
-	              self._changePeriod(self._getPeriodInput(70, periodScroll.getScrollTop()));
+	              self._changePeriod(self._getPeriodInput(70, self.periodScroll.getScrollTop()));
 	            });
 	          });
-	          periodObserver.observe(periodObsTarget, config);
+	          self.periodObserver.observe(periodObsTarget, config);
 	        } else {
 	          setTimeout(scrollerElementsExist, 5);
 	        }
@@ -23288,7 +23895,7 @@
 	exports.default = EditAlarmPage;
 
 /***/ },
-/* 191 */
+/* 200 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -23302,6 +23909,8 @@
 	exports.convertIndextoDay = convertIndextoDay;
 	exports.convertKelvinToFahrenheit = convertKelvinToFahrenheit;
 	exports.convertKelvinToCelsius = convertKelvinToCelsius;
+	exports.fahToCel = fahToCel;
+	exports.celToFah = celToFah;
 	exports.convertFormattedToSrcTime = convertFormattedToSrcTime;
 	exports.convertSrcTimeToTwelveHour = convertSrcTimeToTwelveHour;
 	function setTwoDigit(number) {
@@ -23326,6 +23935,14 @@
 
 	function convertKelvinToCelsius(k) {
 	  return Math.round(k - 273);
+	}
+
+	function fahToCel(f) {
+	  return Math.round((f - 32) * 5 / 9);
+	}
+
+	function celToFah(c) {
+	  return Math.round(c * 9 / 5 + 32);
 	}
 
 	function convertFormattedToSrcTime(hour, minute, second, period) {
@@ -23361,7 +23978,7 @@
 	}
 
 /***/ },
-/* 192 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -23374,19 +23991,19 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _helpers = __webpack_require__(191);
+	var _helpers = __webpack_require__(200);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	// Xscroll objects
-	var hourScroll, minuteScroll, periodScroll;
-
-	// MutationObservers to detect changes to scroller
-	var hourObserver, minuteObserver, periodObserver;
 
 	var AddAlarmPage = _react2.default.createClass({
 	  displayName: 'AddAlarmPage',
 
+	  hourScroll: null,
+	  minuteScroll: null,
+	  periodScroll: null,
+	  hourObserver: null,
+	  minuteObserver: null,
+	  periodObserver: null,
 	  getInitialState: function getInitialState() {
 	    var currentHour = this.props.currentTime.src.hour;
 	    var currentMinute = this.props.currentTime.src.minute;
@@ -23489,83 +24106,79 @@
 	      (function scrollerElementsExist() {
 	        if (document.querySelector('.scroll-time-hour') && document.querySelector('.scroll-time-minute')) {
 	          // HOUR SCROLLER
-	          hourScroll = new XScroll({
+	          self.hourScroll = new XScroll({
 	            renderTo: ".scroll-time-hour",
 	            scrollbarY: false,
 	            scrollbarX: false,
 	            lockX: true
 	          });
 	          var cellHeight = document.querySelector(".scroll-time-hour li").offsetHeight;
-	          hourScroll.plug(new Snap({
+	          self.hourScroll.plug(new Snap({
 	            snapHeight: cellHeight,
 	            autoStep: true,
 	            snapRowsNum: document.querySelectorAll(".scroll-time-hour li").length
 	          }));
-	          hourScroll.render();
-	          hourScroll.scrollTop(hourScrollPosition, 500, 'ease');
+	          self.hourScroll.render();
+	          self.hourScroll.scrollTop(hourScrollPosition, 500, 'ease');
 
 	          // MINUTE SCROLLER
-	          minuteScroll = new XScroll({
+	          self.minuteScroll = new XScroll({
 	            renderTo: ".scroll-time-minute",
 	            scrollbarY: false,
 	            scrollbarX: false,
 	            lockX: true
 	          });
 	          var cellHeight = document.querySelector(".scroll-time-minute li").offsetHeight;
-	          minuteScroll.plug(new Snap({
+	          self.minuteScroll.plug(new Snap({
 	            snapHeight: cellHeight,
 	            autoStep: true,
 	            snapRowsNum: document.querySelectorAll(".scroll-time-minute li").length
 	          }));
-	          minuteScroll.render();
-	          minuteScroll.scrollTop(self.state.time.formatted.minute * 70, 600, 'ease');
+	          self.minuteScroll.render();
+	          self.minuteScroll.scrollTop(self.state.time.formatted.minute * 70, 600, 'ease');
 
 	          // PERIOD SCROLLER
 	          if (!self.props.settings.militarytime) {
-	            periodScroll = new XScroll({
+	            self.periodScroll = new XScroll({
 	              renderTo: ".scroll-time-period",
 	              scrollbarY: false,
 	              scrollbarX: false,
 	              lockX: true
 	            });
 	            var cellHeight = document.querySelector(".scroll-time-period li").offsetHeight;
-	            periodScroll.plug(new Snap({
+	            self.periodScroll.plug(new Snap({
 	              snapHeight: cellHeight,
 	              autoStep: true,
 	              snapRowsNum: document.querySelectorAll(".scroll-time-period li").length
 	            }));
-	            periodScroll.render();
-	            periodScroll.scrollTop(periodScrollPosition * 70, 1000, 'ease');
+	            self.periodScroll.render();
+	            self.periodScroll.scrollTop(periodScrollPosition * 70, 1000, 'ease');
 	          }
 
-	          //PREVENT HORIZONTAL SCROLL FOR HOUR AND MINUTE SCROLLERS
-	          var hourulel = document.querySelector('.scroll-time-hour ul');
-	          hourulel.style.transform = "none !important";
-
 	          var hourObsTarget = document.querySelector(".scroll-time-hour .xs-container");
-	          hourObserver = new MutationObserver(function (mutations) {
+	          self.hourObserver = new MutationObserver(function (mutations) {
 	            mutations.forEach(function (mutation) {
-	              self._changeHour(self._getHourInput(70, hourScroll.getScrollTop()));
+	              self._changeHour(self._getHourInput(70, self.hourScroll.getScrollTop()));
 	            });
 	          });
 	          var config = { attributes: true, childList: true, characterData: true };
-	          hourObserver.observe(hourObsTarget, config);
+	          self.hourObserver.observe(hourObsTarget, config);
 
 	          var minuteObsTarget = document.querySelector(".scroll-time-minute .xs-container");
-	          minuteObserver = new MutationObserver(function (mutations) {
+	          self.minuteObserver = new MutationObserver(function (mutations) {
 	            mutations.forEach(function (mutation) {
-	              self._changeMinute(self._getMinuteInput(70, minuteScroll.getScrollTop()));
+	              self._changeMinute(self._getMinuteInput(70, self.minuteScroll.getScrollTop()));
 	            });
 	          });
-	          minuteObserver.observe(minuteObsTarget, config);
+	          self.minuteObserver.observe(minuteObsTarget, config);
 
 	          var periodObsTarget = document.querySelector(".scroll-time-period .xs-container");
-	          periodObserver = new MutationObserver(function (mutations) {
+	          self.periodObserver = new MutationObserver(function (mutations) {
 	            mutations.forEach(function (mutation) {
-	              self._changePeriod(self._getPeriodInput(70, periodScroll.getScrollTop()));
+	              self._changePeriod(self._getPeriodInput(70, self.periodScroll.getScrollTop()));
 	            });
 	          });
-	          periodObserver.observe(periodObsTarget, config);
+	          self.periodObserver.observe(periodObsTarget, config);
 	        } else {
 	          setTimeout(scrollerElementsExist, 5);
 	        }
@@ -23781,7 +24394,7 @@
 	exports.default = AddAlarmPage;
 
 /***/ },
-/* 193 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -23933,7 +24546,7 @@
 	// </div>
 
 /***/ },
-/* 194 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -23946,9 +24559,9 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _helpers = __webpack_require__(191);
+	var _helpers = __webpack_require__(200);
 
-	var _AlarmSlider = __webpack_require__(195);
+	var _AlarmSlider = __webpack_require__(204);
 
 	var _AlarmSlider2 = _interopRequireDefault(_AlarmSlider);
 
@@ -23957,90 +24570,46 @@
 	var AlarmTriggeredPage = _react2.default.createClass({
 	  displayName: 'AlarmTriggeredPage',
 
-	  //weather conditions
-	  // < 600 is rain
-	  // 600 < x < 700 is snow
-	  // 800 is clear_day
-	  // 801 partly_cloudy
-	  // 802 <= x <= 804 overcast
 	  _onStop: function _onStop() {
 	    this.props._closeAlarmTriggeredPage();
 	  },
 	  _renderTime: function _renderTime() {
-	    if (this.props.settings.militarytime) {
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'currentTime' },
-	        (0, _helpers.setTwoDigit)(this.props.currentTime.src.hour) + ':' + (0, _helpers.setTwoDigit)(this.props.currentTime.src.minute)
-	      );
-	    } else {
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'currentTime' },
-	        (0, _helpers.setTwoDigit)(this.props.currentTime.formatted.hour) + ':' + (0, _helpers.setTwoDigit)(this.props.currentTime.formatted.minute) + ' ' + this.props.currentTime.formatted.period
-	      );
-	    }
+	    return this.props.settings.militarytime ? _react2.default.createElement(
+	      'div',
+	      { className: 'currentTime' },
+	      (0, _helpers.setTwoDigit)(this.props.currentTime.src.hour) + ':' + (0, _helpers.setTwoDigit)(this.props.currentTime.src.minute)
+	    ) : _react2.default.createElement(
+	      'div',
+	      { className: 'currentTime' },
+	      (0, _helpers.setTwoDigit)(this.props.currentTime.formatted.hour) + ':' + (0, _helpers.setTwoDigit)(this.props.currentTime.formatted.minute) + ' ' + this.props.currentTime.formatted.period
+	    );
+	  },
+	  //temporary table mapping darkSky api's icon key to the available backgrounds
+	  icontable: {
+	    'clear-day': 'clear-day',
+	    'clear-night': 'clear-day',
+	    'partly-cloudy-day': 'partly-cloudy',
+	    'partly-cloudy-night': 'partly-cloudy',
+	    'cloudy': 'cloudy',
+	    'rain': 'rain',
+	    'sleet': 'rain',
+	    'snow': 'snow',
+	    'wind': 'partly-cloudy',
+	    'fog': 'cloudy'
 	  },
 	  _renderWeather: function _renderWeather() {
 	    var weatherImage = {
-	      background: 'url("./images/rain.png") no-repeat center center fixed',
-	      WebkitBackgroundSize: 'cover',
-	      MozBackgroundSize: 'cover',
-	      OBackgroundSize: 'cover',
+	      background: 'url("./images/' + this.iconTable[this.props.weather.currently.icon] + '.svg") no-repeat center center',
 	      backgroundSize: 'cover'
 	    };
-	    var weatherConditionId = this.props.weather.weather[0].id;
-	    if (this.props.weather) {
-	      if (weatherConditionId < 600) {
-	        weatherImage.background = 'url("./images/rain.svg") no-repeat center center';
-	      } else if (weatherConditionId < 700) {
-	        weatherImage.background = 'url("./images/snow.svg") no-repeat center center';
-	      } else if (weatherConditionId === 800) {
-	        weatherImage.background = 'url("./images/clear_day.svg") no-repeat center center';
-	      } else if (weatherConditionId === 801) {
-	        weatherImage.background = 'url("./images/partly_cloudy.svg") no-repeat center center';
-	      } else if (weatherConditionId < 805) {
-	        weatherImage.background = 'url("./images/overcast.svg") no-repeat center center';
-	      } else {
-	        console.log('weather id is invalid, check the API docs: http://openweathermap.org/weather-conditions weatherConditionId: ' + weatherConditionId);
-	      }
-	    } else {
-	      console.log('geolocation or weather data was not received when alarm triggered, will not display weather information.');
-	    }
 	    return _react2.default.createElement('div', { style: weatherImage, className: 'weatherBackground' });
 	  },
 	  _renderAudio: function _renderAudio() {
-	    var weatherConditionId = this.props.weather.weather[0].id;
-	    var audioPath = './audio/';
-	    var audioSrc;
-	    if (this.props.weather) {
-	      if (weatherConditionId < 600) {
-	        audioSrc = audioPath + "1.mp3";
-	      } else if (weatherConditionId < 700) {
-	        audioSrc = audioPath + "2.mp3";
-	      } else if (weatherConditionId === 800) {
-	        audioSrc = audioPath + "3.mp3";
-	      } else if (weatherConditionId === 801) {
-	        audioSrc = audioPath + "4.mp3";
-	      } else if (weatherConditionId < 805) {
-	        audioSrc = audioPath + "5.mp3";
-	      } else {
-	        console.log("weather id is invalid, check the API docs: http://openweathermap.org/weather-conditions weatherConditionId: ", weatherConditionId);
-	      }
-	    } else {
-	      console.log('will not display weather information. geolocation or weather data was not received when alarm triggered.');
-	    }
+	    var audioSrc = './audio/' + this.iconTable[this.props.weather.currently.icon] + '.mp3';
 	    return _react2.default.createElement('audio', { id: 'weatherTrack', src: audioSrc, autoPlay: true, loop: true });
 	  },
 	  _renderTemperature: function _renderTemperature() {
-	    var temperature;
-	    if (this.props.settings.temperature === "c") {
-	      temperature = (0, _helpers.convertKelvinToCelsius)(this.props.weather.main.temp);
-	    } else if (this.props.settings.temperature === "f") {
-	      temperature = (0, _helpers.convertKelvinToFahrenheit)(this.props.weather.main.temp);
-	    } else {
-	      temperature = "something's not right...check this.props.settings.temperature";
-	    }
+	    var temperature = this.props.settings.temperature == 'c' ? fahToCel(this.props.weather.currently.temperature) : Math.round(this.props.weather.currently.temperature);
 	    return _react2.default.createElement(
 	      'div',
 	      { className: 'temperature' },
@@ -24077,7 +24646,7 @@
 	exports.default = AlarmTriggeredPage;
 
 /***/ },
-/* 195 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -24090,7 +24659,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _dragdealer = __webpack_require__(196);
+	var _dragdealer = __webpack_require__(205);
 
 	var _dragdealer2 = _interopRequireDefault(_dragdealer);
 
@@ -24176,7 +24745,7 @@
 	exports.default = AlarmSlider;
 
 /***/ },
-/* 196 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
@@ -25087,7 +25656,7 @@
 	});
 
 /***/ },
-/* 197 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25100,7 +25669,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _AlarmElement = __webpack_require__(198);
+	var _AlarmElement = __webpack_require__(207);
 
 	var _AlarmElement2 = _interopRequireDefault(_AlarmElement);
 
@@ -25123,7 +25692,7 @@
 	exports.default = AlarmList;
 
 /***/ },
-/* 198 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25140,7 +25709,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _helpers = __webpack_require__(191);
+	var _helpers = __webpack_require__(200);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -25205,13 +25774,13 @@
 	exports.default = AlarmElement;
 
 /***/ },
-/* 199 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, process) {'use strict';
 
 	var React = __webpack_require__(65);
-	var warn = __webpack_require__(200);
+	var warn = __webpack_require__(209);
 	var hasLocalStorage = 'localStorage' in global;
 	var ls, testKey;
 
@@ -25336,7 +25905,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(4)))
 
 /***/ },
-/* 200 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -25386,586 +25955,6 @@
 
 	module.exports = warning;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
-
-/***/ },
-/* 201 */
-/***/ function(module, exports) {
-
-	module.exports = [
-		{
-			"id": 0,
-			"time": {
-				"src": {
-					"hour": 7,
-					"minute": 30,
-					"second": 0
-				},
-				"formatted": {
-					"hour": 7,
-					"minute": 30,
-					"period": "AM",
-					"second": 0
-				}
-			},
-			"days": {
-				"sun": false,
-				"mon": true,
-				"tue": true,
-				"wed": true,
-				"thu": true,
-				"fri": true,
-				"sat": false
-			},
-			"repeat": true,
-			"snooze": true,
-			"vibrate": false,
-			"activated": true
-		},
-		{
-			"id": 1,
-			"time": {
-				"src": {
-					"hour": 22,
-					"minute": 30,
-					"second": 0
-				},
-				"formatted": {
-					"hour": 10,
-					"minute": 30,
-					"period": "PM",
-					"second": 0
-				}
-			},
-			"days": {
-				"sun": true,
-				"mon": false,
-				"tue": false,
-				"wed": false,
-				"thu": false,
-				"fri": false,
-				"sat": true
-			},
-			"repeat": true,
-			"snooze": true,
-			"vibrate": false,
-			"activated": false
-		}
-	];
-
-/***/ },
-/* 202 */
-/***/ function(module, exports) {
-
-	module.exports = {
-		"militarytime": false,
-		"temperature": "f",
-		"locationservice": true
-	};
-
-/***/ },
-/* 203 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
-/* 204 */,
-/* 205 */,
-/* 206 */,
-/* 207 */,
-/* 208 */,
-/* 209 */,
-/* 210 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	/**
-	 * StyleFix 1.0.3 & PrefixFree 1.0.7
-	 * @author Lea Verou
-	 * MIT license
-	 */
-
-	(function () {
-
-		if (!window.addEventListener) {
-			return;
-		}
-
-		var self = window.StyleFix = {
-			link: function link(_link) {
-				try {
-					// Ignore stylesheets with data-noprefix attribute as well as alternate stylesheets
-					if (_link.rel !== 'stylesheet' || _link.hasAttribute('data-noprefix')) {
-						return;
-					}
-				} catch (e) {
-					return;
-				}
-
-				var url = _link.href || _link.getAttribute('data-href'),
-				    base = url.replace(/[^\/]+$/, ''),
-				    base_scheme = (/^[a-z]{3,10}:/.exec(base) || [''])[0],
-				    base_domain = (/^[a-z]{3,10}:\/\/[^\/]+/.exec(base) || [''])[0],
-				    base_query = /^([^?]*)\??/.exec(url)[1],
-				    parent = _link.parentNode,
-				    xhr = new XMLHttpRequest(),
-				    process;
-
-				xhr.onreadystatechange = function () {
-					if (xhr.readyState === 4) {
-						process();
-					}
-				};
-
-				process = function process() {
-					var css = xhr.responseText;
-
-					if (css && _link.parentNode && (!xhr.status || xhr.status < 400 || xhr.status > 600)) {
-						css = self.fix(css, true, _link);
-
-						// Convert relative URLs to absolute, if needed
-						if (css && base) {
-							css = css.replace(/url\(\s*?((?:"|')?)(.+?)\1\s*?\)/gi, function ($0, quote, url) {
-								if (/^([a-z]{3,10}:|#)/i.test(url)) {
-									// Absolute & or hash-relative
-									return $0;
-								} else if (/^\/\//.test(url)) {
-									// Scheme-relative
-									// May contain sequences like /../ and /./ but those DO work
-									return 'url("' + base_scheme + url + '")';
-								} else if (/^\//.test(url)) {
-									// Domain-relative
-									return 'url("' + base_domain + url + '")';
-								} else if (/^\?/.test(url)) {
-									// Query-relative
-									return 'url("' + base_query + url + '")';
-								} else {
-									// Path-relative
-									return 'url("' + base + url + '")';
-								}
-							});
-
-							// behavior URLs shoudn’t be converted (Issue #19)
-							// base should be escaped before added to RegExp (Issue #81)
-							var escaped_base = base.replace(/([\\\^\$*+[\]?{}.=!:(|)])/g, "\\$1");
-							css = css.replace(RegExp('\\b(behavior:\\s*?url\\(\'?"?)' + escaped_base, 'gi'), '$1');
-						}
-
-						var style = document.createElement('style');
-						style.textContent = css;
-						style.media = _link.media;
-						style.disabled = _link.disabled;
-						style.setAttribute('data-href', _link.getAttribute('href'));
-
-						if (_link.id) style.id = _link.id;
-
-						parent.insertBefore(style, _link);
-						parent.removeChild(_link);
-
-						style.media = _link.media; // Duplicate is intentional. See issue #31
-					}
-				};
-
-				try {
-					xhr.open('GET', url);
-					xhr.send(null);
-				} catch (e) {
-					// Fallback to XDomainRequest if available
-					if (typeof XDomainRequest != "undefined") {
-						xhr = new XDomainRequest();
-						xhr.onerror = xhr.onprogress = function () {};
-						xhr.onload = process;
-						xhr.open("GET", url);
-						xhr.send(null);
-					}
-				}
-
-				_link.setAttribute('data-inprogress', '');
-			},
-
-			styleElement: function styleElement(style) {
-				if (style.hasAttribute('data-noprefix')) {
-					return;
-				}
-				var disabled = style.disabled;
-
-				style.textContent = self.fix(style.textContent, true, style);
-
-				style.disabled = disabled;
-			},
-
-			styleAttribute: function styleAttribute(element) {
-				var css = element.getAttribute('style');
-
-				css = self.fix(css, false, element);
-
-				element.setAttribute('style', css);
-			},
-
-			process: function process() {
-				// Linked stylesheets
-				$('link[rel="stylesheet"]:not([data-inprogress])').forEach(StyleFix.link);
-
-				// Inline stylesheets
-				$('style').forEach(StyleFix.styleElement);
-
-				// Inline styles
-				$('[style]').forEach(StyleFix.styleAttribute);
-			},
-
-			register: function register(fixer, index) {
-				(self.fixers = self.fixers || []).splice(index === undefined ? self.fixers.length : index, 0, fixer);
-			},
-
-			fix: function fix(css, raw, element) {
-				if (self.fixers) {
-					for (var i = 0; i < self.fixers.length; i++) {
-						css = self.fixers[i](css, raw, element) || css;
-					}
-				}
-
-				return css;
-			},
-
-			camelCase: function camelCase(str) {
-				return str.replace(/-([a-z])/g, function ($0, $1) {
-					return $1.toUpperCase();
-				}).replace('-', '');
-			},
-
-			deCamelCase: function deCamelCase(str) {
-				return str.replace(/[A-Z]/g, function ($0) {
-					return '-' + $0.toLowerCase();
-				});
-			}
-		};
-
-		/**************************************
-	  * Process styles
-	  **************************************/
-		(function () {
-			setTimeout(function () {
-				$('link[rel="stylesheet"]').forEach(StyleFix.link);
-			}, 10);
-
-			document.addEventListener('DOMContentLoaded', StyleFix.process, false);
-		})();
-
-		function $(expr, con) {
-			return [].slice.call((con || document).querySelectorAll(expr));
-		}
-	})();
-
-	/**
-	 * PrefixFree
-	 */
-	(function (root) {
-
-		if (!window.StyleFix || !window.getComputedStyle) {
-			return;
-		}
-
-		// Private helper
-		function fix(what, before, after, replacement, css) {
-			what = self[what];
-
-			if (what.length) {
-				var regex = RegExp(before + '(' + what.join('|') + ')' + after, 'gi');
-
-				css = css.replace(regex, replacement);
-			}
-
-			return css;
-		}
-
-		var self = window.PrefixFree = {
-			prefixCSS: function prefixCSS(css, raw, element) {
-				var prefix = self.prefix;
-
-				// Gradient angles hotfix
-				if (self.functions.indexOf('linear-gradient') > -1) {
-					// Gradients are supported with a prefix, convert angles to legacy
-					css = css.replace(/(\s|:|,)(repeating-)?linear-gradient\(\s*(-?\d*\.?\d*)deg/ig, function ($0, delim, repeating, deg) {
-						return delim + (repeating || '') + 'linear-gradient(' + (90 - deg) + 'deg';
-					});
-				}
-
-				css = fix('functions', '(\\s|:|,)', '\\s*\\(', '$1' + prefix + '$2(', css);
-				css = fix('keywords', '(\\s|:)', '(\\s|;|\\}|$)', '$1' + prefix + '$2$3', css);
-				css = fix('properties', '(^|\\{|\\s|;)', '\\s*:', '$1' + prefix + '$2:', css);
-
-				// Prefix properties *inside* values (issue #8)
-				if (self.properties.length) {
-					var regex = RegExp('\\b(' + self.properties.join('|') + ')(?!:)', 'gi');
-
-					css = fix('valueProperties', '\\b', ':(.+?);', function ($0) {
-						return $0.replace(regex, prefix + "$1");
-					}, css);
-				}
-
-				if (raw) {
-					css = fix('selectors', '', '\\b', self.prefixSelector, css);
-					css = fix('atrules', '@', '\\b', '@' + prefix + '$1', css);
-				}
-
-				// Fix double prefixing
-				css = css.replace(RegExp('-' + prefix, 'g'), '-');
-
-				// Prefix wildcard
-				css = css.replace(/-\*-(?=[a-z]+)/gi, self.prefix);
-
-				return css;
-			},
-
-			property: function property(_property) {
-				return (self.properties.indexOf(_property) >= 0 ? self.prefix : '') + _property;
-			},
-
-			value: function value(_value, property) {
-				_value = fix('functions', '(^|\\s|,)', '\\s*\\(', '$1' + self.prefix + '$2(', _value);
-				_value = fix('keywords', '(^|\\s)', '(\\s|$)', '$1' + self.prefix + '$2$3', _value);
-
-				if (self.valueProperties.indexOf(property) >= 0) {
-					_value = fix('properties', '(^|\\s|,)', '($|\\s|,)', '$1' + self.prefix + '$2$3', _value);
-				}
-
-				return _value;
-			},
-
-			// Warning: Prefixes no matter what, even if the selector is supported prefix-less
-			prefixSelector: function prefixSelector(selector) {
-				return selector.replace(/^:{1,2}/, function ($0) {
-					return $0 + self.prefix;
-				});
-			},
-
-			// Warning: Prefixes no matter what, even if the property is supported prefix-less
-			prefixProperty: function prefixProperty(property, camelCase) {
-				var prefixed = self.prefix + property;
-
-				return camelCase ? StyleFix.camelCase(prefixed) : prefixed;
-			}
-		};
-
-		/**************************************
-	  * Properties
-	  **************************************/
-		(function () {
-			var prefixes = {},
-			    properties = [],
-			    shorthands = {},
-			    style = getComputedStyle(document.documentElement, null),
-			    dummy = document.createElement('div').style;
-
-			// Why are we doing this instead of iterating over properties in a .style object? Cause Webkit won't iterate over those.
-			var iterate = function iterate(property) {
-				if (property.charAt(0) === '-') {
-					properties.push(property);
-
-					var parts = property.split('-'),
-					    prefix = parts[1];
-
-					// Count prefix uses
-					prefixes[prefix] = ++prefixes[prefix] || 1;
-
-					// This helps determining shorthands
-					while (parts.length > 3) {
-						parts.pop();
-
-						var shorthand = parts.join('-');
-
-						if (supported(shorthand) && properties.indexOf(shorthand) === -1) {
-							properties.push(shorthand);
-						}
-					}
-				}
-			},
-			    supported = function supported(property) {
-				return StyleFix.camelCase(property) in dummy;
-			};
-
-			// Some browsers have numerical indices for the properties, some don't
-			if (style && style.length > 0) {
-				for (var i = 0; i < style.length; i++) {
-					iterate(style[i]);
-				}
-			} else {
-				for (var property in style) {
-					iterate(StyleFix.deCamelCase(property));
-				}
-			}
-
-			// Find most frequently used prefix
-			var highest = { uses: 0 };
-			for (var prefix in prefixes) {
-				var uses = prefixes[prefix];
-
-				if (highest.uses < uses) {
-					highest = { prefix: prefix, uses: uses };
-				}
-			}
-
-			self.prefix = '-' + highest.prefix + '-';
-			self.Prefix = StyleFix.camelCase(self.prefix);
-
-			self.properties = [];
-
-			// Get properties ONLY supported with a prefix
-			for (var i = 0; i < properties.length; i++) {
-				var property = properties[i];
-
-				if (property.indexOf(self.prefix) === 0) {
-					// we might have multiple prefixes, like Opera
-					var unprefixed = property.slice(self.prefix.length);
-
-					if (!supported(unprefixed)) {
-						self.properties.push(unprefixed);
-					}
-				}
-			}
-
-			// IE fix
-			if (self.Prefix == 'Ms' && !('transform' in dummy) && !('MsTransform' in dummy) && 'msTransform' in dummy) {
-				self.properties.push('transform', 'transform-origin');
-			}
-
-			self.properties.sort();
-		})();
-
-		/**************************************
-	  * Values
-	  **************************************/
-		(function () {
-			// Values that might need prefixing
-			var functions = {
-				'linear-gradient': {
-					property: 'backgroundImage',
-					params: 'red, teal'
-				},
-				'calc': {
-					property: 'width',
-					params: '1px + 5%'
-				},
-				'element': {
-					property: 'backgroundImage',
-					params: '#foo'
-				},
-				'cross-fade': {
-					property: 'backgroundImage',
-					params: 'url(a.png), url(b.png), 50%'
-				}
-			};
-
-			functions['repeating-linear-gradient'] = functions['repeating-radial-gradient'] = functions['radial-gradient'] = functions['linear-gradient'];
-
-			// Note: The properties assigned are just to *test* support. 
-			// The keywords will be prefixed everywhere.
-			var keywords = {
-				'initial': 'color',
-				'zoom-in': 'cursor',
-				'zoom-out': 'cursor',
-				'box': 'display',
-				'flexbox': 'display',
-				'inline-flexbox': 'display',
-				'flex': 'display',
-				'inline-flex': 'display',
-				'grid': 'display',
-				'inline-grid': 'display',
-				'max-content': 'width',
-				'min-content': 'width',
-				'fit-content': 'width',
-				'fill-available': 'width'
-			};
-
-			self.functions = [];
-			self.keywords = [];
-
-			var style = document.createElement('div').style;
-
-			function supported(value, property) {
-				style[property] = '';
-				style[property] = value;
-
-				return !!style[property];
-			}
-
-			for (var func in functions) {
-				var test = functions[func],
-				    property = test.property,
-				    value = func + '(' + test.params + ')';
-
-				if (!supported(value, property) && supported(self.prefix + value, property)) {
-					// It's supported, but with a prefix
-					self.functions.push(func);
-				}
-			}
-
-			for (var keyword in keywords) {
-				var property = keywords[keyword];
-
-				if (!supported(keyword, property) && supported(self.prefix + keyword, property)) {
-					// It's supported, but with a prefix
-					self.keywords.push(keyword);
-				}
-			}
-		})();
-
-		/**************************************
-	  * Selectors and @-rules
-	  **************************************/
-		(function () {
-
-			var selectors = {
-				':read-only': null,
-				':read-write': null,
-				':any-link': null,
-				'::selection': null
-			},
-			    atrules = {
-				'keyframes': 'name',
-				'viewport': null,
-				'document': 'regexp(".")'
-			};
-
-			self.selectors = [];
-			self.atrules = [];
-
-			var style = root.appendChild(document.createElement('style'));
-
-			function supported(selector) {
-				style.textContent = selector + '{}'; // Safari 4 has issues with style.innerHTML
-
-				return !!style.sheet.cssRules.length;
-			}
-
-			for (var selector in selectors) {
-				var test = selector + (selectors[selector] ? '(' + selectors[selector] + ')' : '');
-
-				if (!supported(test) && supported(self.prefixSelector(test))) {
-					self.selectors.push(selector);
-				}
-			}
-
-			for (var atrule in atrules) {
-				var test = atrule + ' ' + (atrules[atrule] || '');
-
-				if (!supported('@' + test) && supported('@' + self.prefix + test)) {
-					self.atrules.push(atrule);
-				}
-			}
-
-			root.removeChild(style);
-		})();
-
-		// Properties that accept properties as their value
-		self.valueProperties = ['transition', 'transition-property'];
-
-		// Add class for current prefix
-		root.className += ' ' + self.prefix;
-
-		StyleFix.register(self.prefixCSS);
-	})(document.documentElement);
 
 /***/ }
 /******/ ]);

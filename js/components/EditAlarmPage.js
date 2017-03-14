@@ -1,13 +1,13 @@
 import React from 'react'
 import { convertSrcTimeToTwelveHour, convertFormattedToSrcTime, setTwoDigit, capitalize } from '../helpers.js'
 
-// Xscroll objects
-var hourScroll, minuteScroll, periodScroll;
-
-// MutationObservers to detect changes to scroller
-var hourObserver, minuteObserver, periodObserver;
-
 var EditAlarmPage = React.createClass({
+  hourScroll: null,
+  minuteScroll: null,
+  periodScroll: null,
+  hourObserver: null,
+  minuteObserver: null,
+  periodObserver: null,
   getInitialState: function() {
     return {
       id: this.props.alarmBeingEdited.id,
@@ -112,85 +112,80 @@ var EditAlarmPage = React.createClass({
       // poll for elements existence before creating XScroll objects with said elements
       (function scrollerElementsExist() {
         if (document.querySelector('.scroll-time-hour') && document.querySelector('.scroll-time-minute')) {
-
           // HOUR SCROLLER
-          hourScroll = new XScroll({
+          self.hourScroll = new XScroll({
             renderTo: ".scroll-time-hour",
             scrollbarY: false,
             scrollbarX: false,
             lockX: true
           })
           var cellHeight = document.querySelector(".scroll-time-hour li").offsetHeight;
-          hourScroll.plug(new Snap({
+          self.hourScroll.plug(new Snap({
             snapHeight: cellHeight,
             autoStep: true,
             snapRowsNum: document.querySelectorAll(".scroll-time-hour li").length
           }));
-          hourScroll.render();
-          hourScroll.scrollTop(hourScrollPosition, 500, 'ease');
+          self.hourScroll.render();
+          self.hourScroll.scrollTop(hourScrollPosition, 500, 'ease');
 
           // MINUTE SCROLLER
-          minuteScroll = new XScroll({
+          self.minuteScroll = new XScroll({
             renderTo: ".scroll-time-minute",
             scrollbarY: false,
             scrollbarX: false,
             lockX: true
           })
           var cellHeight = document.querySelector(".scroll-time-minute li").offsetHeight;
-          minuteScroll.plug(new Snap({
+          self.minuteScroll.plug(new Snap({
             snapHeight: cellHeight,
             autoStep: true,
             snapRowsNum: document.querySelectorAll(".scroll-time-minute li").length
           }));
-          minuteScroll.render();
-          minuteScroll.scrollTop(self.state.time.formatted.minute * 70, 600, 'ease');
+          self.minuteScroll.render();
+          self.minuteScroll.scrollTop(self.state.time.formatted.minute * 70, 600, 'ease');
 
           // PERIOD SCROLLER
           if (!self.props.settings.militarytime) {
-            periodScroll = new XScroll({
+            self.periodScroll = new XScroll({
               renderTo: ".scroll-time-period",
               scrollbarY: false,
               scrollbarX: false,
               lockX: true
             })
             var cellHeight = document.querySelector(".scroll-time-period li").offsetHeight;
-            periodScroll.plug(new Snap({
+            self.periodScroll.plug(new Snap({
               snapHeight: cellHeight,
               autoStep: true,
               snapRowsNum: document.querySelectorAll(".scroll-time-period li").length
             }));
-            periodScroll.render();
-            periodScroll.scrollTop(periodScrollPosition * 70, 1000, 'ease');
+            self.periodScroll.render();
+            self.periodScroll.scrollTop(periodScrollPosition * 70, 1000, 'ease');
           }
 
-          //PREVENT HORIZONTAL SCROLL FOR HOUR AND MINUTE SCROLLERS
-          var hourulel = document.querySelector('.scroll-time-hour ul');
-          hourulel.style.transform = "none !important";
-
           var hourObsTarget = document.querySelector(".scroll-time-hour .xs-container");
-          hourObserver = new MutationObserver(function(mutations) {
+          self.hourObserver = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
-              self._changeHour(self._getHourInput(70, hourScroll.getScrollTop()));
+              self._changeHour(self._getHourInput(70, self.hourScroll.getScrollTop()));
             });
           });
           var config = { attributes: true, childList: true, characterData: true };
-          hourObserver.observe(hourObsTarget, config);
+          self.hourObserver.observe(hourObsTarget, config);
 
           var minuteObsTarget = document.querySelector(".scroll-time-minute .xs-container");
-          minuteObserver = new MutationObserver(function(mutations) {
+          self.minuteObserver = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
-              self._changeMinute(self._getMinuteInput(70, minuteScroll.getScrollTop()));
+              self._changeMinute(self._getMinuteInput(70, self.minuteScroll.getScrollTop()));
             });
           });
-          minuteObserver.observe(minuteObsTarget, config);
+          self.minuteObserver.observe(minuteObsTarget, config);
 
           var periodObsTarget = document.querySelector(".scroll-time-period .xs-container");
-          periodObserver = new MutationObserver(function(mutations) {
+          self.periodObserver = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
-              self._changePeriod(self._getPeriodInput(70, periodScroll.getScrollTop()));
+              self._changePeriod(self._getPeriodInput(70, self.periodScroll.getScrollTop()));
             });
           });
-          periodObserver.observe(periodObsTarget, config);
+          self.periodObserver.observe(periodObsTarget, config);
         } else {
           setTimeout(scrollerElementsExist, 5);
         }

@@ -22,6 +22,14 @@ export function convertKelvinToCelsius(k) {
   return Math.round(k - 273);
 }
 
+export function fahToCel(f) {
+  return Math.round((f - 32) * 5/9) ;
+}
+
+export function celToFah(c) {
+  return Math.round(c * 9/5 + 32);
+}
+
 export function convertFormattedToSrcTime(hour, minute, second, period) {
   var militaryHour = hour;
   if (period === 'PM') {
