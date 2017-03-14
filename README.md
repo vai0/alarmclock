@@ -14,8 +14,7 @@ The design was intended to be built on the iOS or Android platform. However, I w
 - find new weather api that supports https
 - split up scss file
 - setup react router
-- look into progressive web app
-
+- look into creating a [progressive web app](https://developers.google.com/web/fundamentals/getting-started/codelabs/your-first-pwapp/)
 - create splash screen
 - highlight time-wheel to pink on tap
 - add on-hover effects to buttons
