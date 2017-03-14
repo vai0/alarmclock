@@ -94,48 +94,45 @@ var App = React.createClass({
     request.withCredentials = true;
     request.setRequestHeader('Content-Type', 'text/plain');
     request.onload = function() {
-      if (request.status >= 200 && request.status < 400) { //success
-        this.setState({
-          weather: JSON.parse(request.responseText)
-        });
-      } else { //reach server, but receive an error
-        console.log('Dark Sky API reached, but received status error: ', request.status);
-        console.log('Default JSON response fed for a clear-night. clear_day background used in place until I create a night version');
-        this.setState({
-          weather: {
-            latitude: 37.7749,
-            longitude: -122.4194,
-            timezone: "America/Los_Angeles",
-            offset: -7,
-            currently: {
-              time: 1489464754,
-              summary: "Clear",
-              icon: "clear-night",
-              nearestStormDistance: 13,
-              nearestStormBearing: 176,
-              precipIntensity: 0,
-              precipProbability: 0,
-              temperature: 61.79,
-              apparentTemperature: 61.79,
-              dewPoint: 50.51,
-              humidity: 0.66,
-              windSpeed: 3.35,
-              windBearing: 324,
-              visibility: 8.62,
-              cloudCover: 0.11,
-              pressure: 1016.77,
-              ozone: 286.8
-            }
-          },
-          minutely: {},
-          hourly: {},
-          daily: {},
-          flags: {}
-        });
-      }
+      this.setState({
+        weather: JSON.parse(request.responseText)
+      });
     }.bind(this);
     request.onerror = function() {
-      console.log('openweathermap request - some sort of connection error occurred');
+      console.log('some sort of connection error occurred');
+      console.log('Dark Sky API reached, but received status error: ', request.status);
+      console.log('Default JSON response fed for a clear-night. clear_day background used in place until I create a night version');
+      this.setState({
+        weather: {
+          latitude: 37.7749,
+          longitude: -122.4194,
+          timezone: "America/Los_Angeles",
+          offset: -7,
+          currently: {
+            time: 1489464754,
+            summary: "Clear",
+            icon: "clear-night",
+            nearestStormDistance: 13,
+            nearestStormBearing: 176,
+            precipIntensity: 0,
+            precipProbability: 0,
+            temperature: 61.79,
+            apparentTemperature: 61.79,
+            dewPoint: 50.51,
+            humidity: 0.66,
+            windSpeed: 3.35,
+            windBearing: 324,
+            visibility: 8.62,
+            cloudCover: 0.11,
+            pressure: 1016.77,
+            ozone: 286.8
+          }
+        },
+        minutely: {},
+        hourly: {},
+        daily: {},
+        flags: {}
+      });
     };
     request.send();
   },
