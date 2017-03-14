@@ -12,7 +12,7 @@ var AlarmTriggeredPage = React.createClass({
       : <div className="currentTime">{setTwoDigit(this.props.currentTime.formatted.hour) + ':' + setTwoDigit(this.props.currentTime.formatted.minute) + ' ' + this.props.currentTime.formatted.period}</div>;
   },
   //temporary table mapping darkSky api's icon key to the available backgrounds
-  icontable: {
+  iconTable: {
     'clear-day': 'clear-day',
     'clear-night': 'clear-day',
     'partly-cloudy-day': 'partly-cloudy',

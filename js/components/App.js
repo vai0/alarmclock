@@ -24,8 +24,8 @@ var App = React.createClass({
         },
         formatted: convertSrcTimeToTwelveHour(hour, minute, second)
       },
-      location: null,
-      weather: null
+      location: {},
+      weather: {}
     };
   },
   componentWillMount: function() {

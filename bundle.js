@@ -22561,8 +22561,8 @@
 	        },
 	        formatted: (0, _helpers.convertSrcTimeToTwelveHour)(hour, minute, second)
 	      },
-	      location: null,
-	      weather: null
+	      location: {},
+	      weather: {}
 	    };
 	  },
 	  componentWillMount: function componentWillMount() {
@@ -24585,7 +24585,7 @@
 	    );
 	  },
 	  //temporary table mapping darkSky api's icon key to the available backgrounds
-	  icontable: {
+	  iconTable: {
 	    'clear-day': 'clear-day',
 	    'clear-night': 'clear-day',
 	    'partly-cloudy-day': 'partly-cloudy',
