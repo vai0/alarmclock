@@ -133,7 +133,7 @@ var App = React.createClass({
         daily: {},
         flags: {}
       });
-    };
+    }.bind(this);
     request.send();
   },
   _toggleAlarm: function(alarmid) {

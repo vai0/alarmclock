@@ -22670,7 +22670,7 @@
 	        daily: {},
 	        flags: {}
 	      });
-	    };
+	    }.bind(this);
 	    request.send();
 	  },
 	  _toggleAlarm: function _toggleAlarm(alarmid) {
