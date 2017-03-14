@@ -76,11 +76,11 @@ var App = React.createClass({
       this._getWeather(this.state.location.longitude, this.state.location.latitude);
     }
     function error(err) {
-      console.warn('ERROR(' + err.code + '): ' + err.message + '...falling back on default location value');
+      console.warn('ERROR(' + err.code + '): ' + err.message + '...falling back on default location value: San Francisco');
       this.setState({
         location: {
-          longitude: '-121.876590',
-          latitude: '37.383573'
+          longitude: '37.7749',
+          latitude: '122.4194'
         }
       });
       this._getWeather(this.state.location.longitude, this.state.location.latitude);
@@ -89,7 +89,7 @@ var App = React.createClass({
   },
   _getWeather: function(longitude, latitude) {
     var request = new XMLHttpRequest();
-    request.open('GET', 'http://api.openweathermap.org/data/2.5/weather?lat='+latitude+'&lon='+longitude+'&APPID=11063795b43e3d923147da4c5f10100b', true);
+    request.open('GET', 'https://api.openweathermap.org/data/2.5/weather?lat='+latitude+'&lon='+longitude+'&APPID=11063795b43e3d923147da4c5f10100b', true);
     request.onload = function() {
       if (request.status >= 200 && request.status < 400) { //success
         this.setState({
