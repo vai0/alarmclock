@@ -91,8 +91,8 @@ var App = React.createClass({
   _getWeather: function(longitude, latitude) {
     var request = new XMLHttpRequest();
     request.open('GET', 'https://api.darksky.net/forecast/' + '4c0201f38184db4de3d293a5bbd6cf3e/' + latitude + ',' + longitude, true);
-    xhr.withCredentials = true;
-    xhr.setRequestHeader('Content-Type', 'text/plain');
+    request.withCredentials = true;
+    request.setRequestHeader('Content-Type', 'text/plain');
     request.onload = function() {
       if (request.status >= 200 && request.status < 400) { //success
         this.setState({
