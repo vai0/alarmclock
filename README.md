@@ -21,7 +21,6 @@ The design was intended to be built on the iOS or Android platform. However, I w
 - add transitions between pages
 - add animation to open/close days container
 - align Wakey title
-- test
 
 <br>
 
