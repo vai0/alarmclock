@@ -32,6 +32,9 @@ vulcanize indexsource.html > index.html
 ```
 <br>
 
+#### Known Issues:
+- Audio will not autoplay when the alarm is triggered on mobile devices due to a limitation set by Chrome and Safari mobile browsers. [Link](http://stackoverflow.com/questions/26066062/autoplay-html5-audio-player-on-mobile-browsers).
+
 __[Demo](https://justinchi.me/alarmclock)__
 
 __Libraries:__ React, Polymer, [react-polymer](https://www.npmjs.com/package/react-polymer), [react-localstorage](https://github.com/STRML/react-localstorage), [XScroll](http://xscroll.github.io/), [Prefixfree](https://leaverou.github.io/prefixfree/), [Dragdealer](https://skidding.github.io/dragdealer/)
