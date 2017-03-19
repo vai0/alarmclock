@@ -23,6 +23,13 @@ The design was intended to be built on the iOS or Android platform. However, I w
 - align Wakey title
 
 <br>
+####To build:
+1. Compile with webpack
+2. Install vulcanize
+3. Run 
+```
+vulcanize indexsource.html > index.html
+```
 
 Working __[demo](https://justinchi.me/alarmclock)__
 
