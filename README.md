@@ -1,14 +1,14 @@
-#Wakey Alarm Clock
+# Wakey Alarm Clock
 
 An alarm clock app with weather forecasts meant to be used on your phone. This project was designed by [Xiaotong Yuchi](http://www.xiaotongyuchi.com/wakeyalarm).
 
 The design was intended to be built on the iOS or Android platform. However, I wanted to challenge myself by building a dynamic web application that relies entirely on managing all logic, data, and the view locally.
 
-####Goals for this project:
+#### Goals for this project:
 - Performant. Must feel like a native app.
 - Responsive. UI shouldn't break on mobile devices
 
-####To-Do:
+#### To-Do:
 - fix AlarmTriggeredPage not firing on mobile
 - separate time-wheel into its own component, eliminating duplication across EditAlarmPage and AddAlarmPage
 - find new weather api that supports https
@@ -23,7 +23,7 @@ The design was intended to be built on the iOS or Android platform. However, I w
 - align Wakey title
 
 
-####To build:
+#### To build:
 1. Compile with webpack
 2. Install [vulcanize](https://www.npmjs.com/package/vulcanize)
 3. Run 
