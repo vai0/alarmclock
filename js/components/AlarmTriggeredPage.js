@@ -5,6 +5,7 @@ import AlarmSlider from './AlarmSlider.js'
 var AlarmTriggeredPage = React.createClass({
   _onStop: function() {
     this.props._closeAlarmTriggeredPage();
+    this._stopVibrate();
   },
   _renderTime: function() {
     return this.props.settings.militarytime
@@ -41,6 +42,20 @@ var AlarmTriggeredPage = React.createClass({
       : Math.round(this.props.weather.currently.temperature);
     return <div className="temperature">{temperature}&deg;</div>
   },
+  _vibrateInterval: null,
+  _startVibrate: function() {
+    if (window.navigator && window.navigator.vibrate) {
+      this._vibrateInterval = setInterval(function() {
+        navigator.vibrate(1620);
+      }, 2700);
+    } else {
+      console.log('vibration API not supported in this browser')
+    }
+  },
+  _stopVibrate: function() {
+    if (this._vibrateInterval) clearInterval(this._vibrateInterval);
+    navigator.vibrate(0);
+  },
   render: function() {
     return (
       <div className="AlarmTriggeredPage">
@@ -51,7 +66,7 @@ var AlarmTriggeredPage = React.createClass({
         <div className="bottomHalf">
           {this._renderTime()}
           <div className="snoozeDescription">Tap to snooze</div>
-          <AlarmSlider _onStop={this._onStop} />
+          <AlarmSlider _onStop={this._onStop} _startVibrate={this._startVibrate} />
         </div>
         {this._renderAudio()}
       </div>

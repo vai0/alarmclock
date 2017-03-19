@@ -4,6 +4,7 @@ import Dragdealer from 'dragdealer'
 var AlarmSlider = React.createClass({
   componentDidMount: function() {
     this._createSlider();
+    this.props._startVibrate();
   },
   _createSlider: function() {
     var handle = document.querySelector('.handle');
@@ -11,6 +12,8 @@ var AlarmSlider = React.createClass({
     var ringer = document.querySelector('.ringer-icon');
     var path = document.querySelector('.path');
     var pathContainer = document.querySelector('.path-container');
+    var innerRipple = document.querySelector('.inner-ripple');
+    var outerRipple = document.querySelector('.outer-ripple');
     var self = this;
 
     var handlePosition;
@@ -29,8 +32,8 @@ var AlarmSlider = React.createClass({
         handle.classList.add('press');
         handle.classList.remove('raise');
         innerRipple.classList.remove('ripple-out-in');
-        innerRipple.style.display = 'none';
         outerRipple.classList.remove('ripple-out');
+        innerRipple.style.display = 'none';
         outerRipple.style.display = 'none';
       },
       dragStopCallback: function(x, y) {
@@ -42,11 +45,12 @@ var AlarmSlider = React.createClass({
           handle.classList.add('raise');
           handleContainer.classList.add('scale');
           innerRipple.classList.add('ripple-out-in');
-          innerRipple.style.display = 'block';
-          outerRipple.style.display = 'block';
           outerRipple.classList.add('ripple-out');
+          innerRipple.style.display = 'inline-block';
+          outerRipple.style.display = 'inline-block';
         } else if (handlePosition === 1) {
           ringer.classList.remove('shake');
+          self.props._onStop();
         }
       }
     });
