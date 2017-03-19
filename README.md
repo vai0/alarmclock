@@ -9,9 +9,7 @@ The design was intended to be built on the iOS or Android platform. However, I w
 - Responsive. UI shouldn't break on mobile devices
 
 #### To-Do:
-- fix AlarmTriggeredPage not firing on mobile
 - separate time-wheel into its own component, eliminating duplication across EditAlarmPage and AddAlarmPage
-- find new weather api that supports https
 - split up scss file
 - setup react router
 - look into creating a [progressive web app](https://developers.google.com/web/fundamentals/getting-started/codelabs/your-first-pwapp/)
