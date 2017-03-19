@@ -22,14 +22,15 @@ The design was intended to be built on the iOS or Android platform. However, I w
 - add animation to open/close days container
 - align Wakey title
 
-<br>
+
 ####To build:
 1. Compile with webpack
-2. Install vulcanize
+2. Install [vulcanize](https://www.npmjs.com/package/vulcanize)
 3. Run 
 ```
 vulcanize indexsource.html > index.html
 ```
+<br>
 
 Working __[demo](https://justinchi.me/alarmclock)__
 
