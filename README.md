@@ -33,7 +33,7 @@ vulcanize indexsource.html > index.html
 <br>
 
 #### Known Issues:
-- Audio will not autoplay when the alarm is triggered on mobile. No workaround. Reason is autoplay and preload are disabled on mobile browsers. [Link](http://stackoverflow.com/questions/26066062/autoplay-html5-audio-player-on-mobile-browsers).
+- Audio will not autoplay when the alarm is triggered on mobile. No workaround. Reason is autoplay and preload are disabled on mobile browsers. [Link](http://stackoverflow.com/questions/26066062/autoplay-html5-audio-player-on-mobile-browsers). Wish I'd known this before I started the project :(
 
 __[Demo](https://justinchi.me/alarmclock)__
 
