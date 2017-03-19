@@ -28,6 +28,10 @@ var AlarmSlider = React.createClass({
         handleContainer.classList.remove('scale');
         handle.classList.add('press');
         handle.classList.remove('raise');
+        innerRipple.classList.remove('ripple-out-in');
+        innerRipple.style.display = 'none';
+        outerRipple.classList.remove('ripple-out');
+        outerRipple.style.display = 'none';
       },
       dragStopCallback: function(x, y) {
         if (handlePosition < 1) {
@@ -37,9 +41,12 @@ var AlarmSlider = React.createClass({
           ringer.classList.add('shake');
           handle.classList.add('raise');
           handleContainer.classList.add('scale');
+          innerRipple.classList.add('ripple-out-in');
+          innerRipple.style.display = 'block';
+          outerRipple.style.display = 'block';
+          outerRipple.classList.add('ripple-out');
         } else if (handlePosition === 1) {
           ringer.classList.remove('shake');
-          self.props._onStop();
         }
       }
     });
@@ -53,7 +60,9 @@ var AlarmSlider = React.createClass({
             <span className="x"></span>
           </div>
           <div className="handle-container scale">
+            <span className="outer-ripple ripple-out"></span>
             <div className="handle raise">
+              <span className="inner-ripple ripple-out-in"></span>
               <span className="clock-icon"></span>
               <span className="ringer-icon shake"></span>
             </div>

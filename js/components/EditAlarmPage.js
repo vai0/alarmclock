@@ -1,4 +1,8 @@
 import React from 'react'
+import XScroll from '../../node_modules/xscroll/build/cmd/xscroll.js'
+import SimuScroll from '../../node_modules/xscroll/build/cmd/simulate-scroll.js'
+import Snap from '../../node_modules/xscroll/build/cmd/plugins/snap.js'
+import Infinite from '../../node_modules/xscroll/build/cmd/plugins/infinite.js'
 import { convertSrcTimeToTwelveHour, convertFormattedToSrcTime, setTwoDigit, capitalize } from '../helpers.js'
 
 var EditAlarmPage = React.createClass({
@@ -104,11 +108,11 @@ var EditAlarmPage = React.createClass({
     var periodScrollPosition = self.state.time.formatted.period === 'AM' ? 0 : 1;
 
     //initialize scroller objects
-    seajs.config({
-      base: "./node_modules/xscroll/build/cmd"
-    });
+    // seajs.config({
+    //   base: "./node_modules/xscroll/build/cmd"
+    // });
 
-    seajs.use(["simulate-scroll", "plugins/snap", "plugins/infinite"], function(XScroll, Snap, Infinite) {
+    // seajs.use(["simulate-scroll", "plugins/snap", "plugins/infinite"], function(XScroll, Snap, Infinite) {
       // poll for elements existence before creating XScroll objects with said elements
       (function scrollerElementsExist() {
         if (document.querySelector('.scroll-time-hour') && document.querySelector('.scroll-time-minute')) {
@@ -190,7 +194,7 @@ var EditAlarmPage = React.createClass({
           setTimeout(scrollerElementsExist, 5);
         }
       })();
-    });
+    // });
   },
   _renderDays: function() {
     if (this.state.repeat) {
