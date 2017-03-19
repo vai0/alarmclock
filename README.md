@@ -9,9 +9,7 @@ The design was intended to be built on the iOS or Android platform. However, I w
 - Responsive. UI shouldn't break on mobile devices
 
 #### To-Do:
-- fix AlarmTriggeredPage not firing on mobile
 - separate time-wheel into its own component, eliminating duplication across EditAlarmPage and AddAlarmPage
-- find new weather api that supports https
 - split up scss file
 - setup react router
 - look into creating a [progressive web app](https://developers.google.com/web/fundamentals/getting-started/codelabs/your-first-pwapp/)
@@ -30,10 +28,13 @@ The design was intended to be built on the iOS or Android platform. However, I w
 ```
 vulcanize indexsource.html > index.html
 ```
+#### Known Issues:
+- Audio will not autoplay when the alarm is triggered on mobile. No workaround. Reason is autoplay attribute is disabled on mobile browsers. [Link](http://stackoverflow.com/questions/26066062/autoplay-html5-audio-player-on-mobile-browsers). Wish I'd known this before I started the project :(
+
 <br>
 
 __[Demo](https://justinchi.me/alarmclock)__
 
 __Libraries:__ React, Polymer, [react-polymer](https://www.npmjs.com/package/react-polymer), [react-localstorage](https://github.com/STRML/react-localstorage), [XScroll](http://xscroll.github.io/), [Prefixfree](https://leaverou.github.io/prefixfree/), [Dragdealer](https://skidding.github.io/dragdealer/)
 
-__Tools:__ webpack, bower, npm
+__Tools:__ webpack, bower, npm, vulcanize
