@@ -39,4 +39,4 @@ __[Demo](https://justinchi.me/alarmclock)__
 
 __Libraries:__ React, Polymer, [react-polymer](https://www.npmjs.com/package/react-polymer), [react-localstorage](https://github.com/STRML/react-localstorage), [XScroll](http://xscroll.github.io/), [Prefixfree](https://leaverou.github.io/prefixfree/), [Dragdealer](https://skidding.github.io/dragdealer/)
 
-__Tools:__ webpack, bower, npm
+__Tools:__ webpack, bower, npm, vulcanize
