@@ -31,7 +31,7 @@ The design was intended to be built on the iOS or Android platform. However, I w
 vulcanize indexsource.html > index.html
 ```
 #### Known Issues:
-- Audio will not autoplay when the alarm is triggered on mobile. No workaround. Reason is autoplay and preload are disabled on mobile browsers. [Link](http://stackoverflow.com/questions/26066062/autoplay-html5-audio-player-on-mobile-browsers). Wish I'd known this before I started the project :(
+- Audio will not autoplay when the alarm is triggered on mobile. No workaround. Reason is autoplay attribute is disabled on mobile browsers. [Link](http://stackoverflow.com/questions/26066062/autoplay-html5-audio-player-on-mobile-browsers). Wish I'd known this before I started the project :(
 
 <br>
 
