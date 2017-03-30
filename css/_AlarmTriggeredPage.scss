@@ -1,5 +1,33 @@
+@keyframes pan {
+  0% { transform: translateX(0%); }
+  100% {
+    transform: translateX(105%) scaleX(1.3);
+    opacity: 0.4;
+  }
+}
+
+@keyframes panNoFade {
+  0% { transform: translateX(0); }
+  100% {
+    transform: translateX(375px) scaleX(1.1);
+  }
+}
+
+@import '_clear-day';
+@import '_partly-cloudy';
+@import '_cloudy';
+@import '_rain';
+@import '_snow';
+
 .AlarmTriggeredPage {
   .topHalf {
+    .weather-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
     &:before {
       content: " ";
     }

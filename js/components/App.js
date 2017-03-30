@@ -101,7 +101,7 @@ var App = React.createClass({
     request.onerror = function() {
       console.log('some sort of connection error occurred');
       console.log('Dark Sky API reached, but received status error: ', request.status);
-      console.log('Default JSON response fed for a clear-night. clear_day background used in place until I create a night version');
+      console.log('Fallback data JSON response fed for snow.');
       this.setState({
         weather: {
           latitude: 37.7749,
@@ -111,7 +111,7 @@ var App = React.createClass({
           currently: {
             time: 1489464754,
             summary: "Clear",
-            icon: "clear-night",
+            icon: "snow",
             nearestStormDistance: 13,
             nearestStormBearing: 176,
             precipIntensity: 0,

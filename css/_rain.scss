@@ -1,0 +1,105 @@
+.rain {
+  background-image: linear-gradient(to bottom, #2DAFF6 0%, #75FAE2 100%);
+  .cloud-one {
+    position: relative;
+    top: -65px;
+    animation: panNoFade 80s linear infinite;
+    .circle {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+    }
+    .c-one {
+      left: 15px;
+      width: 118px;
+      height: 118px;
+    }
+    .c-two {
+      top: 50px;
+      left: -30px;
+      width: 72px;
+      height: 72px;
+    }
+    .c-three {
+      top: 50px;
+      left: 120px;
+      width: 43px;
+      height: 43px;
+    }
+    .c-four {
+      top: 50px;
+      left: 160px;
+      width: 29px;
+      height: 29px;
+    }
+  }
+  .cloud-two {
+    position: relative;
+    top: -70px;
+    left: -210px;
+    animation: panNoFade 70s linear infinite;
+    .circle {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+    }
+    .c-one {
+      left: 28px;
+      width: 118px;
+      height: 118px;
+    }
+    .c-two {
+      top: 65px;
+      width: 43px;
+      height: 43px;
+    }
+    .c-three {
+      top: 35px;
+      left: 118px;
+      width: 72px;
+      height: 72px;
+    }
+  }
+  .cloud-three {
+    position: relative;
+    top: 275px;
+    left: 275px;
+    animation: panNoFade 100s linear infinite;
+    .circle {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+    }
+    .c-one {
+      left: 30px;
+      width: 73px;
+      height: 73px;
+    }
+    .c-two {
+      top: 25px;
+      width: 49px;
+      height: 49px;
+    }
+  }
+  .droplet-container {
+    position: relative;
+    left: -200px;
+    width: 375px;
+    height: 100%;
+    animation: panNoFade 70s linear infinite;
+  }
+  .droplet {
+    position: absolute;
+    top: -200px;
+    width: 1px;
+    height: 100px;
+    background-color: white;
+    border-radius: 5px;
+    animation: fall 3s linear infinite;
+  }
+}
+
+@keyframes fall {
+  0% { transform: translate(0, 0) rotate(-8deg)}
+  100% { transform: translate(417px, 3000px)}
+}

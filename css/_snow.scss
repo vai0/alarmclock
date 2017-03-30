@@ -1,0 +1,63 @@
+.snow {
+  background-image: linear-gradient(to bottom, #B4D6FC 0%, #9CAADE 100%);
+  .snowflake-container {
+    position: relative;
+    left: -10%;
+    width: 120%;
+    height: 100%;
+    .snowflake {
+      position: absolute;
+      top: -30px;
+      height: 20px;
+      width: 20px;
+      background-color: white;
+      border-radius: 50%;
+      z-index: 9999;
+      animation: snowfalling 10s linear infinite,
+                snowdrifting 4s ease-in-out infinite;
+    }
+  }
+  .circle {
+    position: absolute;
+    background-color: white;
+    border-radius: 50%;
+  }
+  .cloud-one {
+    position: relative;
+    top: 255px;
+    left: -100px;
+    animation: panNoFade 80s linear infinite;
+    .circle {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+    }
+    .c-one {
+      left: 45px;
+      width: 118px;
+      height: 118px;
+    }
+    .c-two {
+      top: 40px;
+      width: 72px;
+      height: 72px;
+    }
+    .c-three {
+      top: 58px;
+      left: 150px;
+      width: 43px;
+      height: 43px;
+    }
+  }
+}
+
+@keyframes snowfalling {
+  0% { top: -20%; }
+  100% { top: 120%; }
+}
+
+@keyframes snowdrifting {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(40px); }
+  100% { transform: translateX(0); }
+}

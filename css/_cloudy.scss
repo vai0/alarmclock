@@ -1,0 +1,314 @@
+.cloudy {
+  background-image: linear-gradient(to bottom, #A9AEB1 0%, #EBECEC 100%);
+  .cloud-one {
+    position: relative;
+    top: 50px;
+    left: -30px;
+    animation: pan 90s linear infinite;
+    .circle {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+    }
+    .c-one {
+      left: 15px;
+      width: 48px;
+      height: 48px;
+    }
+    .c-two {
+      top: 15px;
+      width: 22px;
+      height: 22px;
+    }
+    .c-three {
+      top: 8px;
+      left: 45px;
+      width: 32px;
+      height: 32px;
+    }
+  }
+  .cloud-two {
+    position: relative;
+    top: 180px;
+    left: 45px;
+    animation: pan 60s linear infinite;
+    .circle {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+    }
+    .c-one {
+      left: 13px;
+      width: 44px;
+      height: 44px;
+    }
+    .c-two {
+      top: 15px;
+      width: 20px;
+      height: 20px;
+    }
+    .c-three {
+      top: 18px;
+      left: 61px;
+      width: 17px;
+      height: 17px;
+    }
+  }
+  .cloud-three {
+    position: relative;
+    top: 130px;
+    left: 290px;
+    animation: pan 80s linear infinite;
+    .circle {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+    }
+    .c-one {
+      left: 11px;
+      width: 30px;
+      height: 30px;
+    }
+    .c-two {
+      top: 6px;
+      width: 20px;
+      height: 20px;
+    }
+    .c-three {
+      top: 9px;
+      left: 37px;
+      width: 14px;
+      height: 14px;
+    }
+  }
+  .cloud-four {
+    position: relative;
+    top: 245px;
+    animation: pan 35s linear infinite;
+    .circle {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+    }
+    .c-one {
+      left: 45px;
+      width: 118px;
+      height: 118px;
+    }
+    .c-two {
+      top: 40px;
+      width: 72px;
+      height: 72px;
+    }
+    .c-three {
+      top: 58px;
+      left: 150px;
+      width: 43px;
+      height: 43px;
+    }
+  }
+  .cloud-five {
+    position: relative;
+    top: 275px;
+    left: 185px;
+    animation: pan 50s linear infinite;
+    .circle {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+    }
+    .c-one {
+      width: 71px;
+      height: 71px;
+    }
+    .c-two {
+      top: 18px;
+      left: 57px;
+      width: 33px;
+      height: 33px;
+    }
+  }
+  .cloud-six {
+    position: relative;
+    top: 305px;
+    left: 250px;
+    animation: pan 30s linear infinite;
+    .circle {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+    }
+    .c-one {
+      left: 11px;
+      width: 30px;
+      height: 30px;
+    }
+    .c-two {
+      top: 6px;
+      width: 20px;
+      height: 20px;
+    }
+    .c-three {
+      top: 9px;
+      left: 37px;
+      width: 14px;
+      height: 14px;
+    }
+  }
+  .cloud-seven {
+    position: relative;
+    top: 225px;
+    left: 298px;
+    animation: pan 40s linear infinite;
+    .circle {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+    }
+    .c-one {
+      left: 28px;
+      width: 118px;
+      height: 118px;
+    }
+    .c-two {
+      top: 65px;
+      width: 43px;
+      height: 43px;
+    }
+    .c-three {
+      top: 35px;
+      left: 118px;
+      width: 72px;
+      height: 72px;
+    }
+  }
+  .cloud-eight {
+    position: relative;
+    left: -375px;
+    top: 245px;
+    animation: pan 35s linear infinite;
+    .circle {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+    }
+    .c-one {
+      left: 45px;
+      width: 118px;
+      height: 118px;
+    }
+    .c-two {
+      top: 40px;
+      width: 72px;
+      height: 72px;
+    }
+    .c-three {
+      top: 58px;
+      left: 150px;
+      width: 43px;
+      height: 43px;
+    }
+  }
+  .cloud-nine {
+    position: relative;
+    top: 275px;
+    left: -190px;
+    animation: pan 45s linear infinite;
+    .circle {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+    }
+    .c-one {
+      width: 71px;
+      height: 71px;
+    }
+    .c-two {
+      top: 18px;
+      left: 57px;
+      width: 33px;
+      height: 33px;
+    }
+  }
+  .cloud-ten {
+    position: relative;
+    top: 305px;
+    left: -125px;
+    animation: pan 35s linear infinite;
+    .circle {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+    }
+    .c-one {
+      left: 11px;
+      width: 30px;
+      height: 30px;
+    }
+    .c-two {
+      top: 6px;
+      width: 20px;
+      height: 20px;
+    }
+    .c-three {
+      top: 9px;
+      left: 37px;
+      width: 14px;
+      height: 14px;
+    }
+  }
+  .cloud-eleven {
+    position: relative;
+    top: 225px;
+    left: -77px;
+    animation: pan 65s linear infinite;
+    .circle {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+    }
+    .c-one {
+      left: 28px;
+      width: 118px;
+      height: 118px;
+    }
+    .c-two {
+      top: 65px;
+      width: 43px;
+      height: 43px;
+    }
+    .c-three {
+      top: 35px;
+      left: 118px;
+      width: 72px;
+      height: 72px;
+    }
+  }
+  .cloud-twelve {
+    position: relative;
+    top: 130px;
+    left: -85px;
+    animation: pan 40s linear infinite;
+    .circle {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+    }
+    .c-one {
+      left: 11px;
+      width: 30px;
+      height: 30px;
+    }
+    .c-two {
+      top: 6px;
+      width: 20px;
+      height: 20px;
+    }
+    .c-three {
+      top: 9px;
+      left: 37px;
+      width: 14px;
+      height: 14px;
+    }
+  }
+}
