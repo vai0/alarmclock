@@ -20,7 +20,14 @@
 @import '_snow';
 
 .AlarmTriggeredPage {
+
+  height: inherit;
+
   .topHalf {
+
+    position: relative;
+    height: 50%;
+
     .weather-container {
       position: relative;
       width: 100%;
@@ -31,9 +38,6 @@
     &:before {
       content: " ";
     }
-
-    position: relative;
-    height: 50vh;
 
     .weatherBackground {
       width: 100%;
