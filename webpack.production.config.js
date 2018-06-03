@@ -1,10 +1,12 @@
 var webpack = require('webpack');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var extractCSS = new ExtractTextPlugin('./css/main.css');
+var path = require('path');
 
 module.exports = {
   entry: './js/main.js',
   output: {
+    path: path.join(__dirname, 'dist'),
     filename: 'bundle.js'
   },
   module: {

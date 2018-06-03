@@ -2,9 +2,9 @@
   "name": "alarmclock",
   "version": "1.0.0",
   "description": "",
-  "main": "alarmclass.js",
+  "main": "js/main.js",
   "scripts": {
-    "build": "NODE_ENV=production webpack --config ./webpack.production.config.js"
+    "build": "bower i && NODE_ENV=production webpack --config ./webpack.production.config.js && vulcanize indexsource.html > dist/index.html"
   },
   "repository": {
     "type": "git",
@@ -25,10 +25,11 @@
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "react-polymer": "^3.0.0",
-    "webpack": "^1.14.0",
     "xscroll": "^3.1.2"
   },
   "devDependencies": {
+    "bower": "1.8.4",
+    "vulcanize": "1.16.0",
     "css-loader": "^0.26.1",
     "dragdealer": "^0.9.9",
     "extract-text-webpack-plugin": "^1.0.1",
